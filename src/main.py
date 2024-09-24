@@ -4,10 +4,14 @@ from tkinter import ttk
 from tkinter import Tk, Text
 from tkinter import filedialog as fd
 from tkinter import Menu
+from tero.tero import * #import all functions from tero, these don't exist yet
+from read.read import * #import all functions from read
+from write.write import * #import all functions from write
 
-platform = None
+acmt_platform = None #global function with no value
+acmt_file_path = None 
 
-#Next time, add platform selection. Maybe as a submenu?
+
 
 class AchievementConverter:
 
@@ -16,8 +20,19 @@ class AchievementConverter:
         self.root.title('Achievement Converter')
     
     def select_file():
-        filename = fd.askopenfilename()
-        print('The file path is: ' + filename)
+        global acmt_file_path
+        acmt_file_path = fd.askopenfilename()
+        print('The file path is: ' + acmt_file_path)
+    
+    def acmt_import():
+        tero_function(acmt_platform) #send platform to tero
+        read_file(acmt_file_path) #send file to read
+
+    #tero calls this
+    def acmt_write(acmt_data): #takes list/array whatever as parameter
+        write_function(acmt_data) #Sends data to write
+
+
 
 
         
