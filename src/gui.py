@@ -8,6 +8,8 @@ class AchievementConverterGUI:
    
     def __init__(self, root):
 
+        self.selected_path = None #empty variable for file path, should the config be used here?
+
         #window centering
         window_width = 600 
         window_height = 300
@@ -41,7 +43,7 @@ class AchievementConverterGUI:
         open_button = ttk.Button(
             root,
             text="Import achievement file",
-            #command=select_file #broken
+            command=self.select_file 
         )
 
         exit_button = ttk.Button(
@@ -53,11 +55,14 @@ class AchievementConverterGUI:
         open_button.grid(row=3, column=0, padx=5, pady=5)
         exit_button.grid(row=4, column=1, padx=5, pady=5)
     
+    def select_file(self):
+        file_path = fd.askopenfilename()
+        if file_path: #if user changed the path
+            self.selected_path = file_path #set file path as the new one
 
-    
     
     def run_gui():
         root = tk.Tk() #tkinter
         app = AchievementConverterGUI(root)
         root.mainloop() #keep the window displaying
-        pass
+        return app.selected_path #return new path to main

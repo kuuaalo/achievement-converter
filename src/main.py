@@ -1,41 +1,26 @@
-import configparser
-
+import config
 from tkinter import filedialog as fd
 
-from gui import AchievementConverterGUI as gui #import gui
+from gui import AchievementConverterGUI #import gui
 
-from tero.tero import Tero as tero #import all functions from tero, these don't exist yet
+from tero.tero import Tero #import all functions from tero, these don't exist yet
+from write.write import Write #import all functions from write, these don't exist yet
+from read.read import * #import all functions from read
 
-
-#from read.read import * #import all functions from read
-#from write.write import * #import all functions from write
-
-acmt_platform = None #global function with no value
-acmt_file_path = None 
-
-
-
-class AchievementConverter:
-
-    def select_file():
-        global acmt_file_path
-        acmt_file_path = fd.askopenfilename()
-        print('The file path is: ' + acmt_file_path)
-    
-    #def acmt_import():
-        #tero_function(acmt_platform) #send platform to tero
-        #read_file(acmt_file_path) #send file to read
-
-    #tero calls this
-    #def acmt_write(acmt_data): #takes list/array whatever as parameter
-       # write_function(acmt_data) #Sends data to write
 
         
 def main():
-    tero.response_moi() #test function call
-    gui.run_gui() #call gui
-    
+    acmt_platform = config.DEFAULT_FILE_FORMAT #use default format
+    acmt_file_path = config.DEFAULT_FILE_PATH #use default path
 
+    selected_path = AchievementConverterGUI.run_gui() #call gui to get path
+
+    if selected_path != None: #if user changed path use it and it's not null
+        acmt_file_path = selected_path 
+    print(acmt_file_path)
+    tero = Tero(False, False) #init tero and give parameter
+    write = Write(acmt_file_path, acmt_platform, tero) #init write and give params
+    #read = Read(acmt_file_path, acmt_platform, tero) #init read and give params
 
 if __name__ == "__main__":
     main()

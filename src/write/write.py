@@ -20,7 +20,7 @@ class Write:
             return False
 
         
-    def run(self)
+    def run(self):
         pass
 
 
