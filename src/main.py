@@ -22,6 +22,10 @@ def main():
     write = Write(acmt_file_path, acmt_platform, tero) #init write and give params
     #read = Read(acmt_file_path, acmt_platform, tero) #init read and give params
 
+    #tero.run() #call the run functions
+    #write.run()
+    #read.run()
+
 if __name__ == "__main__":
     main()
 
