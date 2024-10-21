@@ -1,0 +1,82 @@
+ "123456"
+{
+	"stats"
+	{
+		"1"
+		{
+			"bits"
+			{
+				"1"
+				{
+					"name"	"AchievementID1"
+					"display"
+					{
+						"name"
+						{
+							"english"	"Achievement 1"
+							"finnish"	"Saavutus 1"
+							"token"	"NEW_ACHIEVEMENT_1_1_NAME"
+						}
+						"desc"
+						{
+							"english"	"Description of Achievement 1"
+							"finnish"	"Saavutus 1:en kuvaus"
+							"token"	"NEW_ACHIEVEMENT_1_1_DESC"
+						}
+						"hidden"	"0"
+						"icon"	"Achievement_1.jpg"
+						"icon_gray"	"Achievement_Locked_1.jpg"
+					}
+				}
+				"2"
+				{
+					"name"	"AchievementID2"
+					"display"
+					{
+						"name"
+						{
+							"english"	"Achievement 2"
+							"finnish"	"Saavutus 2"
+							"token"	"NEW_ACHIEVEMENT_1_2_NAME"
+						}
+						"desc"
+						{
+							"english"	"Description of Achievement 2"
+							"finnish"	"Saavutus 2:en kuvaus"
+							"token"	"NEW_ACHIEVEMENT_1_2_DESC"
+						}
+						"hidden"	"1"
+						"icon"	"Achievement_2.jpg"
+						"icon_gray"	"Achievement_Locked_2.jpg"
+					}
+				}
+				"3"
+				{
+					"name"	"AchievementID3"
+					"display"
+					{
+						"name"
+						{
+							"english"	"Achievement 3"
+							"finnish"	"Saavutus 3"
+							"token"	"NEW_ACHIEVEMENT_1_3_NAME"
+						}
+						"desc"
+						{
+							"english"	"Description of Achievement 3"
+							"finnish"	"Saavutus 3:en kuvaus"
+							"token"	"NEW_ACHIEVEMENT_1_3_DESC"
+						}
+						"hidden"	"1"
+						"icon"	"Achievement_3.jpg"
+						"icon_gray"	"Achievement_Locked_3.jpg"
+					}
+				}
+			}
+			"type"	"ACHIEVEMENTS"
+		}
+	}
+	"version"	"2"
+	"gamename"	"Super Ultimate Awesome Game"
+}
+ 

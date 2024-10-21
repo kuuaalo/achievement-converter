@@ -1,0 +1,10 @@
+name,locale,lockedTitle,lockedDescription,unlockedTitle,unlockedDescription,flavorText,lockedIcon,unlockedIcon
+AchievementID1,en-US,Locked Achievement 1,Locked Description of Achievement 1,Achievement 1,Description of Achievement 1,,Achievement_Locked_1.jpg,Achievement_1.jpg
+AchievementID1,fi,Lukittu Saavutus 1,Lukittu Saavutus 1:en kuvaus,Saavutus 1,Saavutus 1:en kuvaus,,Achievement_Locked_1.jpg,Achievement_1.jpg
+AchievementID1,default,Locked Achievement 1,Locked Description of Achievement 1,Achievement 1,Description of Achievement 1,,Achievement_Locked_1.jpg,Achievement_1.jpg
+AchievementID2,en-US,Locked Achievement 2,Locked Description of Achievement 2,Achievement 2,Description of Achievement 2,,Achievement_Locked_2.jpg,Achievement_2.jpg
+AchievementID2,fi,Lukittu Saavutus 2,Lukittu Saavutus 2:en kuvaus,Saavutus 2,Saavutus 2:en kuvaus,,Achievement_Locked_2.jpg,Achievement_2.jpg
+AchievementID2,default,Locked Achievement 2,Locked Description of Achievement 2,Achievement 2,Description of Achievement 2,,Achievement_Locked_2.jpg,Achievement_2.jpg
+AchievementID3,en-US,Locked Achievement 3,Locked Description of Achievement 3,Achievement 3,Description of Achievement 3,,Achievement_Locked_3.jpg,Achievement_3.jpg
+AchievementID3,fi,Lukittu Saavutus 3,Lukittu Saavutus 3:en kuvaus,Saavutus 3,Saavutus 3:en kuvaus,,Achievement_Locked_3.jpg,Achievement_3.jpg
+AchievementID3,default,Locked Achievement 3,Locked Description of Achievement 3,Achievement 3,Description of Achievement 3,,Achievement_Locked_3.jpg,Achievement_3.jpg

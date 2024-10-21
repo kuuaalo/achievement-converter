@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Localization xmlns="http://config.mgt.xboxlive.com/schema/localization/1">
+	<DevDisplayLocale locale="en-US" />
+	<LocalizedString id="AchievementID1">
+		<Value locale="en-US">Achievement 1</Value>
+		<Value locale="fi">Saavutus 1</Value>
+	</LocalizedString>
+	<LocalizedString id="AchievementID2">
+		<Value locale="en-US">Achievement 2</Value>
+		<Value locale="fi">Saavutus 2</Value>
+	</LocalizedString>
+	<LocalizedString id="AchievementID3">
+		<Value locale="en-US">Achievement 3</Value>
+		<Value locale="fi">Saavutus 3</Value>
+	</LocalizedString>
+	<LocalizedString id="LockedDescriptionId1">
+		<Value locale="en-US">Locked Description of Achievement 1</Value>
+		<Value locale="fi">Lukittu Saavutus 1:en kuvaus</Value>
+	</LocalizedString>
+	<LocalizedString id="LockedDescriptionId2">
+		<Value locale="en-US">Locked Description of Achievement 2</Value>
+		<Value locale="fi">Lukittu Saavutus 2:en kuvaus</Value>
+	</LocalizedString>
+	<LocalizedString id="LockedDescriptionId3">
+		<Value locale="en-US">Locked Description of Achievement 3</Value>
+		<Value locale="fi">Lukittu Saavutus 3:en kuvaus</Value>
+	</LocalizedString>
+	<LocalizedString id="UnlockedDescriptionId1">
+		<Value locale="en-US">Description of Achievement 1</Value>
+		<Value locale="fi">Saavutus 1:en kuvaus</Value>
+	</LocalizedString>
+	<LocalizedString id="UnlockedDescriptionId2">
+		<Value locale="en-US">Description of Achievement 2</Value>
+		<Value locale="fi">Saavutus 2:en kuvaus</Value>
+	</LocalizedString>
+	<LocalizedString id="UnlockedDescriptionId3">
+		<Value locale="en-US">Description of Achievement 3</Value>
+		<Value locale="fi">Saavutus 3:en kuvaus</Value>
+	</LocalizedString>
+</Localization>
