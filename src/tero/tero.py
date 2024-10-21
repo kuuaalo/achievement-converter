@@ -37,6 +37,9 @@ class Tero:
         else: return False
 
     def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
+        #need an input from user
+        #dict[key] = new value
+        #if the key exists, the value is replaces, if not, it will be created
         True
 
 #write starts here
