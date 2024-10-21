@@ -25,11 +25,15 @@ class Tero:
 
 #Read starts here
     def add_achievement(self,achievement):  # no need to iterate, just takes the dict and passes it where it is needed
-        if isinstance(achievement,dict): return True
+        if isinstance(achievement,dict): 
+            self.achievement_list.append(achievement)
+            return self.achievement_list
         else: return False
             
     def add_achievements(self,achievements):# no need to iterate, just takes the list of dicts and passes it where it is needed
-        if isinstance(achievements,list): return True
+        if isinstance(achievements,list): 
+            self.achievement_list = achievements
+            return self.achievement_list
         else: return False
 
     def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
@@ -40,12 +44,13 @@ class Tero:
         return {"Name":"achievement01","Status":"end"}
         
     def get_achievements(self):#write calls this, and this returns list of dicts
-        return [{"Name":"achievement02","Status":"end"}]
+        return self.achievement_list
+    #[{"Name":"achievement02","Status":"end"}]
 
-    def get_achievement_by_data(self,data):#not sure yet
+    def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
         False
     
-    def get_next_achievement(self):
+    def get_next_achievement(self):#Not sure why needed, get_achievement can just iterate thru?
         return {"Name":"achievement03","Status":"end"}
 
    
