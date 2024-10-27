@@ -19,9 +19,20 @@ class Tero:
         print(timestamp)
 
 #inner functions
-    def find_achievement(): #will find achievement with given values
-        
-        False
+    def find_achievement(self,achievement_list): #will find achievement with given values
+        key = input(input "the key for the achievement you want to find:")
+        for achievement in achievement_list:
+            if key in achievement_list:
+                return achievement[key]
+        return None
+
+    def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
+        #needs inputs for:
+        #key
+        #value
+        #dict[key] = new value
+        #if the key exists, the value is replaced, if not, it will be created
+        True
 
 #Read starts here
     def add_achievement(self,achievement):  # no need to iterate, just takes the dict and passes it where it is needed
@@ -36,11 +47,7 @@ class Tero:
             return self.achievement_list
         else: return False
 
-    def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
-        #need an input from user
-        #dict[key] = new value
-        #if the key exists, the value is replaced, if not, it will be created
-        True
+  
 
 #write starts here
 #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
@@ -57,5 +64,7 @@ class Tero:
     
     def get_next_achievement(self):#Not sure why needed, get_achievement can just iterate thru?
         return {"Name":"achievement03","Status":"end"}
+    
+    def run(self,achivement):
 
    
