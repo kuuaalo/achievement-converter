@@ -26,12 +26,12 @@ class Tero:
 #Read starts here
     def add_achievement(self,achievement):  # no need to iterate, just takes the dict and passes it where it is needed
         if isinstance(achievement,dict): 
-            self.achievement_list.append(achievement)
-            return self.achievement_list
+            self.achievement_list.append(achievement) #adds achievement to achievement_list
+            return self.achievement_list #returns all given achievements as list
         else: return False
             
     def add_achievements(self,achievements):# no need to iterate, just takes the list of dicts and passes it where it is needed
-        if isinstance(achievements,list): 
+        if isinstance(achievements,list): #is this obsolete?
             self.achievement_list = achievements
             return self.achievement_list
         else: return False
@@ -39,16 +39,18 @@ class Tero:
     def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
         #need an input from user
         #dict[key] = new value
-        #if the key exists, the value is replaces, if not, it will be created
+        #if the key exists, the value is replaced, if not, it will be created
         True
 
 #write starts here
-    def get_achievement(self):#write calls this, and this returns achievement in dict
-        return {"Name":"achievement01","Status":"end"}
-        
+#    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
+#        if len(self.achievement_list) > index:
+#            return {"Name":"achievement01","Status":"end"}
+#        return None
+    
     def get_achievements(self):#write calls this, and this returns list of dicts
         return self.achievement_list
-    #[{"Name":"achievement02","Status":"end"}]
+   
 
     def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
         False
