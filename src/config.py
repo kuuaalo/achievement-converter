@@ -1,3 +1,3 @@
 # config.py
-DEFAULT_FILE_PATH = "../files/"
-DEFAULT_FILE_FORMAT = ".xml"
+DEFAULT_FILE_PATH = "read/test.txt"
+DEFAULT_FILE_FORMAT = ".txt"
