@@ -33,7 +33,7 @@ class Read:
         if file_name:
             self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
         else:
-            self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
+            #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
             print("Using test.txt")
             return None
 

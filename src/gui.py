@@ -6,7 +6,13 @@ from tkinter import filedialog as fd
 
 class AchievementConverterGUI:
    
-    def __init__(self, root):
+    def __init__(self, root, input):
+        
+        self.root = root
+        
+        self.root.title("Achievement Converter")
+
+        self.input = input
 
         self.selected_path = None #empty variable for file path, should the config be used here?
 
@@ -49,7 +55,7 @@ class AchievementConverterGUI:
         exit_button = ttk.Button(
             root,
             text="Exit",
-            command=lambda: root.quit() #quit program
+            command=lambda: root.quit() #quit program exits the mainloop
         )
 
         open_button.grid(row=3, column=0, padx=5, pady=5)
@@ -58,11 +64,8 @@ class AchievementConverterGUI:
     def select_file(self):
         file_path = fd.askopenfilename()
         if file_path: #if user changed the path
-            self.selected_path = file_path #set file path as the new one
+            self.input(file_path) #callback function, new path to main
 
-    
-    def run_gui():
-        root = tk.Tk() #tkinter
-        app = AchievementConverterGUI(root)
-        root.mainloop() #keep the window displaying
-        return app.selected_path #return new path to main
+
+
+ 

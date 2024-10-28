@@ -20,7 +20,7 @@ class Tero:
 
 #inner functions
     def find_achievement(self,achievement_list): #will find achievement with given values
-        key = input(input "the key for the achievement you want to find:")
+        #key = input(input "the key for the achievement you want to find:")
         for achievement in achievement_list:
             if key in achievement_list:
                 return achievement[key]
@@ -65,6 +65,6 @@ class Tero:
     def get_next_achievement(self):#Not sure why needed, get_achievement can just iterate thru?
         return {"Name":"achievement03","Status":"end"}
     
-    def run(self,achivement):
+    #def run(self,achivement):
 
    
