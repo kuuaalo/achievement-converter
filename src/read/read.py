@@ -31,7 +31,7 @@ class Read:
     def __init__(self, file_name, format, tero):
 
         if file_name:
-            self.file_name = file_name
+            self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
         else:
             self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
             print("Using test.txt")
@@ -47,6 +47,7 @@ class Read:
     def run (self):
         acmt = self.read_file()
         acmt_dict = {}
+#self.format.parser(acmt, acmt_dict)
         acmt_x = acmt.split(",")
         for y in acmt_x:
             s = y.split(":")
@@ -64,7 +65,6 @@ class Read:
             self.file_name = file_name
 
         #try:
-        #self.file_name = #"C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
             #with
 
         f = open(self.file_name, "r")
