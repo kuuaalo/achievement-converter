@@ -1,6 +1,6 @@
 import xml.dom.minidom as minidom
-import csv  
-import tero
+import csv 
+from tero import Tero
 
 class Write:
     def __init__(self, file_name, file_format):
