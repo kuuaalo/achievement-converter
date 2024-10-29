@@ -32,6 +32,7 @@ class Read:
 
         if file_name:
             self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
+            print(self.file_name)
         else:
             #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
             print("Using test.txt")
@@ -41,6 +42,11 @@ class Read:
             self.format = format
         else:
             print("väärin")
+            return None
+        if tero:
+            self.tero = tero
+        else:
+            print("Error: no tero")
             return None
 
 
@@ -60,7 +66,7 @@ class Read:
         return True
 
 
-    def read_file(self, file_name = False):
+    def read_file(self, file_name= False ):
         if file_name:
             self.file_name = file_name
 
@@ -72,9 +78,9 @@ class Read:
         print(file_content)  # Print the content of the file
         return file_content
 
-R = Read(False, "dummy", "1")
-R.read_file()
-R.run()
+#R = Read(False, "dummy", "1")
+#R.read_file()
+#R.run()
 
         #except FileNotFoundError:
             #print(f"File {self.file_name} not found.")

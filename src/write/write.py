@@ -1,6 +1,6 @@
 import xml.dom.minidom as minidom
 import csv 
-from tero import Tero
+from tero import tero
 
 class Write:
     def __init__(self, file_name, file_format, tero):
@@ -15,9 +15,9 @@ class Write:
         else:
             print("Wrong format")  # Print error if file format is invalid
             return
-
+        self.tero=tero
     def run(self):
-        achievement_list = self.tero.get_achievements()
+        achievements = self.tero.get_achievements()
         
         # Sample data for achievements.
         # achievements = [
@@ -59,12 +59,12 @@ class Write:
 
     def write_to_csv(self, achievements):
         # Using DictWriter to write to a CSV file
-        with open(self.file_name, "w", newline='') as f:  # Open the file for writing with newline handling
+        with open("test2.csv", "w", newline='') as f:  # Open the file for writing with newline handling
             writer = csv.DictWriter(f, fieldnames=["Name", "Status"])  # Define field names for the CSV
             writer.writeheader()  # Write the header row
             writer.writerows(achievements)  # Write all rows from the achievements list
 
-        print(f"Data written to {self.file_name} in CSV format.")  # Confirm the write operation
+        print(f"Data written to test2.csv in CSV format.")  # Confirm the write operation
 
 # Testing the Write class
 if __name__ == "__main__":

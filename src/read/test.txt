@@ -1,4 +1,1 @@
-Name,Status
-Achievement1,Completed
-Achievement2,In Progress
-Achievement3,Failed
+Name:jussi,Status:dead,Name:aalo,Status:dead
