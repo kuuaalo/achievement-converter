@@ -3,7 +3,7 @@ import csv
 from tero import Tero
 
 class Write:
-    def __init__(self, file_name, file_format):
+    def __init__(self, file_name, file_format, tero):
         if file_name:
             self.file_name = file_name  
         else:
