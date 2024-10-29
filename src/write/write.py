@@ -1,5 +1,6 @@
 import xml.dom.minidom as minidom
 import csv  
+import tero
 
 class Write:
     def __init__(self, file_name, file_format):
@@ -16,12 +17,14 @@ class Write:
             return
 
     def run(self):
-        # Sample data for achievements
-        achievements = [
-            {"Name": "Achievement1", "Status": "Completed"},
-            {"Name": "Achievement2", "Status": "In Progress"},
-            {"Name": "Achievement3", "Status": "Failed"}
-        ]
+        achievement_list = self.tero.get_achievements()
+        
+        # Sample data for achievements.
+        # achievements = [
+        #    {"Name": "Achievement1", "Status": "Completed"},
+        #    {"Name": "Achievement2", "Status": "In Progress"},
+        #    {"Name": "Achievement3", "Status": "Failed"}
+        #]
 
         if self.file_format == "xml":
             self.write_to_xml(achievements)  # Write to XML if format is XML
