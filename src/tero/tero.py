@@ -20,34 +20,43 @@ class Tero:
         print(timestamp)
 
 #inner functions
+#################################
 #    def find_achievement(self,achievement_list): #will find achievement with given values
 #        key = input("Enter the key for the achievement you want to find:") #takes input for what you want to find
-#            if key in achievement_list:
-#               return achievement_list[key] #returns the value if it exists, else 
-#            else
-#               return None
+#        if key in achievement_list:
+#            value = achievement_list[key]
+#            print(f"Achievement found: {key} - {value}")
+#            return {key:value} #returns the value pair if it exists
+#        else:
+#            print("Achievement not found.")
+#            return None
+#
+#    def add_data_to_achievement(self,achievement_list,key): #Will able to manipulate data in achievement
+#        new_value = input("Enter new value for the achievement:") #takes the new value as input
+#        if key in achievement_list: #checks if it exists
+#            achievement_list[key] = new_value
+#            print(f"Achievement found: {key} - {new_value}")
+#        else:
+#            print(f"No achievement with key '{key}' found.")
+#            return None
+###################################
+        
 
-  #  def add_data_to_achievement(self,achievement,data): #might be able to manipulate data in achievement
-        #needs inputs for:
-        #key
-        #value
-        #dict[key] = new value
-        #if the key exists, the value is replaced, if not, it will be created
- #       True
 
 #Read starts here
+###################################
     def add_achievement(self,achievement):  # no need to iterate, just takes the dict and passes it where it is needed
         if isinstance(achievement,dict): 
             self.achievement_list.append(achievement) #adds achievement to achievement_list
             return self.achievement_list #returns all given achievements as list
         else: return False
             
-    def add_achievements(self,achievements):# no need to iterate, just takes the list of dicts and passes it where it is needed
-        if isinstance(achievements,list): #is this obsolete?
+    def add_achievements(self,achievements):#takes a list of achievements and passes them on as a list 
+        if isinstance(achievements,list): #
             self.achievement_list = achievements
             return self.achievement_list
         else: return False
-
+####################################
   
 
 #write starts here
