@@ -49,7 +49,19 @@ class AchievementConverterGUI:
         open_button = ttk.Button(
             root,
             text="Import achievement file",
-            command=self.select_file 
+            command=lambda: self.select_file(1)
+        )
+        
+        export_button = ttk.Button(
+            root,
+            text="Export achievement file",
+            command=lambda: self.select_file(2)
+        )
+
+        save_button = ttk.Button(
+            root,
+            text="Save achievement file",
+            command=lambda: self.select_file(3)
         )
 
         exit_button = ttk.Button(
@@ -58,13 +70,22 @@ class AchievementConverterGUI:
             command=lambda: root.quit() #quit program exits the mainloop
         )
 
-        open_button.grid(row=3, column=0, padx=5, pady=5)
+        open_button.grid(row=1, column=0, padx=5, pady=5)
+        export_button.grid(row=2, column=0, padx=5, pady=5)
+        save_button.grid(row=3, column=0, padx=5, pady=5)
         exit_button.grid(row=4, column=1, padx=5, pady=5)
     
-    def select_file(self):
-        file_path = fd.askopenfilename()
+    def select_file(self, command):
+        if (command == 1): #prompt to open file for importing
+            file_path = fd.askopenfilename()
+        elif (command == 2): #prompt to pick directory to export file
+            file_path = fd.askdirectory(title="Where do you want to export the file")
+        elif (command == 3): #prompt to save a project file
+            file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        
         if file_path: #if user changed the path
-            self.input(file_path) #callback function, new path to main
+            self.input(file_path, command) #callback function, new path to main
+
 
 
 
