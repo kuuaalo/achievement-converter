@@ -24,7 +24,11 @@
 # parserin vuoro, xml, miten saa luettua että siitä voi tehdä jotain > set_achievement
 # opettele käyttämään parseria, xml, csv > dict > avain/arvo, tutki pythonin valmiita parsereita
 import os
-import tero
+#from ..\tero import Tero
+
+test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test2.txt"
+
+tero = 1
 
 class Read:
 
@@ -34,8 +38,7 @@ class Read:
             self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
             print(self.file_name)
         else:
-            #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test.txt"
-            print("Using test.txt")
+            print("Using test2.txt")
             return None
 
         if format:
@@ -43,6 +46,7 @@ class Read:
         else:
             print("väärin")
             return None
+
         if tero:
             self.tero = tero
         else:
@@ -61,7 +65,7 @@ class Read:
 
         print(acmt_dict)
 
-        self.tero.add_achievement(acmt_dict)
+        #self.tero.add_achievement(acmt_dict)
 
         return True
 
@@ -78,9 +82,9 @@ class Read:
         print(file_content)  # Print the content of the file
         return file_content
 
-#R = Read(False, "dummy", "1")
-#R.read_file()
-#R.run()
+R = Read(test_file_location, "dummy", "1")
+R.read_file()
+R.run()
 
         #except FileNotFoundError:
             #print(f"File {self.file_name} not found.")
