@@ -31,6 +31,8 @@ class AchievementConverterGUI:
 
         self.create_buttons(self.root)
 
+        
+
     def create_menu(self, root):
         #menu creation (in progress)
         menubar = Menu(root)
@@ -73,7 +75,31 @@ class AchievementConverterGUI:
         open_button.grid(row=1, column=0, padx=5, pady=5)
         export_button.grid(row=2, column=0, padx=5, pady=5)
         save_button.grid(row=3, column=0, padx=5, pady=5)
-        exit_button.grid(row=4, column=1, padx=5, pady=5)
+        exit_button.grid(row=1, column=2, padx=5, pady=5)
+    
+    def create_table(self, root, acmt_list):
+        frame = tk.Frame(root)
+        frame.grid(row=0, column=0, sticky='nsew')
+        column_list = tuple(acmt_list.keys()) #create a tuple of column names from dict keys
+        table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
+     
+        for col in table["columns"]: #iterate trough the columns
+            table.heading(col, text = col) #set column names as headers
+    
+        table.grid(row=0, column=0, sticky='nsew')
+
+        #in progress! scrollbar broken
+        scrollbar = ttk.Scrollbar(frame, orient="horizontal", command=table.xview)
+        scrollbar.grid(row=1, column=0, sticky='nsew')
+        table.configure(xscroll=scrollbar.set)
+
+        root.grid_rowconfigure(0, weight=1) #how do these work?
+        root.grid_columnconfigure(0, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+
+        
+
     
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing

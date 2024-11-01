@@ -1,4 +1,5 @@
 import config
+import read.vdfparse as vdf
 from tkinter import filedialog as fd
 import tkinter as tk
 
@@ -23,6 +24,8 @@ class AchievementConverter:
                     self.acmt_file_path = selected_path
                     self.read = Read(self.acmt_file_path, self.acmt_platform, self.tero) #init read and give params
                     self.read.run() #run read
+                    acmt_list = vdf.value_dict() #get temporary template dict
+                    self.gui.create_table(self.root, acmt_list) #send to gui to display values
         elif(command==2): #export INCOMPLETE
                 if selected_path != None:
                     emptypath = selected_path #returns the empty path chosen, does not actually save there INCOMPLETE
