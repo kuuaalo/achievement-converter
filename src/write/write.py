@@ -16,16 +16,10 @@ class Write:
             print("Wrong format")  # Print error if file format is invalid
             return
         self.tero=tero
+        
     def run(self):
         achievements = self.tero.get_achievements()
         
-        # Sample data for achievements.
-        # achievements = [
-        #    {"Name": "Achievement1", "Status": "Completed"},
-        #    {"Name": "Achievement2", "Status": "In Progress"},
-        #    {"Name": "Achievement3", "Status": "Failed"}
-        #]
-
         if self.file_format == "xml":
             self.write_to_xml(achievements)  # Write to XML if format is XML
         elif self.file_format == "csv":
@@ -36,7 +30,7 @@ class Write:
     def write_to_xml(self, achievements):
         doc = minidom.Document()  # Create a new XML document
         root = doc.createElement('Achievements')  # Create the root element
-        doc.appendChild(root)  # Append the root element to the document
+        doc.appendChild(root)
 
         for achievement in achievements:
             ach_elem = doc.createElement('Achievement')  # Create an Achievement element
@@ -68,8 +62,9 @@ class Write:
 
 # Testing the Write class
 if __name__ == "__main__":
-    file_name = "achievements.csv"  # Change the file name to test CSV output
-    file_format = "csv"  # Change the format to 'csv'
+    file_name = "achievements.xml"  # Change the file name to test CSV/XML output
+    file_format = "xml"  # Change the format to CSV/XML
 
     writer = Write(file_name, file_format)  # Initialize the Write class
     writer.run()  # Execute the write process
+    
