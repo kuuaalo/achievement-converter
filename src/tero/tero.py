@@ -1,7 +1,9 @@
 import time
 import read
-class Tero:
 
+
+
+class Tero:
     def __init__(self, resume=False, achievement_list=False):
       
         if resume:  #opening existing projects
@@ -14,13 +16,44 @@ class Tero:
         else:
             self.achievement_list = []
         
-    def response_moi(self):
-        timestamp = time.time()
-        print("Moi, olen Tero")
-        print(timestamp)
 
-#inner functions
-#################################
+#Read starts here
+
+    def add_achievement(self,achievement):  # Takes a dict and passes it where it is needed
+        if isinstance(achievement,dict): 
+            self.achievement_list.append(achievement) #adds achievement to achievement_list
+            return self.achievement_list #returns all given achievements as list
+        else: return False
+            
+    def add_achievements(self,achievements):#takes a list of achievements  
+        if isinstance(achievements,list): 
+            self.achievement_list = achievements
+            return self.achievement_list #returns the list of achievements for later use
+        else: return False
+
+  
+
+#write starts here
+     
+    def get_achievements(self):#write calls this, and this returns list of dicts
+        return self.achievement_list
+   
+    def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
+        False
+    
+
+
+
+
+
+
+#functions still in progress start here
+
+
+
+
+   #inner functions
+
 #    def find_achievement(self,achievement_list): #will find achievement with given values
 #        key = input("Enter the key for the achievement you want to find:") #takes input for what you want to find
 #        if key in achievement_list:
@@ -39,42 +72,10 @@ class Tero:
 #        else:
 #            print(f"No achievement with key '{key}' found.")
 #            return None
-###################################
-        
 
-
-#Read starts here
-###################################
-    def add_achievement(self,achievement):  # no need to iterate, just takes the dict and passes it where it is needed
-        if isinstance(achievement,dict): 
-            self.achievement_list.append(achievement) #adds achievement to achievement_list
-            return self.achievement_list #returns all given achievements as list
-        else: return False
-            
-    def add_achievements(self,achievements):#takes a list of achievements and passes them on as a list 
-        if isinstance(achievements,list): #
-            self.achievement_list = achievements
-            return self.achievement_list
-        else: return False
-####################################
-  
-
-#write starts here
-#    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
+    #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
 #        if len(self.achievement_list) > index:
 #            return {"Name":"achievement01","Status":"end"}
 #        return None
-    
-    def get_achievements(self):#write calls this, and this returns list of dicts
-        return self.achievement_list
-   
 
-    def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
-        False
-    
-   # def get_next_achievement(self):#Not sure why needed, get_achievement can just iterate thru?
-   #     return {"Name":"achievement03","Status":"end"}
-    
-   # def run(self,achivement):
 
-   
