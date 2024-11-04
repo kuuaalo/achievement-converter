@@ -64,11 +64,11 @@ class Tero:
 #            print("Achievement not found.")
 #            return None
 #
-#    def add_data_to_achievement(self,achievement_list,key): #Will able to manipulate data in achievement
-#        new_value = input("Enter new value for the achievement:") #takes the new value as input
-#        if key in achievement_list: #checks if it exists
-#            achievement_list[key] = new_value
-#            print(f"Achievement found: {key} - {new_value}")
+#    def add_data_to_achievement(self,achievement_list,key, new_value): #Will able to manipulate data in achievement
+#       for achievement in achievement_list
+#         if key in achievement: #checks if it exists
+#            achievement[key] = new_value
+#            print(f"Achievement updated: {key} - {new_value}")
 #        else:
 #            print(f"No achievement with key '{key}' found.")
 #            return None
