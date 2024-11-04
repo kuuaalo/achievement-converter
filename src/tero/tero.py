@@ -20,7 +20,9 @@ class Tero:
 #Read starts here
 
     def add_achievement(self,achievement):  # Takes a dict and passes it where it is needed
-        if isinstance(achievement,dict): 
+        if isinstance(achievement,dict):
+            #lisää _0, _1 id jotta achievementin voi löytää
+            # mistä tero ymmärtää milloin achievement loppuu 
             self.achievement_list.append(achievement) #adds achievement to achievement_list
             return self.achievement_list #returns all given achievements as list
         else: return False
@@ -54,8 +56,8 @@ class Tero:
 
    #inner functions
 
-#    def find_achievement(self,achievement_list): #will find achievement with given values
-#        key = input("Enter the key for the achievement you want to find:") #takes input for what you want to find
+#    def add_data_to_achievement(self,achievement_list,key,new_value): #replace values in spesific achievements with spesific data
+#        achievementit indexin mukaan
 #        if key in achievement_list:
 #            value = achievement_list[key]
 #            print(f"Achievement found: {key} - {value}")
@@ -64,14 +66,14 @@ class Tero:
 #            print("Achievement not found.")
 #            return None
 #
-#    def add_data_to_achievement(self,achievement_list,key, new_value): #Will able to manipulate data in achievement
-#       for achievement in achievement_list
-#         if key in achievement: #checks if it exists
-#            achievement[key] = new_value
-#            print(f"Achievement updated: {key} - {new_value}")
-#        else:
-#            print(f"No achievement with key '{key}' found.")
-#            return None
+    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
+       for achievement in achievement_list:
+         if key in achievement: #checks if it exists
+            achievement[key] = new_value
+            print(f"Achievement updated: {key} - {new_value}")
+        else:
+            print(f"Achievement for'{key}' added with value: '{new_value}'.")
+            return None
 
     #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
 #        if len(self.achievement_list) > index:
