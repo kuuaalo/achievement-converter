@@ -68,10 +68,11 @@ class Tero:
 #
     def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
        for achievement in achievement_list:
-         if key in achievement: #checks if it exists
+        if key in achievement: #checks if it exists
             achievement[key] = new_value
             print(f"Achievement updated: {key} - {new_value}")
         else:
+            achievement[key]= new_value #adds it if it doesnt exist
             print(f"Achievement for {key} added with value: {new_value}.")
             return None
 
