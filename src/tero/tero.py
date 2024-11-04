@@ -72,7 +72,7 @@ class Tero:
             achievement[key] = new_value
             print(f"Achievement updated: {key} - {new_value}")
         else:
-            print(f"Achievement for'{key}' added with value: '{new_value}'.")
+            print(f"Achievement for {key} added with value: {new_value}.")
             return None
 
     #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
