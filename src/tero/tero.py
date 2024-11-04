@@ -74,7 +74,7 @@ class Tero:
         else:
             achievement[key]= new_value #adds it if it doesnt exist
             print(f"Achievement for {key} added with value: {new_value}.")
-            return None
+            
 
     #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
 #        if len(self.achievement_list) > index:
