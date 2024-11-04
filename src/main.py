@@ -17,7 +17,7 @@ class AchievementConverter:
 
         self.tero = Tero(False, False) #init and give parameters
         self.gui = AchievementConverterGUI(self.root, self.file_handler) #call gui give ref to root and file handler
-         
+
     def file_handler(self, selected_path, command):
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
@@ -42,7 +42,7 @@ class AchievementConverter:
             print("Error")
 
     def run(self):
-         self.root.mainloop() #infinite loop for displaying gui
+        self.root.mainloop() #infinite loop for displaying gui
         
 
 def main():

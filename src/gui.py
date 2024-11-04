@@ -5,7 +5,7 @@ from tkinter import filedialog as fd
 
 
 class AchievementConverterGUI:
-   
+
     def __init__(self, root, file_handler):
         
         self.root = root
@@ -13,7 +13,6 @@ class AchievementConverterGUI:
         self.file_handler = file_handler #give reference to function in main on init
         self.selected_path = None #empty variable for file path, should the config be used here?
 
-       
         #window sizing
         window_width = 600 
         window_height = 300
@@ -31,8 +30,6 @@ class AchievementConverterGUI:
 
         self.create_buttons(self.root)
 
-        
-
     def create_menu(self, root):
         #menu creation (in progress)
         menubar = Menu(root)
@@ -44,7 +41,6 @@ class AchievementConverterGUI:
             label="File",
             menu=file_menu
         )
-
 
     def create_buttons(self, root):
         open_button = ttk.Button( #button to import file
@@ -82,7 +78,7 @@ class AchievementConverterGUI:
         frame.grid(row=0, column=0, sticky='nsew')
         column_list = tuple(acmt_list.keys()) #create a tuple of column names from dict keys
         table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
-     
+    
         for col in table["columns"]: #iterate trough the columns
             table.heading(col, text = col) #set column names as headers
     
@@ -98,9 +94,6 @@ class AchievementConverterGUI:
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
 
-        
-
-    
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing
             file_path = fd.askopenfilename()
@@ -111,7 +104,3 @@ class AchievementConverterGUI:
         
         self.file_handler(file_path, command) #callback function, new path and variable to main
 
-
-
-
- 
