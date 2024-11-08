@@ -24,6 +24,7 @@
 # parserin vuoro, xml, miten saa luettua että siitä voi tehdä jotain > set_achievement
 # opettele käyttämään parseria, xml, csv > dict > avain/arvo, tutki pythonin valmiita parsereita
 import os
+import vdf
 #from ..\tero import Tero
 
 test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test2.txt"
@@ -56,14 +57,24 @@ class Read:
 
     def run (self):
         acmt = self.read_file()
-        acmt_dict = {}
-#self.format.parser(acmt, acmt_dict)
-        acmt_x = acmt.split(",")
-        for y in acmt_x:
-            s = y.split(":")
-            acmt_dict[s[0]] = s[1]
 
-        print(acmt_dict)
+        d = vdf.parse(acmt)
+        dd = vdf.dump(d, pretty=True)
+        print(dd)
+        i = dd.items() #propably too simplistic, will need to test
+
+        for k, v in i:
+            print(f"key: {k}  value: {v}")
+            tero.add_achievement(k, v)
+
+        #acmt_dict = {}
+#self.format.parser(acmt, acmt_dict)
+        #acmt_x = acmt.split(",")
+        #for y in acmt_x:
+            #s = y.split(":")
+            #acmt_dict[s[0]] = s[1]
+
+        #print(acmt_dict)
 
         #self.tero.add_achievement(acmt_dict)
 
