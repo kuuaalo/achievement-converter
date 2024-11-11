@@ -25,9 +25,10 @@
 # opettele käyttämään parseria, xml, csv > dict > avain/arvo, tutki pythonin valmiita parsereita
 import os
 import vdf
+import pprint
 #from ..\tero import Tero
 
-test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\src\\read\\test2.txt"
+test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
 
 tero = 1
 
@@ -56,16 +57,75 @@ class Read:
 
 
     def run (self):
-        acmt = self.read_file()
+        acmt = self.open_file_debug()
 
         d = vdf.parse(acmt)
-        dd = vdf.dump(d, pretty=True)
-        print(dd)
-        i = dd.items() #propably too simplistic, will need to test
+        #dd = vdf.dump(d, pretty=True)
+        print("printing d")
 
-        for k, v in i:
-            print(f"key: {k}  value: {v}")
-            tero.add_achievement(k, v)
+        pprint.pp(d)
+        v = d.values() #propably too simplistic, will need to test
+        #print("printing i.key")
+        #pprint.pp(i.key())
+
+        print("printing v")
+        print(v)
+
+        k = list(d)[0]
+        print("printing k")
+        print(k)
+
+        v = d[k]
+        print("printing v length")
+        print(v.__len__())
+
+        vk = list(v)
+        print("printing vk")
+        print(vk)
+
+        x = vk[0]
+        print(x)
+
+        y = v[x]
+        print("printing y")
+        print(y)
+        print(y.__len__())
+
+        z = y['1']
+        print("printing z")
+        print(z)
+        print("printing z len")
+        print(z.__len__())
+
+        zl = list(z)
+        print("printing zl")
+        print(zl)
+
+        q = z["type"]
+        print("printing q")
+        print(q)
+
+        a = z["bits"]
+        print("printing a")
+        print(a)
+        print("printing a len")
+        print(a.__len__())
+
+        al = list(a)
+        print("printing")
+        print(al)
+        print(al.__len__())
+
+        acmtL = [a['1'], a['2'], a['3']]
+        print("printing acmtL")
+        pprint.pp(acmtL)
+
+        #print("printing key-value pairs")
+
+        #for kk, vv in i:
+            #pprint.pp(f"key: {kk}  value: {vv}")
+            #pprint.pp(f"value: {vv}")
+            #tero.add_achievement(k, v)
 
         #acmt_dict = {}
 #self.format.parser(acmt, acmt_dict)
@@ -93,8 +153,12 @@ class Read:
         print(file_content)  # Print the content of the file
         return file_content
 
+    def open_file_debug(self):
+        f = open(self.file_name, "r")
+        return f
+
 R = Read(test_file_location, "dummy", "1")
-R.read_file()
+#R.read_file()
 R.run()
 
         #except FileNotFoundError:
