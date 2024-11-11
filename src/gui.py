@@ -76,7 +76,7 @@ class AchievementConverterGUI:
     def create_table(self, root, acmt_list):
         frame = tk.Frame(root)
         frame.grid(row=0, column=0, sticky='nsew')
-        column_list = tuple(acmt_list.keys()) #create a tuple of column names from dict keys
+        column_list = tuple('name', acmt_list.keys()) #create a tuple of column names from dict keys
         table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
     
         for col in table["columns"]: #iterate trough the columns
@@ -98,7 +98,8 @@ class AchievementConverterGUI:
         if (command == 1): #prompt to open file for importing
             file_path = fd.askopenfilename()
         elif (command == 2): #prompt to pick directory to export file
-            file_path = fd.askdirectory(title="Where do you want to export the file")
+            file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", 
+                                             filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
         elif (command == 3): #prompt to save a project file
             file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt")])
         

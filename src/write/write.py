@@ -20,9 +20,9 @@ class Write:
     def run(self):
         achievements = self.tero.get_achievements()
         
-        if self.file_format == "xml":
+        if self.file_format == ".xml":
             self.write_to_xml(achievements)  # Write to XML if format is XML
-        elif self.file_format == "csv":
+        elif self.file_format == ".csv":
             self.write_to_csv(achievements)  # Write to CSV if format is CSV
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats

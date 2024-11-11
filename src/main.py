@@ -2,6 +2,7 @@ import config
 import read.vdfparse as vdf
 from tkinter import filedialog as fd
 import tkinter as tk
+import os
 
 from gui import AchievementConverterGUI #import gui
 
@@ -22,16 +23,16 @@ class AchievementConverter:
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
                     self.acmt_file_path = selected_path
-                    self.read = Read(self.acmt_file_path, self.acmt_platform, self.tero) #init read and give params
+                    self.read = Read(self.acmt_file_path, self.acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
                     acmt_list = vdf.value_dict() #get temporary template dict
                     self.gui.create_table(self.root, acmt_list) #send to gui to display values
-        elif(command==2): #export INCOMPLETE
+        elif(command==2): #export
                 if selected_path != None:
-                    emptypath = selected_path #returns the empty path chosen, does not actually save there INCOMPLETE
-                    self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #init write in the future pass path
-                    self.write.run() #run write.
-                    print(emptypath)
+                    self.acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
+                    self.acmt_file_path = selected_path #set the file path and name
+                    self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #pass path and name to write
+                    self.write.run() #run write
         elif(command==3): #save as txt to project file !INCOMPLETE!
                 if selected_path != None: 
                     self.acmt_file_path = selected_path
@@ -39,7 +40,10 @@ class AchievementConverter:
                     self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #init write in the future pass path
                     self.write.run() #run write
         else:
-            print("Error")
+            print("Error: no command given or command unknown.")
+    
+    def get_file_extension(self, selected_path):
+        return os.path.splitext(selected_path)[1].lower()  # returns file extension
 
     def run(self):
         self.root.mainloop() #infinite loop for displaying gui
