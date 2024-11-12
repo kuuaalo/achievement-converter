@@ -39,7 +39,47 @@ def value_dict():
     "ag_type":None, #aggregationType epic stats.csv
     "flavor_txt": None, # flavorText epic achievementLocalizations.csv
     }
+    data = {
+    "id": "123456",
+    "version": "2",
+    "gamename": "Super Ultimate Awesome Game",
+    "stats_type": "ACHIEVEMENTS",
+    
+    "achievement_1_id": "AchievementID1",
+    "achievement_1_name_english": "Achievement 1",
+    "achievement_1_name_finnish": "Saavutus 1",
+    "achievement_1_name_token": "NEW_ACHIEVEMENT_1_1_NAME",
+    "achievement_1_desc_english": "Description of Achievement 1",
+    "achievement_1_desc_finnish": "Saavutus 1:en kuvaus",
+    "achievement_1_desc_token": "NEW_ACHIEVEMENT_1_1_DESC",
+    "achievement_1_hidden": "0",
+    "achievement_1_icon": "Achievement_1.jpg",
+    "achievement_1_icon_gray": "Achievement_Locked_1.jpg",
+    
+    "achievement_2_id": "AchievementID2",
+    "achievement_2_name_english": "Achievement 2",
+    "achievement_2_name_finnish": "Saavutus 2",
+    "achievement_2_name_token": "NEW_ACHIEVEMENT_1_2_NAME",
+    "achievement_2_desc_english": "Description of Achievement 2",
+    "achievement_2_desc_finnish": "Saavutus 2:en kuvaus",
+    "achievement_2_desc_token": "NEW_ACHIEVEMENT_1_2_DESC",
+    "achievement_2_hidden": "1",
+    "achievement_2_icon": "Achievement_2.jpg",
+    "achievement_2_icon_gray": "Achievement_Locked_2.jpg",
+    
+    "achievement_3_id": "AchievementID3",
+    "achievement_3_name_english": "Achievement 3",
+    "achievement_3_name_finnish": "Saavutus 3",
+    "achievement_3_name_token": "NEW_ACHIEVEMENT_1_3_NAME",
+    "achievement_3_desc_english": "Description of Achievement 3",
+    "achievement_3_desc_finnish": "Saavutus 3:en kuvaus",
+    "achievement_3_desc_token": "NEW_ACHIEVEMENT_1_3_DESC",
+    "achievement_3_hidden": "1",
+    "achievement_3_icon": "Achievement_3.jpg",
+    "achievement_3_icon_gray": "Achievement_Locked_3.jpg",
+}
+
 
     #d = vdf.parse(open('../../files/steamlocalization_test.vdf')) #parse works on either string/file
     #print(d)
-    return acmt_dict
+    return data
