@@ -30,6 +30,7 @@ class AchievementConverter:
         elif(command==2): #export
                 if selected_path != None:
                     self.acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
+                    print(self.acmt_platform)
                     self.acmt_file_path = selected_path #set the file path and name
                     self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #pass path and name to write
                     self.write.run() #run write
