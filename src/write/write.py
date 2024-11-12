@@ -2,6 +2,7 @@ import xml.dom.minidom as minidom
 import csv 
 import vdf
 from tero import tero
+import read.vdfparse as vdf2
 
 class Write:
     def __init__(self, file_name, file_format, tero):
@@ -20,12 +21,13 @@ class Write:
         
     def run(self):
         achievements = self.tero.get_achievements()
+        #achievements = vdf2.value_dict() 
         
         if self.file_format == ".xml":
             self.write_to_xml(achievements) # Write to XML if format is XML
         elif self.file_format == ".csv":
             self.write_to_csv(achievements) # Write to CSV if format is CSV
-        elif self.file_format == ".vdf":
+        elif self.file_format == ".txt":
             self.write_to_vdf(achievements) # Write to VDF if format is VDF
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
@@ -56,7 +58,7 @@ class Write:
 
     def write_to_csv(self, achievements):
         # Using DictWriter to write to a CSV file
-        with open(self.file_name, "w", newline='') as f: 
+        with open(self.file_name, "w", newline='') as f:  # Open the file for writing with newline handling
             writer = csv.DictWriter(f, fieldnames=["Name", "Status"])  # Define field names for the CSV
             writer.writeheader()
             writer.writerows(achievements)  # Write all rows from the achievements list
@@ -66,7 +68,7 @@ class Write:
     def write_to_vdf(self, achievements):
         # Prepare data in a format compatible with VDF
         vdf_data = {"Achievements": {str(i): ach for i, ach in enumerate(achievements)}} 
-         # Convert dictionary to VDF format and write it
+        # Convert dictionary to VDF format and write it
         with open(self.file_name, "w") as f:
             f.write(vdf.dumps(vdf_data, pretty=True)) # pretty=True adds indentations
         
