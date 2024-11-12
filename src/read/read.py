@@ -69,7 +69,7 @@ class Read:
         #v = d.values() #propably too simplistic, will need to test
         #print("printing i.key")
         #pprint.pp(i.key())
-        
+
         #print("printing v")
         #print(v)
 
@@ -130,7 +130,7 @@ class Read:
             #tero.add_achievement(k, v)
 
         acmt_dict = {}
-#self.format.parser(acmt, acmt_dict)
+        #self.format.parser(acmt, acmt_dict)
         acmt_x = acmt.split(",")
         for y in acmt_x:
             s = y.split(":")
@@ -141,6 +141,84 @@ class Read:
         self.tero.add_achievement(acmt_dict)
 
         return True
+
+    def run_vdf (self):
+        acmt = self.read_file()
+
+        acmt = self.open_file_debug()
+
+        d = vdf.parse(acmt)
+        print("printing d")
+        pprint.pp(d)
+
+        j = d['123456']['stats']['1']
+        print("printing j")
+        pprint.pp(j)
+
+        if (j['type'] == 'ACHIEVEMENTS'):
+            print("type in j is correct")
+            pass
+        else:
+            print("type in j is not correct")
+            return False
+
+        m = j['bits']
+        print('printing m')
+        pprint.pp(m)
+
+        # k = list(d)[0]
+
+        # v = d[k]
+        # print("printing v length")
+        # print(v.__len__())
+
+        # vk = list(v)
+        # print("printing vk")
+        # print(vk)
+
+        # x = vk[0]
+        # print(x)
+
+        # y = v[x]
+        # print("printing y")
+        # print(y)
+        # print(y.__len__())
+
+        # z = y['1']
+        # print("printing z")
+        # print(z)
+        # print("printing z len")
+        # print(z.__len__())
+
+        # zl = list(z)
+        # print("printing zl")
+        # print(zl)
+
+        # q = z["type"]
+        # print("printing q")
+        # print(q)
+
+        # a = z["bits"]
+        # print("printing a")
+        # print(a)
+        # print("printing a len")
+        # print(a.__len__())
+
+        # al = list(a)
+        # print("printing")
+        # print(al)
+        # print(al.__len__())
+
+        # acmtL = [a['1'], a['2'], a['3']]
+        # print("printing acmtL")
+        # pprint.pp(acmtL)
+
+        # print("printing key-value pairs")
+
+        #for kk, vv in i:
+            # pprint.pp(f"key: {kk}  value: {vv}")
+            # pprint.pp(f"value: {vv}")
+            # tero.add_achievement(k, v)
 
 
     def read_file(self, file_name= False ):
@@ -160,8 +238,7 @@ class Read:
         return f
 
 #R = Read(test_file_location, "dummy", "1")
-#R.read_file()
-#R.run()
+#R.run_vdf()
 
         #except FileNotFoundError:
             #print(f"File {self.file_name} not found.")
