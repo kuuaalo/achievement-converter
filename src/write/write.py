@@ -1,5 +1,6 @@
 import xml.dom.minidom as minidom
 import csv 
+import vdf
 from tero import tero
 
 class Write:
@@ -21,9 +22,11 @@ class Write:
         achievements = self.tero.get_achievements()
         
         if self.file_format == ".xml":
-            self.write_to_xml(achievements)  # Write to XML if format is XML
+            self.write_to_xml(achievements) # Write to XML if format is XML
         elif self.file_format == ".csv":
-            self.write_to_csv(achievements)  # Write to CSV if format is CSV
+            self.write_to_csv(achievements) # Write to CSV if format is CSV
+        elif self.file_format == ".vdf":
+            self.write_to_vdf(achievements) # Write to VDF if format is VDF
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
 
@@ -53,18 +56,19 @@ class Write:
 
     def write_to_csv(self, achievements):
         # Using DictWriter to write to a CSV file
-        with open("test2.csv", "w", newline='') as f:  # Open the file for writing with newline handling
+        with open(self.file_name, "w", newline='') as f: 
             writer = csv.DictWriter(f, fieldnames=["Name", "Status"])  # Define field names for the CSV
-            writer.writeheader()  # Write the header row
+            writer.writeheader()
             writer.writerows(achievements)  # Write all rows from the achievements list
 
-        print(f"Data written to test2.csv in CSV format.")  # Confirm the write operation
+        print(f"Data written to {self.file_name} in CSV format.")  # Confirm the write operation
 
-# Testing the Write class
-if __name__ == "__main__":
-    file_name = "achievements.xml"  # Change the file name to test CSV/XML output
-    file_format = "xml"  # Change the format to CSV/XML
-
-    writer = Write(file_name, file_format)  # Initialize the Write class
-    writer.run()  # Execute the write process
+    def write_to_vdf(self, achievements):
+        # Prepare data in a format compatible with VDF
+        vdf_data = {"Achievements": {str(i): ach for i, ach in enumerate(achievements)}} 
+         # Convert dictionary to VDF format and write it
+        with open(self.file_name, "w") as f:
+            f.write(vdf.dumps(vdf_data))
+        
+        print(f"Data written to {self.file_name} in VDF format.")
     
