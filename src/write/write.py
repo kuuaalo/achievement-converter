@@ -68,7 +68,7 @@ class Write:
         vdf_data = {"Achievements": {str(i): ach for i, ach in enumerate(achievements)}} 
          # Convert dictionary to VDF format and write it
         with open(self.file_name, "w") as f:
-            f.write(vdf.dumps(vdf_data))
+            f.write(vdf.dumps(vdf_data, pretty=True)) # pretty=True adds indentations
         
         print(f"Data written to {self.file_name} in VDF format.")
     
