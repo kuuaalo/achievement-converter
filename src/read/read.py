@@ -57,68 +57,70 @@ class Read:
 
 
     def run (self):
-        acmt = self.open_file_debug()
+        acmt = self.read_file()
 
-        d = vdf.parse(acmt)
+        #acmt = self.open_file_debug()
+
+        #d = vdf.parse(acmt)
         #dd = vdf.dump(d, pretty=True)
-        print("printing d")
+        #print("printing d")
 
-        pprint.pp(d)
-        v = d.values() #propably too simplistic, will need to test
+        #pprint.pp(d)
+        #v = d.values() #propably too simplistic, will need to test
         #print("printing i.key")
         #pprint.pp(i.key())
+        
+        #print("printing v")
+        #print(v)
 
-        print("printing v")
-        print(v)
+        #k = list(d)[0]
+        #print("printing k")
+        #print(k)
 
-        k = list(d)[0]
-        print("printing k")
-        print(k)
+        #v = d[k]
+        #print("printing v length")
+        #print(v.__len__())
 
-        v = d[k]
-        print("printing v length")
-        print(v.__len__())
+        #vk = list(v)
+        #print("printing vk")
+        #print(vk)
 
-        vk = list(v)
-        print("printing vk")
-        print(vk)
+        #x = vk[0]
+        #print(x)
 
-        x = vk[0]
-        print(x)
+        #y = v[x]
+        #print("printing y")
+        #print(y)
+        #print(y.__len__())
 
-        y = v[x]
-        print("printing y")
-        print(y)
-        print(y.__len__())
+        #z = y['1']
+        #print("printing z")
+        #print(z)
+        #print("printing z len")
+        #print(z.__len__())
 
-        z = y['1']
-        print("printing z")
-        print(z)
-        print("printing z len")
-        print(z.__len__())
+        #zl = list(z)
+        #print("printing zl")
+        #print(zl)
 
-        zl = list(z)
-        print("printing zl")
-        print(zl)
+        #q = z["type"]
+        #print("printing q")
+        #print(q)
 
-        q = z["type"]
-        print("printing q")
-        print(q)
+        #a = z["bits"]
+        #print("printing a")
+        #print(a)
+        #print("printing a len")
+        #print(a.__len__())
 
-        a = z["bits"]
-        print("printing a")
-        print(a)
-        print("printing a len")
-        print(a.__len__())
+        #al = list(a)
+        #print("printing")
+        #print(al)
+        #print(al.__len__())
 
-        al = list(a)
-        print("printing")
-        print(al)
-        print(al.__len__())
-
-        acmtL = [a['1'], a['2'], a['3']]
-        print("printing acmtL")
-        pprint.pp(acmtL)
+        #acmtL = [a['1'], a['2'], a['3']]
+        #print("printing acmtL")
+        #pprint.pp(acmtL)
 
         #print("printing key-value pairs")
 
@@ -127,16 +129,16 @@ class Read:
             #pprint.pp(f"value: {vv}")
             #tero.add_achievement(k, v)
 
-        #acmt_dict = {}
+        acmt_dict = {}
 #self.format.parser(acmt, acmt_dict)
-        #acmt_x = acmt.split(",")
-        #for y in acmt_x:
-            #s = y.split(":")
-            #acmt_dict[s[0]] = s[1]
+        acmt_x = acmt.split(",")
+        for y in acmt_x:
+            s = y.split(":")
+            acmt_dict[s[0]] = s[1]
 
         #print(acmt_dict)
 
-        #self.tero.add_achievement(acmt_dict)
+        self.tero.add_achievement(acmt_dict)
 
         return True
 
@@ -157,9 +159,9 @@ class Read:
         f = open(self.file_name, "r")
         return f
 
-R = Read(test_file_location, "dummy", "1")
+#R = Read(test_file_location, "dummy", "1")
 #R.read_file()
-R.run()
+#R.run()
 
         #except FileNotFoundError:
             #print(f"File {self.file_name} not found.")
