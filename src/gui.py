@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk, Menu
 from tkinter import Tk, Text
 from tkinter import filedialog as fd
+from pandastable import Table, TableModel
+import pandas as pd
 
 
 class AchievementConverterGUI:
@@ -29,6 +31,8 @@ class AchievementConverterGUI:
         self.create_menu(self.root) #call function to create menu
 
         self.create_buttons(self.root)
+
+        
 
     def create_menu(self, root):
         #menu creation (in progress)
@@ -77,22 +81,54 @@ class AchievementConverterGUI:
         frame = tk.Frame(root)
         frame.grid(row=0, column=0, sticky='nsew')
         column_list = tuple(acmt_list.keys()) #create a tuple of column names from dict keys
-        table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
+        self.table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
     
-        for col in table["columns"]: #iterate trough the columns
-            table.heading(col, text = col) #set column names as headers
+        for col in self.table["columns"]: #iterate trough the columns
+            self.table.heading(col, text = col) #set column names as headers
+
+        test_list = [acmt_list, acmt_list, acmt_list]
+        for item in test_list: #?does this actually use the values in acmt test?
+            self.table.insert('', index='end', values=list(acmt_list.values()))
     
-        table.grid(row=0, column=0, sticky='nsew')
+        self.table.grid(row=0, column=0, sticky='nsew')
 
         #in progress! scrollbar broken
-        scrollbar = ttk.Scrollbar(frame, orient="horizontal", command=table.xview)
+        scrollbar = ttk.Scrollbar(frame, orient="horizontal", command=self.table.xview)
         scrollbar.grid(row=1, column=0, sticky='nsew')
-        table.configure(xscroll=scrollbar.set)
+        self.table.configure(xscroll=scrollbar.set)
 
         root.grid_rowconfigure(0, weight=1) #how do these work?
         root.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
+
+        #listens to double click on table, send info to edit value function
+        self.table.bind("<Double-1>", lambda event: self.edit_value(self.root, event))
+        
+
+  
+        
+    
+    def edit_value(self, root, event):
+        selected_item = self.table.selection() #select achievement based on row
+
+        current_values = self.table.item(selected_item, "values") #save values in string
+
+    
+        editor = tk.Toplevel(root) #create new window
+        editor.title("Edit")
+        
+        T = Text(editor, height = 5, width = 100) #test text box to display info
+        T.insert(tk.END, current_values)
+        T.grid(row=1, column=0, padx=5, pady=5)
+
+
+    def populate_table():
+        pass
+
+        
+    
+        
 
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing
