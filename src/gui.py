@@ -2,42 +2,33 @@ import tkinter as tk
 from tkinter import ttk, Menu
 from tkinter import Tk, Text
 from tkinter import filedialog as fd
-from pandastable import Table, TableModel
-import pandas as pd
-
+from tkinter.messagebox import showinfo
 
 class AchievementConverterGUI:
 
-    def __init__(self, root, file_handler):
+    def __init__(self, root, file_handler, acmt_list):
         
         self.root = root
         self.root.title("Achievement Converter") #window name
         self.file_handler = file_handler #give reference to function in main on init
         self.selected_path = None #empty variable for file path, should the config be used here?
+        self.acmt_list = acmt_list
 
-        #window sizing
-        window_width = 600 
-        window_height = 300
 
-        #window centering
-        screen_width = self.root.winfo_screenwidth()
-        screen_height = self.root.winfo_screenheight()
+        self.root.geometry("1200x600")
+        self.root.title("Achievement Converter")
 
-        center_x = int(screen_width/ 2 - window_width / 2)
-        center_y = int(screen_height/2 - window_height / 2)
+        self.create_menu() #call function to create menu
 
-        self.root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}') 
+        self.create_table()
 
-        self.create_menu(self.root) #call function to create menu
+        self.create_buttons()
 
-        self.create_buttons(self.root)
 
-        
-
-    def create_menu(self, root):
+    def create_menu(self):
         #menu creation (in progress)
-        menubar = Menu(root)
-        root.config(menu=menubar)
+        menubar = Menu(self.root)
+        self.root.config(menu=menubar)
 
         file_menu = Menu(menubar)
 
@@ -45,90 +36,97 @@ class AchievementConverterGUI:
             label="File",
             menu=file_menu
         )
+    
+    def create_table(self):
+        frame = tk.Frame(self.root)
+        scrollbary = ttk.Scrollbar(frame, orient="vertical")
+        scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
+        scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
+        scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
+        
+        column_list = tuple(self.acmt_list.keys()) #create a tuple of column names from dict keys
+        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
+        scrollbary.configure(command=self.table.yview)
+        self.table.configure(yscrollcommand=scrollbary.set)
+        scrollbarx.configure(command=self.table.xview)
+        self.table.configure(xscrollcommand=scrollbarx.set)
+        self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        frame.pack(fill=tk.BOTH,expand=True)
 
-    def create_buttons(self, root):
+        for col in self.table["columns"]: #iterate trough the columns
+            self.table.heading(col, text = col) #set column names as headers
+
+
+        #listens to double click on table, send info to edit value function
+        self.table.bind("<Double-1>", lambda event: self.edit_value(self.root, event))
+        self.table.tag_configure('null_value', background='red') #tag to display red color for null values
+
+    def populate_table(self):
+        test_list = [self.acmt_list, self.acmt_list, self.acmt_list]
+        for item in test_list:
+            row_values = list(item.values()) 
+            if (None in row_values): #add tag if acmt has null value
+                self.table.insert('', index='end', values=list(item.values()), tags=('null_value',))
+            else:
+                self.table.insert('', index='end', values=list(item.values()))
+ 
+  
+    def create_buttons(self):
+        button_frame = ttk.Frame(self.root)
+        button_frame.pack(fill=tk.BOTH, expand=False)
+        
         open_button = ttk.Button( #button to import file
-            root,
+            button_frame,
             text="Import achievement file",
             command=lambda: self.select_file(1) #sends a parameter to select file
         )
         
         export_button = ttk.Button( #button to export file
-            root,
+            button_frame,
             text="Export achievement file",
             command=lambda: self.select_file(2)
         )
 
         save_button = ttk.Button( #button to save project file
-            root,
+            button_frame,
             text="Save achievement file",
             command=lambda: self.select_file(3)
         )
 
         exit_button = ttk.Button( #button to exit program
-            root,
+            button_frame,
             text="Exit",
-            command=lambda: root.quit() #quit program exits the mainloop
+            command=lambda: self.root.quit() #quit program exits the mainloop
         )
 
+ 
+
         #button placement on grid
-        open_button.grid(row=1, column=0, padx=5, pady=5)
-        export_button.grid(row=2, column=0, padx=5, pady=5)
-        save_button.grid(row=3, column=0, padx=5, pady=5)
-        exit_button.grid(row=1, column=2, padx=5, pady=5)
+        open_button.pack(side=tk.LEFT, expand=False)
+        export_button.pack(side=tk.LEFT, expand=False)
+        save_button.pack(side=tk.LEFT, expand=False)
+        exit_button.pack(side=tk.LEFT, expand=False)
+
     
-    def create_table(self, root, acmt_list):
-        frame = tk.Frame(root)
-        frame.grid(row=0, column=0, sticky='nsew')
-        column_list = tuple(acmt_list.keys()) #create a tuple of column names from dict keys
-        self.table = ttk.Treeview(frame, columns = column_list, show = 'headings') #create table with tuple
     
-        for col in self.table["columns"]: #iterate trough the columns
-            self.table.heading(col, text = col) #set column names as headers
-
-        test_list = [acmt_list, acmt_list, acmt_list]
-        for item in test_list: #?does this actually use the values in acmt test?
-            self.table.insert('', index='end', values=list(acmt_list.values()))
-    
-        self.table.grid(row=0, column=0, sticky='nsew')
-
-        #in progress! scrollbar broken
-        scrollbar = ttk.Scrollbar(frame, orient="horizontal", command=self.table.xview)
-        scrollbar.grid(row=1, column=0, sticky='nsew')
-        self.table.configure(xscroll=scrollbar.set)
-
-        root.grid_rowconfigure(0, weight=1) #how do these work?
-        root.grid_columnconfigure(0, weight=1)
-        frame.grid_rowconfigure(0, weight=1)
-        frame.grid_columnconfigure(0, weight=1)
-
-        #listens to double click on table, send info to edit value function
-        self.table.bind("<Double-1>", lambda event: self.edit_value(self.root, event))
-        
-
   
         
     
     def edit_value(self, root, event):
+        
         selected_item = self.table.selection() #select achievement based on row
+        edit_frame = tk.Frame(self.root)
 
-        current_values = self.table.item(selected_item, "values") #save values in string
-
+        for key in self.acmt_list:
+            field_label = ttk.Label(edit_frame, text=key)
+            field = ttk.Entry(edit_frame)
+            field_label.pack(side = tk.LEFT, expand=False)
+            field.pack(side = tk.LEFT,expand=False)
+            
     
-        editor = tk.Toplevel(root) #create new window
-        editor.title("Edit")
-        
-        T = Text(editor, height = 5, width = 100) #test text box to display info
-        T.insert(tk.END, current_values)
-        T.grid(row=1, column=0, padx=5, pady=5)
+        edit_frame.pack(side = tk.TOP, fill=tk.Y,expand=True)
 
 
-    def populate_table():
-        pass
-
-        
-    
-        
 
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing
