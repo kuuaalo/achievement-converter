@@ -23,10 +23,12 @@
 # achievements on lista dictionaryja
 # parserin vuoro, xml, miten saa luettua että siitä voi tehdä jotain > set_achievement
 # opettele käyttämään parseria, xml, csv > dict > avain/arvo, tutki pythonin valmiita parsereita
+# mitä rauli haluaa: minkälaisen python tietorakenteen olettaa saavansa
+
 import os
 import vdf
 import pprint
-#from ..\tero import Tero
+#miten importoidaan tero
 
 test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
 
@@ -148,23 +150,35 @@ class Read:
         acmt = self.open_file_debug()
 
         d = vdf.parse(acmt)
-        print("printing d")
-        pprint.pp(d)
 
+        # tämän voi siirtää parametriksi
         j = d['123456']['stats']['1']
-        print("printing j")
-        pprint.pp(j)
 
+        # halutaan joku mainin määrittämä tapa miten saada käyttäjälle näkyville
         if (j['type'] == 'ACHIEVEMENTS'):
             print("type in j is correct")
             pass
         else:
             print("type in j is not correct")
+            # self.df("type in j is not correct")
             return False
 
         m = j['bits']
-        print('printing m')
-        pprint.pp(m)
+
+        ml = list(m)
+
+        ol = []
+
+        for x in ml:
+            xv = m[x]
+            ol.append(xv)
+
+        print("printing ol")
+        pprint.pp(ol)
+
+        # tero.add_achievements(ol)
+
+        return True
 
         # k = list(d)[0]
 
@@ -237,12 +251,15 @@ class Read:
         f = open(self.file_name, "r")
         return f
 
-#R = Read(test_file_location, "dummy", "1")
-#R.run_vdf()
+    def register_debug(self, df):
+        self.df = df
 
-        #except FileNotFoundError:
-            #print(f"File {self.file_name} not found.")
-            #return None
+# R = Read(test_file_location, "dummy", tero)
+# R.run_vdf()
+
+        # except FileNotFoundError:
+        #     print(f"File {self.file_name} not found.")
+        #     return None
 
 
 
