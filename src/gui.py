@@ -38,7 +38,7 @@ class AchievementConverterGUI:
         )
     
     def create_table(self):
-        frame = tk.Frame(self.root)
+        frame = tk.Frame(self.root, width=400, height=300)
         scrollbary = ttk.Scrollbar(frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
@@ -51,14 +51,14 @@ class AchievementConverterGUI:
         scrollbarx.configure(command=self.table.xview)
         self.table.configure(xscrollcommand=scrollbarx.set)
         self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        frame.pack(fill=tk.BOTH,expand=True)
+        frame.pack(fill=tk.BOTH,expand=True, padx=30, pady=30)
 
         for col in self.table["columns"]: #iterate trough the columns
             self.table.heading(col, text = col) #set column names as headers
 
 
         #listens to double click on table, send info to edit value function
-        self.table.bind("<Double-1>", lambda event: self.edit_value(self.root, event))
+        self.table.bind("<Double-1>", lambda event: self.edit_value(event))
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
 
     def populate_table(self):
@@ -69,7 +69,26 @@ class AchievementConverterGUI:
                 self.table.insert('', index='end', values=list(item.values()), tags=('null_value',))
             else:
                 self.table.insert('', index='end', values=list(item.values()))
- 
+        
+    def edit_value(self, event):
+        
+        selected_item = self.table.selection() #select achievement based on row
+        edit_frame = tk.Frame(self.root)
+       
+
+        for index, key in enumerate(self.acmt_list):
+            field_frame = tk.Frame(edit_frame)
+            field_label = ttk.Label(field_frame , text=key)
+            field = ttk.Entry(field_frame)
+            
+            field_label.pack(side = tk.LEFT, expand=False)
+            field.pack(side = tk.LEFT,expand=False)
+            field_frame.pack(side = tk.LEFT, expand=True, padx=10, pady=10)
+            
+    
+        edit_frame.pack(side = tk.TOP, expand=True, padx=30, pady=30)
+
+
   
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
@@ -111,21 +130,6 @@ class AchievementConverterGUI:
     
   
         
-    
-    def edit_value(self, root, event):
-        
-        selected_item = self.table.selection() #select achievement based on row
-        edit_frame = tk.Frame(self.root)
-
-        for key in self.acmt_list:
-            field_label = ttk.Label(edit_frame, text=key)
-            field = ttk.Entry(edit_frame)
-            field_label.pack(side = tk.LEFT, expand=False)
-            field.pack(side = tk.LEFT,expand=False)
-            
-    
-        edit_frame.pack(side = tk.TOP, fill=tk.Y,expand=True)
-
 
 
     def select_file(self, command): #should these be in main?
