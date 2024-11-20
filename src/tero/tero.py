@@ -21,7 +21,7 @@ class Tero:
 
     def add_achievement(self,achievement):  # Takes a dict and passes it where it is needed
         if isinstance(achievement,dict):
-            #lisää _0, _1 id jotta achievementin voi löytää
+        
             # mistä tero ymmärtää milloin achievement loppuu 
             self.achievement_list.append(achievement) #adds achievement to achievement_list
             return self.achievement_list #returns all given achievements as list
@@ -49,8 +49,8 @@ class Tero:
 
 
 
-#functions still in progress start here
-
+#functions still in progress start 
+#millaisena main antaa valuet?
 
 
 
@@ -66,15 +66,16 @@ class Tero:
 #            print("Achievement not found.")
 #            return None
 #
+
+#Kaksi funktiota, tee muutos yhteen, tee muutos kaikkiin
+
     def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
        for achievement in achievement_list:
         if key in achievement: #checks if it exists
             achievement[key] = new_value
-            print(f"Achievement updated: {key} - {new_value}")
-        else:
-            achievement[key]= new_value #adds it if it doesnt exist
-            print(f"Achievement for {key} added with value: {new_value}.")
-            
+        return achievement_list
+
+
 
     #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
 #        if len(self.achievement_list) > index:

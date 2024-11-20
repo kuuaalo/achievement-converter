@@ -1,0 +1,4 @@
+name,hidden,statThresholds,user_epic_achievements_xp
+AchievementID1,TRUE,,5
+AchievementID2,FALSE,,10
+AchievementID3,TRUE,,50
