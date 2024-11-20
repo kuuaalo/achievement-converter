@@ -60,77 +60,6 @@ class Read:
 
     def run (self):
         acmt = self.read_file()
-
-        #acmt = self.open_file_debug()
-
-        #d = vdf.parse(acmt)
-        #dd = vdf.dump(d, pretty=True)
-        #print("printing d")
-
-        #pprint.pp(d)
-        #v = d.values() #propably too simplistic, will need to test
-        #print("printing i.key")
-        #pprint.pp(i.key())
-
-        #print("printing v")
-        #print(v)
-
-        #k = list(d)[0]
-        #print("printing k")
-        #print(k)
-
-        #v = d[k]
-        #print("printing v length")
-        #print(v.__len__())
-
-        #vk = list(v)
-        #print("printing vk")
-        #print(vk)
-
-        #x = vk[0]
-        #print(x)
-
-        #y = v[x]
-        #print("printing y")
-        #print(y)
-        #print(y.__len__())
-
-        #z = y['1']
-        #print("printing z")
-        #print(z)
-        #print("printing z len")
-        #print(z.__len__())
-
-        #zl = list(z)
-        #print("printing zl")
-        #print(zl)
-
-        #q = z["type"]
-        #print("printing q")
-        #print(q)
-
-        #a = z["bits"]
-        #print("printing a")
-        #print(a)
-        #print("printing a len")
-        #print(a.__len__())
-
-        #al = list(a)
-        #print("printing")
-        #print(al)
-        #print(al.__len__())
-
-        #acmtL = [a['1'], a['2'], a['3']]
-        #print("printing acmtL")
-        #pprint.pp(acmtL)
-
-        #print("printing key-value pairs")
-
-        #for kk, vv in i:
-            #pprint.pp(f"key: {kk}  value: {vv}")
-            #pprint.pp(f"value: {vv}")
-            #tero.add_achievement(k, v)
-
         acmt_dict = {}
         #self.format.parser(acmt, acmt_dict)
         acmt_x = acmt.split(",")
@@ -151,8 +80,11 @@ class Read:
 
         d = vdf.parse(acmt)
 
+        self.steamid = list(d)[0]
+
+
         # tämän voi siirtää parametriksi
-        j = d['123456']['stats']['1']
+        j = d[self.steamid]['stats']['1']
 
         # halutaan joku mainin määrittämä tapa miten saada käyttäjälle näkyville
         if (j['type'] == 'ACHIEVEMENTS'):
@@ -180,60 +112,51 @@ class Read:
 
         return True
 
-        # k = list(d)[0]
-
-        # v = d[k]
-        # print("printing v length")
-        # print(v.__len__())
-
-        # vk = list(v)
-        # print("printing vk")
-        # print(vk)
-
-        # x = vk[0]
-        # print(x)
-
-        # y = v[x]
-        # print("printing y")
-        # print(y)
-        # print(y.__len__())
-
-        # z = y['1']
-        # print("printing z")
-        # print(z)
-        # print("printing z len")
-        # print(z.__len__())
-
-        # zl = list(z)
-        # print("printing zl")
-        # print(zl)
-
-        # q = z["type"]
-        # print("printing q")
-        # print(q)
-
-        # a = z["bits"]
-        # print("printing a")
-        # print(a)
-        # print("printing a len")
-        # print(a.__len__())
-
-        # al = list(a)
-        # print("printing")
-        # print(al)
-        # print(al.__len__())
-
-        # acmtL = [a['1'], a['2'], a['3']]
-        # print("printing acmtL")
-        # pprint.pp(acmtL)
-
-        # print("printing key-value pairs")
-
-        #for kk, vv in i:
-            # pprint.pp(f"key: {kk}  value: {vv}")
-            # pprint.pp(f"value: {vv}")
-            # tero.add_achievement(k, v)
-
+# tämä on testifunktio Teroa varten
+    def run_fake(self):
+        fdict1 = {"version": None, #Steam version in file
+                    "game_name": None, #Steam game name in file
+                    "acmt_num": None, #display order/ identifier in file for multiple achievements
+                    "name_id": "achievement 1",
+                    "name_en": None, #Name/title in english
+                    "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
+                    "name_locked": None, #locked acmt title. ! for all localizations? !
+                    "name_token": None, #ref to steam description
+                    "desc_en": None, #description in english ! for all localizations? !
+                    "desc_fi": None, #description in english ! for all localizations? !
+                    "desc_token": None, #ref to steam description
+                    "hidden": None, #hidden achievement true/false
+                    "icon": None, #icon for achievements
+                    "icon_locked": None, #gray icon for locked achievements
+                    "desc_locked":None, #description for locked achievements ! for all localizations? !
+                    "acmt_xp":None, #amount of xp gained by achieving
+                    "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
+                    "ag_type":None, #aggregationType epic stats.csv
+                    "flavor_txt": None, # flavorText epic achievementLocalizations.csv
+                }
+        fdict2 = {"version": None, #Steam version in file
+                    "game_name": None, #Steam game name in file
+                    "acmt_num": None, #display order/ identifier in file for multiple achievements
+                    "name_id": "achievement 2",
+                    "name_en": None, #Name/title in english
+                    "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
+                    "name_locked": None, #locked acmt title. ! for all localizations? !
+                    "name_token": None, #ref to steam description
+                    "desc_en": None, #description in english ! for all localizations? !
+                    "desc_fi": None, #description in english ! for all localizations? !
+                    "desc_token": None, #ref to steam description
+                    "hidden": None, #hidden achievement true/false
+                    "icon": None, #icon for achievements
+                    "icon_locked": None, #gray icon for locked achievements
+                    "desc_locked":None, #description for locked achievements ! for all localizations? !
+                    "acmt_xp":None, #amount of xp gained by achieving
+                    "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
+                    "ag_type":None, #aggregationType epic stats.csv
+                    "flavor_txt": None, # flavorText epic achievementLocalizations.csv
+                }
+        flist = [fdict1, fdict2]
+        self.tero.add_achievements(flist)
+        return True
 
     def read_file(self, file_name= False ):
         if file_name:
