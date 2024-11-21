@@ -17,18 +17,19 @@ class AchievementConverter:
         self.root = tk.Tk()
 
         self.tero = Tero(False, False) #init and give parameters
-        acmt_list = vdf.value_dict() #get temporary template dict
-        self.gui = AchievementConverterGUI(self.root, self.file_handler, acmt_list ) #call gui give ref to root and file handler
+        #acmt_list = vdf.value_dict() #get temporary template dict
+        
+        self.gui = AchievementConverterGUI(self.root, self.file_handler) #call gui give ref to root and file handler
 
     def file_handler(self, selected_path, command):
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
                     self.acmt_file_path = selected_path
                     self.read = Read(self.acmt_file_path, self.acmt_platform, self.tero) #init read and give params, does it need platform?
-                    self.read.run() #run read
+                    self.read.run_fake() #run read
+                    acmt_list = self.tero.get_achievements()
+                    self.gui.create_table(acmt_list)
                     self.gui.populate_table() #send to gui to display values
-
-                    
 
         elif(command==2): #export
                 if selected_path != None:

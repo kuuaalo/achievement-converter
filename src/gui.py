@@ -6,13 +6,13 @@ from tkinter.messagebox import showinfo
 
 class AchievementConverterGUI:
 
-    def __init__(self, root, file_handler, acmt_list):
+    def __init__(self, root, file_handler):
         
         self.root = root
         self.root.title("Achievement Converter") #window name
         self.file_handler = file_handler #give reference to function in main on init
         self.selected_path = None #empty variable for file path, should the config be used here?
-        self.acmt_list = acmt_list
+        
 
 
         self.root.geometry("1200x600")
@@ -20,7 +20,7 @@ class AchievementConverterGUI:
 
         self.create_menu() #call function to create menu
 
-        self.create_table()
+        #self.create_table()
 
         self.create_buttons()
 
@@ -37,14 +37,16 @@ class AchievementConverterGUI:
             menu=file_menu
         )
     
-    def create_table(self):
+    def create_table(self, acmt_list):
+        self.acmt_list = acmt_list
         frame = tk.Frame(self.root, width=400, height=300)
         scrollbary = ttk.Scrollbar(frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
-        column_list = tuple(self.acmt_list.keys()) #create a tuple of column names from dict keys
+        test_dict = self.acmt_list[0]
+        column_list = tuple(test_dict.keys()) #create a tuple of column names from dict keys
         self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
         scrollbary.configure(command=self.table.yview)
         self.table.configure(yscrollcommand=scrollbary.set)
@@ -62,8 +64,8 @@ class AchievementConverterGUI:
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
 
     def populate_table(self):
-        test_list = [self.acmt_list, self.acmt_list, self.acmt_list]
-        for item in test_list:
+        #self.test_list = [self.acmt_list, self.acmt_list, self.acmt_list]
+        for item in self.acmt_list:
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
                 self.table.insert('', index='end', values=list(item.values()), tags=('null_value',))
@@ -71,25 +73,39 @@ class AchievementConverterGUI:
                 self.table.insert('', index='end', values=list(item.values()))
         
     def edit_value(self, event):
-        
         selected_item = self.table.selection() #select achievement based on row
         edit_frame = tk.Frame(self.root)
-       
+        
+        replaceall_button = ttk.Button( #button to import file
+            edit_frame,
+            text="Replace value in all achievements",
+            command=lambda:self.tero.add_data_to_achievement(field_vars) #TERO KUTSU TÄHÄN
+        )
+        replacethis_button = ttk.Button( #button to import file
+            edit_frame,
+            text="Replace value in this achievement",
+            command=lambda:self.tero.add_data_to_all_achievements(field_vars) #TOINEN TERO KUTSU TÄHÄN
+        )
+        replaceall_button.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
 
-        for index, key in enumerate(self.acmt_list):
+        field_vars = {} #dict to store new values
+        test_dict2 = self.acmt_list[0] #KORJAA. ei käytä oikeita valueita!!
+        
+        for index, key in enumerate(test_dict2):
             field_frame = tk.Frame(edit_frame)
-            field_label = ttk.Label(field_frame , text=key)
-            field = ttk.Entry(field_frame)
+            field_string = tk.StringVar()
+            field_vars[key] = field_string
+
+            field_label = ttk.Label(field_frame, text=key)
+            field = ttk.Entry(field_frame, textvariable=field_string)
             
-            field_label.pack(side = tk.LEFT, expand=False)
+            field_label.pack(side=tk.LEFT, expand=False)
             field.pack(side = tk.LEFT,expand=False)
-            field_frame.pack(side = tk.LEFT, expand=True, padx=10, pady=10)
-            
+            field_frame.pack(side = tk.TOP, expand=False, padx=10, pady=10)
     
-        edit_frame.pack(side = tk.TOP, expand=True, padx=30, pady=30)
+        edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
 
 
-  
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
         button_frame.pack(fill=tk.BOTH, expand=False)
