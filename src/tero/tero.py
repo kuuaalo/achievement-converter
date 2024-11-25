@@ -31,6 +31,8 @@ class Tero:
   
 
 #write starts here
+    key = "game_name"
+    new_value = "perkele"
      
     def get_achievements(self):#write calls this, and this returns list of dicts
         return self.achievement_list
@@ -44,7 +46,40 @@ class Tero:
             achievement[key] = new_value
         else:
             achievement[key]= new_value #adds it if it doesnt exist
-            
+    
+  
+    def update_achievement_data(self, achievement_list, achievement_id, key, new_value):
+    try:
+        achievement = achievement_list[achievement_id]
+        if key in achievement:
+            old_value = achievement[key]
+            print(f"Key '{key}' löytyi. Päivitetään: Old='{old_value}', New='{new_value}'")
+        else:
+            print(f"Key '{key}' puuttui. Lisätään se: New='{new_value}'")
+        achievement[key] = new_value
+        print(f"Achievement päivitetty: ID={achievement_id}, Key='{key}', Value='{new_value}'")
+        return True
+
+    except IndexError:
+        print(f"Virhe: ID={achievement_id} ei ole kelvollinen.")
+        return False
+    except Exception as e:
+        print(f"Tuntematon virhe: {e}")
+        return False
+
+
+
+#tällaisia asioita tarvitaan:
+#selected_id = 2  # GUI:n kautta saatu ID
+#key_to_update = "acmt_xp"  # GUI:n kautta valittu key
+#new_value = 100  # Uusi arvo käyttäjältä
+
+#tero.update_achievement_data(achievement_list, selected_id, key_to_update, new_value)
+
+
+
+
+
 
 #functions still in progress start 
 #millaisena main antaa valuet?
@@ -64,16 +99,15 @@ class Tero:
 #            return None
 #
 
-
 #Kaksi funktiota, tee muutos yhteen, tee muutos kaikkiin
 
-    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
-       for achievement in achievement_list:
-        if key in achievement: #checks if it exists
-            achievement[key] = new_value
-        else: 
-            achievement[key] = new_value #make it if it doesnt exist
-        return achievement_list
+#    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
+#       for achievement in achievement_list:
+#        if key in achievement: #checks if it exists
+#            achievement[key] = new_value
+#        else: 
+#            achievement[key] = new_value #make it if it doesnt exist
+#        return achievement_list
 
 
 

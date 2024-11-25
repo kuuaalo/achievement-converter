@@ -30,7 +30,7 @@ import vdf
 import pprint
 #miten importoidaan tero
 
-test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
+test_file_location = "C:\\Users\\rauli\\Documents\\GitHub\\achievement-converter\\testi1.txt"
 
 tero = 1
 
