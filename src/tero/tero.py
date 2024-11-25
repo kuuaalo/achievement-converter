@@ -1,28 +1,23 @@
-import time
-import read
+#import sys
+#sys.path.insert(0,r"C:\Users\rauli\Documents\GitHub\achievement-converter\achievement-converter\src\read")
+#from read import Read
 
 
 
 class Tero:
-    def __init__(self, resume=False, achievement_list=False):
+    def __init__(self, resume=False, achievement_list=None):
       
-        if resume:  #opening existing projects
-            pass
-        else:
-            pass
-
-        if achievement_list:
+        if achievement_list is not None:
             self.achievement_list = achievement_list
+            
         else:
             self.achievement_list = []
-        
+            
 
 #Read starts here
 
     def add_achievement(self,achievement):  # Takes a dict and passes it where it is needed
         if isinstance(achievement,dict):
-        
-            # mistä tero ymmärtää milloin achievement loppuu 
             self.achievement_list.append(achievement) #adds achievement to achievement_list
             return self.achievement_list #returns all given achievements as list
         else: return False
@@ -43,11 +38,13 @@ class Tero:
     def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
         False
     
-
-
-
-
-
+    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
+       for achievement in achievement_list:
+        if key in achievement: #checks if it exists
+            achievement[key] = new_value
+        else:
+            achievement[key]= new_value #adds it if it doesnt exist
+            
 
 #functions still in progress start 
 #millaisena main antaa valuet?
@@ -67,12 +64,15 @@ class Tero:
 #            return None
 #
 
+
 #Kaksi funktiota, tee muutos yhteen, tee muutos kaikkiin
 
     def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
        for achievement in achievement_list:
         if key in achievement: #checks if it exists
             achievement[key] = new_value
+        else: 
+            achievement[key] = new_value #make it if it doesnt exist
         return achievement_list
 
 
@@ -83,3 +83,8 @@ class Tero:
 #        return None
 
 
+#if __name__ == "__main__":
+#    tero = Tero()
+
+#R = Read(test_file_location, self)
+#R.run_fake()
