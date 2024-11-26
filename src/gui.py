@@ -64,7 +64,6 @@ class AchievementConverterGUI:
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
 
     def populate_table(self):
-        #self.test_list = [self.acmt_list, self.acmt_list, self.acmt_list]
         for item in self.acmt_list:
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
@@ -73,12 +72,29 @@ class AchievementConverterGUI:
                 self.table.insert('', index='end', values=list(item.values()))
         
     def edit_value(self, event):
-        selected_item = self.table.selection() #select achievement based on row
+        #selected_item = self.table.selection() #select achievement based on row
         edit_frame = tk.Frame(self.root)
+        tree = event.widget
+        region = tree.identify("region", event.x, event.y)
+        row_id = tree.identify_row(event.y)  # Get row
+        column_id = tree.identify_column(event.x)  # Get column
+        if row_id and column_id: # CONTINUE HERE. GET COLUMN NAME AND CELL VALUE
+            print(row_id)
+            print(column_id)
+            title = tree.set(row_id)  # Get cell value
+            value = tree.set(row_id, column_id)  # Get cell value
+            #print(value)
+            field_label = ttk.Label(edit_frame, text=title)
+            value_label = ttk.Label(edit_frame, text=value)
+            field_label.pack(side=tk.LEFT, expand=False)
+            value_label.pack(side = tk.LEFT,expand=False)
+            
         
+
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in all achievements",
+            #command=self.file_handler(key, var, 4)
             command=lambda:self.tero.add_data_to_achievement(field_vars) #TERO KUTSU TÄHÄN
         )
         replacethis_button = ttk.Button( #button to import file
@@ -88,23 +104,26 @@ class AchievementConverterGUI:
         )
         replaceall_button.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
 
-        field_vars = {} #dict to store new values
-        test_dict2 = self.acmt_list[0] #KORJAA. ei käytä oikeita valueita!!
+        #field_vars = {} #dict to store new values
+        #test_dict2 = self.acmt_list[0] #KORJAA. ei käytä oikeita valueita!!
         
-        for index, key in enumerate(test_dict2):
-            field_frame = tk.Frame(edit_frame)
-            field_string = tk.StringVar()
-            field_vars[key] = field_string
+        #for index, key in enumerate(test_dict2):
+            #field_frame = tk.Frame(edit_frame)
+            #field_string = tk.StringVar()
+            #field_vars[key] = field_string
+            #value = test_dict2[key]
 
-            field_label = ttk.Label(field_frame, text=key)
-            field = ttk.Entry(field_frame, textvariable=field_string)
+            #field_label = ttk.Label(field_frame, text=key)
+            #value_label = ttk.Label(field_frame, text=value)
+            #field = ttk.Entry(field_frame)
             
-            field_label.pack(side=tk.LEFT, expand=False)
-            field.pack(side = tk.LEFT,expand=False)
-            field_frame.pack(side = tk.TOP, expand=False, padx=10, pady=10)
+            #field_label.pack(side=tk.LEFT, expand=False)
+            #value_label.pack(side = tk.LEFT,expand=False)
+            #field.pack(side = tk.LEFT,expand=False)
+            #field_frame.pack(side = tk.TOP, expand=False, padx=10, pady=10)
     
         edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
-        print(field_vars)
+        # print(field_vars)
 
 
     def create_buttons(self):
