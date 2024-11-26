@@ -27,11 +27,14 @@
 
 import os
 import vdf
+import csv
 import pprint
 # from tero import tero
 #miten importoidaan tero
 
-test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
+# test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+
+# tero = 1
 
 class Read:
 
@@ -60,22 +63,23 @@ class Read:
 
 
     def run (self):
-        acmt = self.read_file()
-        acmt_dict = {}
-        #self.format.parser(acmt, acmt_dict)
-        acmt_x = acmt.split(",")
-        for y in acmt_x:
-            s = y.split(":")
-            acmt_dict[s[0]] = s[1]
+        if self.format == "vdf":
+            self.run_vdf(self)
 
-        #print(acmt_dict)
+        elif self.format == "xml":
+            pass
 
-        self.tero.add_achievement(acmt_dict)
+        elif self.format == "csv":
+            pass
+
+        else:
+            print("format not recognized: ")
+            print(self.format)
+            return False
 
         return True
 
     def run_vdf (self):
-        acmt = self.read_file()
 
         acmt = self.open_file_debug()
 
@@ -124,6 +128,17 @@ class Read:
         self.tero.add_achievements(ol)
 
         return True
+
+    def run_csv(self):
+
+        acmt = self.open_file_debug()
+        g = csv.reader(acmt)
+        print("printing g")
+        pprint.pp(g)
+
+        for l in g:
+            print(l)
+
 
 # tämä on testifunktio Teroa varten
     def run_fake(self):
@@ -192,7 +207,7 @@ class Read:
         self.df = df
 
 # R = Read(test_file_location, "dummy", tero)
-# R.run_vdf()
+# R.run_csv()
 
         # except FileNotFoundError:
         #     print(f"File {self.file_name} not found.")
