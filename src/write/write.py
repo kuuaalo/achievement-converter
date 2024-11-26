@@ -1,7 +1,6 @@
 import xml.dom.minidom as minidom
 import csv 
 import vdf
-import json
 from tero import tero
 import read.vdfparse as vdf2
 
@@ -16,7 +15,7 @@ class Write:
         if file_format:
             self.file_format = file_format.lower()  # Set the file format to lowercase
         else:
-            print("Wrong format")  # Print error if file format is invalid
+            print("Wrong format from write")  # Print error if file format is invalid
             return
         self.tero=tero
         
