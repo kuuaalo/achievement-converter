@@ -47,7 +47,7 @@ class Tero:
             achievement[key] = new_value
         else:
             achievement[key]= new_value #adds it if it doesnt exist
-        return achievement_list    
+        return self.achievement_list    
   
 #    def update_achievement_data(self, achievement_list, achievement_id, key, new_value):
 #    try:
