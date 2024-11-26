@@ -1,6 +1,7 @@
 #import sys
 #sys.path.insert(0,r"C:\Users\rauli\Documents\GitHub\achievement-converter\achievement-converter\src\read")
 #from read import Read
+#import read
 
 
 
@@ -29,7 +30,6 @@ class Tero:
         else: return False
 
   
-
 #write starts here
     key = "game_name"
     new_value = "perkele"
@@ -48,24 +48,24 @@ class Tero:
             achievement[key]= new_value #adds it if it doesnt exist
     
   
-    def update_achievement_data(self, achievement_list, achievement_id, key, new_value):
-    try:
-        achievement = achievement_list[achievement_id]
-        if key in achievement:
-            old_value = achievement[key]
-            print(f"Key '{key}' löytyi. Päivitetään: Old='{old_value}', New='{new_value}'")
-        else:
-            print(f"Key '{key}' puuttui. Lisätään se: New='{new_value}'")
-        achievement[key] = new_value
-        print(f"Achievement päivitetty: ID={achievement_id}, Key='{key}', Value='{new_value}'")
-        return True
+#    def update_achievement_data(self, achievement_list, achievement_id, key, new_value):
+#    try:
+#        achievement = achievement_list[achievement_id]
+#        if key in achievement:
+#            old_value = achievement[key]
+#            print(f"Key '{key}' löytyi. Päivitetään: Old='{old_value}', New='{new_value}'")
+#        else:
+#            print(f"Key '{key}' puuttui. Lisätään se: New='{new_value}'")
+#        achievement[key] = new_value
+#        print(f"Achievement päivitetty: ID={achievement_id}, Key='{key}', Value='{new_value}'")
+#        return True
 
-    except IndexError:
-        print(f"Virhe: ID={achievement_id} ei ole kelvollinen.")
-        return False
-    except Exception as e:
-        print(f"Tuntematon virhe: {e}")
-        return False
+#    except IndexError:
+#        print(f"Virhe: ID={achievement_id} ei ole kelvollinen.")
+#        return False
+#    except Exception as e:
+#        print(f"Tuntematon virhe: {e}")
+#        return False
 
 
 
@@ -88,26 +88,8 @@ class Tero:
 
    #inner functions
 
-#    def add_data_to_achievement(self,achievement_list,key,new_value): #replace values in spesific achievements with spesific data
-#        achievementit indexin mukaan
-#        if key in achievement_list:
-#            value = achievement_list[key]
-#            print(f"Achievement found: {key} - {value}")
-#            return {key:value} #returns the value pair if it exists
-#        else:
-#            print("Achievement not found.")
-#            return None
-#
 
-#Kaksi funktiota, tee muutos yhteen, tee muutos kaikkiin
 
-#    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
-#       for achievement in achievement_list:
-#        if key in achievement: #checks if it exists
-#            achievement[key] = new_value
-#        else: 
-#            achievement[key] = new_value #make it if it doesnt exist
-#        return achievement_list
 
 
 
@@ -117,8 +99,8 @@ class Tero:
 #        return None
 
 
-#if __name__ == "__main__":
-#    tero = Tero()
 
-#R = Read(test_file_location, self)
-#R.run_fake()
+
+# R = Read(test_file_location, self)
+# R.run_fakef()
+#filename tarvitsee korvata omalla
