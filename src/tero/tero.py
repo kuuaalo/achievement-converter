@@ -9,8 +9,7 @@ class Tero:
     def __init__(self, resume=False, achievement_list=None):
       
         if achievement_list is not None:
-            self.achievement_list = achievement_list
-            
+            self.achievement_list = achievement_list  
         else:
             self.achievement_list = []
             
@@ -26,8 +25,10 @@ class Tero:
     def add_achievements(self,achievements):#takes a list of achievements  
         if isinstance(achievements,list): 
             self.achievement_list = achievements
+            print("debugprint")
             return self.achievement_list #returns the list of achievements for later use
         else: return False
+
 
   
 #write starts here
@@ -40,8 +41,8 @@ class Tero:
     def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
         False
     
-    def add_data_to_all_achievements(self,achievement_list,key, new_value): #replace value in all achievements
-       for achievement in achievement_list:
+    def add_data_to_all_achievements(self,key,new_value): #replace value in all achievements
+       for achievement in self.achievement_list:
         if key in achievement: #checks if it exists
             achievement[key] = new_value
         else:
@@ -70,9 +71,24 @@ class Tero:
 
 
 #tällaisia asioita tarvitaan:
-#selected_id = 2  # GUI:n kautta saatu ID
+#selected_id = 2,3,5,7,8  # GUI:n kautta saatu ID
 #key_to_update = "acmt_xp"  # GUI:n kautta valittu key
 #new_value = 100  # Uusi arvo käyttäjältä
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #tero.update_achievement_data(achievement_list, selected_id, key_to_update, new_value)
 
