@@ -28,7 +28,7 @@
 import os
 import vdf
 import pprint
-from tero import tero
+# from tero import tero
 #miten importoidaan tero
 
 test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
@@ -52,6 +52,8 @@ class Read:
 
         if tero:
             self.tero = tero
+            print("self_tero")
+            print(self.tero)
         else:
             print("Error: no tero")
             return None
@@ -125,49 +127,50 @@ class Read:
 
 # tämä on testifunktio Teroa varten
     def run_fake(self):
-        fdict1 = {"version": None, #Steam version in file
-                    "game_name": None, #Steam game name in file
-                    "acmt_num": None, #display order/ identifier in file for multiple achievements
-                    "name_id": "achievement 1",
-                    "name_en": None, #Name/title in english
-                    "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
-                    "name_locked": None, #locked acmt title. ! for all localizations? !
-                    "name_token": None, #ref to steam description
-                    "desc_en": None, #description in english ! for all localizations? !
-                    "desc_fi": None, #description in english ! for all localizations? !
-                    "desc_token": None, #ref to steam description
-                    "hidden": None, #hidden achievement true/false
-                    "icon": None, #icon for achievements
-                    "icon_locked": None, #gray icon for locked achievements
-                    "desc_locked":None, #description for locked achievements ! for all localizations? !
-                    "acmt_xp":None, #amount of xp gained by achieving
-                    "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
-                    "ag_type":None, #aggregationType epic stats.csv
-                    "flavor_txt": None, # flavorText epic achievementLocalizations.csv
-                }
-        fdict2 = {"version": None, #Steam version in file
-                    "game_name": None, #Steam game name in file
-                    "acmt_num": None, #display order/ identifier in file for multiple achievements
-                    "name_id": "achievement 2",
-                    "name_en": None, #Name/title in english
-                    "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
-                    "name_locked": None, #locked acmt title. ! for all localizations? !
-                    "name_token": None, #ref to steam description
-                    "desc_en": None, #description in english ! for all localizations? !
-                    "desc_fi": None, #description in english ! for all localizations? !
-                    "desc_token": None, #ref to steam description
-                    "hidden": None, #hidden achievement true/false
-                    "icon": None, #icon for achievements
-                    "icon_locked": None, #gray icon for locked achievements
-                    "desc_locked":None, #description for locked achievements ! for all localizations? !
-                    "acmt_xp":None, #amount of xp gained by achieving
-                    "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
-                    "ag_type":None, #aggregationType epic stats.csv
-                    "flavor_txt": None, # flavorText epic achievementLocalizations.csv
-                }
-        flist = [fdict1, fdict2]
-        self.tero.add_achievements(flist)
-        return True
+        self.run_vdf()
+    #     fdict1 = {"version": None, #Steam version in file
+    #                 "game_name": None, #Steam game name in file
+    #                 "acmt_num": None, #display order/ identifier in file for multiple achievements
+    #                 "name_id": "achievement 1",
+    #                 "name_en": None, #Name/title in english
+    #                 "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
+    #                 "name_locked": None, #locked acmt title. ! for all localizations? !
+    #                 "name_token": None, #ref to steam description
+    #                 "desc_en": None, #description in english ! for all localizations? !
+    #                 "desc_fi": None, #description in english ! for all localizations? !
+    #                 "desc_token": None, #ref to steam description
+    #                 "hidden": None, #hidden achievement true/false
+    #                 "icon": None, #icon for achievements
+    #                 "icon_locked": None, #gray icon for locked achievements
+    #                 "desc_locked":None, #description for locked achievements ! for all localizations? !
+    #                 "acmt_xp":None, #amount of xp gained by achieving
+    #                 "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
+    #                 "ag_type":None, #aggregationType epic stats.csv
+    #                 "flavor_txt": None, # flavorText epic achievementLocalizations.csv
+    #             }
+    #     fdict2 = {"version": None, #Steam version in file
+    #                 "game_name": None, #Steam game name in file
+    #                 "acmt_num": None, #display order/ identifier in file for multiple achievements
+    #                 "name_id": "achievement 2",
+    #                 "name_en": None, #Name/title in english
+    #                 "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
+    #                 "name_locked": None, #locked acmt title. ! for all localizations? !
+    #                 "name_token": None, #ref to steam description
+    #                 "desc_en": None, #description in english ! for all localizations? !
+    #                 "desc_fi": None, #description in english ! for all localizations? !
+    #                 "desc_token": None, #ref to steam description
+    #                 "hidden": None, #hidden achievement true/false
+    #                 "icon": None, #icon for achievements
+    #                 "icon_locked": None, #gray icon for locked achievements
+    #                 "desc_locked":None, #description for locked achievements ! for all localizations? !
+    #                 "acmt_xp":None, #amount of xp gained by achieving
+    #                 "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
+    #                 "ag_type":None, #aggregationType epic stats.csv
+    #                 "flavor_txt": None, # flavorText epic achievementLocalizations.csv
+    #             }
+    #     flist = [fdict1, fdict2]
+    #     self.tero.add_achievements(flist)
+    #     return True
 
     def read_file(self, file_name= False ):
         if file_name:
@@ -188,8 +191,8 @@ class Read:
     def register_debug(self, df):
         self.df = df
 
-R = Read(test_file_location, "dummy", tero)
-R.run_vdf()
+# R = Read(test_file_location, "dummy", tero)
+# R.run_vdf()
 
         # except FileNotFoundError:
         #     print(f"File {self.file_name} not found.")

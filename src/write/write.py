@@ -1,13 +1,13 @@
 import xml.dom.minidom as minidom
-import csv 
+import csv
 import vdf
-from tero import tero
+# from tero import tero
 import read.vdfparse as vdf2
 
 class Write:
     def __init__(self, file_name, file_format, tero):
         if file_name:
-            self.file_name = file_name  
+            self.file_name = file_name
         else:
             print("Wrong file name")
             return
@@ -18,11 +18,11 @@ class Write:
             print("Wrong format from write")  # Print error if file format is invalid
             return
         self.tero=tero
-        
+
     def run(self):
         achievements = self.tero.get_achievements()
-        #achievements = vdf2.value_dict() 
-        
+        #achievements = vdf2.value_dict()
+
         if self.file_format == ".xml":
             self.write_to_xml(achievements) # Write to XML if format is XML
         elif self.file_format == ".csv":
@@ -53,7 +53,7 @@ class Write:
             root.appendChild(ach_elem)  # Append the Achievement element to the root
 
         xml_str = doc.toprettyxml(indent="  ")  # Convert the document to a pretty-printed XML string
-        with open(self.file_name, "w") as f: 
+        with open(self.file_name, "w") as f:
             f.write(xml_str)  # Write the XML string to the file
 
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
