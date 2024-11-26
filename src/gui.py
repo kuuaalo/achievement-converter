@@ -104,6 +104,7 @@ class AchievementConverterGUI:
             field_frame.pack(side = tk.TOP, expand=False, padx=10, pady=10)
     
         edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
+        print(field_vars)
 
 
     def create_buttons(self):

@@ -29,7 +29,8 @@ class Write:
         elif self.file_format == ".csv":
             self.write_to_csv(achievements) # Write to CSV if format is CSV
         elif self.file_format == ".txt":
-            self.write_to_txt(achievements) # write to TXT if formar is TXT
+            #self.write_to_txt(achievements) # write to TXT if formar is TXT
+            self.write_to_vdf(achievements)
         elif self.file_format == ".vdf":
             self.write_to_vdf(achievements) # Write to VDF if format is VDF
         else:
@@ -62,7 +63,7 @@ class Write:
     def write_to_csv(self, achievements):
         # Using DictWriter to write to a CSV file
         with open(self.file_name, "w", newline='') as f:  # Open the file for writing with newline handling
-            writer = csv.DictWriter(f, fieldnames=["Name", "Status"])  # Define field names for the CSV
+            writer = csv.DictWriter(f, fieldnames=[])  # Define field names for the CSV
             writer.writeheader()
             writer.writerows(achievements)  # Write all rows from the achievements list
 

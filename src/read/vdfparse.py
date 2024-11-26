@@ -44,7 +44,6 @@ def value_dict():
     "version": "2",
     "gamename": "Super Ultimate Awesome Game",
     "stats_type": "ACHIEVEMENTS",
-    
     "achievement_1_id": "AchievementID1",
     "achievement_1_name_english": "Achievement 1",
     "achievement_1_name_finnish": "Saavutus 1",
