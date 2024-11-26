@@ -1,6 +1,7 @@
 import xml.dom.minidom as minidom
 import csv 
 import vdf
+import json
 from tero import tero
 import read.vdfparse as vdf2
 
@@ -28,6 +29,8 @@ class Write:
         elif self.file_format == ".csv":
             self.write_to_csv(achievements) # Write to CSV if format is CSV
         elif self.file_format == ".txt":
+            self.write_to_txt(achievements) # write to TXT if formar is TXT
+        elif self.file_format == ".vdf":
             self.write_to_vdf(achievements) # Write to VDF if format is VDF
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
@@ -66,11 +69,37 @@ class Write:
         print(f"Data written to {self.file_name} in CSV format.")  # Confirm the write operation
 
     def write_to_vdf(self, achievements):
-        # Prepare data in a format compatible with VDF
-        vdf_data = {"Achievements": {str(i): ach for i, ach in enumerate(achievements)}} 
-        # Convert dictionary to VDF format and write it
-        with open(self.file_name, "w") as f:
-            f.write(vdf.dumps(vdf_data, pretty=True)) # pretty=True adds indentations
-        
-        print(f"Data written to {self.file_name} in VDF format.")
+        # Create a nested structure for the achievements in VDF format
+        nested_data = {"GameInfo": achievements}
+
+        # Convert the dictionary to VDF format
+        vdf_text = vdf.dumps(nested_data, pretty=True)
+
+        with open(self.file_name_vdf, "w") as f:
+            f.write(vdf_text)
+
+        print(f"Data written to {self.file_name_vdf} in nested VDF format.")
+
+# This method writes the achievements to a plain text file
+    def write_to_txt(self, achievements):
+        # Write the achievements in a readable plain text format
+        with open(self.file_name_txt, "w") as f:
+            # First, write game-level information (id, version, etc.)
+            f.write(f"Game Information:\n")
+            f.write(f"ID: {achievements['id']}\n")
+            f.write(f"Version: {achievements['version']}\n")
+            f.write(f"Game Name: {achievements['gamename']}\n")
+            f.write(f"Stats Type: {achievements['stats_type']}\n")
+            f.write("\n")
+
+            # Write achievements inside the "Achievements" block
+            f.write("Achievements:\n")
+            for achievement_id, details in achievements["Achievements"].items():
+                f.write(f"Achievement ID: {achievement_id}\n")
+                for subkey, subvalue in details.items():
+                    f.write(f"  {subkey}: {subvalue}\n")
+                f.write("\n")
+
+        print(f"Data written to {self.file_name_txt} in plain text format.")
+
     
