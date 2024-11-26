@@ -21,6 +21,7 @@ class Write:
         
     def run(self):
         achievements = self.tero.get_achievements()
+        print("write debugmessage no:1")
         #achievements = vdf2.value_dict() 
         
         if self.file_format == ".xml":
@@ -41,7 +42,7 @@ class Write:
 
         for achievement in achievements:
             ach_elem = doc.createElement('Achievement')  # Create an Achievement element
-
+            print("write debugmessage no:2")
             name_elem = doc.createElement('Name')  # Create a Name element
             name_elem.appendChild(doc.createTextNode(achievement['Name']))
             ach_elem.appendChild(name_elem)  # Append the Name element to Achievement
