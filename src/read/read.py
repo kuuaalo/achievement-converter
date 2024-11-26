@@ -28,11 +28,10 @@
 import os
 import vdf
 import pprint
+from tero import tero
 #miten importoidaan tero
 
-test_file_location = "C:\\Users\\rauli\\Documents\\GitHub\\achievement-converter\\testi1.txt"
-
-tero = 1
+test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\steamvdf_test.txt"
 
 class Read:
 
@@ -102,13 +101,25 @@ class Read:
         ol = []
 
         for x in ml:
-            xv = m[x]
-            ol.append(xv)
+            z = {}
+            y = m[x]
+            z["name_id"] = y["name"]
+            z["name_en"] = y["display"]["name"]["english"]
+            z["name_fi"] = y["display"]["name"]["finnish"]
+            z["name_token"] = y["display"]["name"]["token"]
+            z["desc_en"] = y["display"]["desc"]["english"]
+            z["desc_fi"] = y["display"]["desc"]["finnish"]
+            z["desc_token"] = y["display"]["desc"]["token"]
+            z["hidden"] = y["display"]["hidden"]
+            z["icon"] = y["display"]["icon"]
+            z["icon_locked"] = y["display"]["icon_gray"]
+
+            ol.append(z)
 
         print("printing ol")
         pprint.pp(ol)
 
-        # tero.add_achievements(ol)
+        self.tero.add_achievements(ol)
 
         return True
 
@@ -177,8 +188,8 @@ class Read:
     def register_debug(self, df):
         self.df = df
 
-# R = Read(test_file_location, "dummy", tero)
-# R.run_vdf()
+R = Read(test_file_location, "dummy", tero)
+R.run_vdf()
 
         # except FileNotFoundError:
         #     print(f"File {self.file_name} not found.")
