@@ -49,20 +49,16 @@ class Tero:
             achievement[key]= new_value #adds it if it doesnt exist
         return self.achievement_list    
   
-#    def update_achievement_data(self, achievement_list, achievement_id, key, new_value):
+#    def update_achievement_data(self, achievement_id, key, new_value):
 #    try:
 #        achievement = achievement_list[achievement_id]
 #        if key in achievement:
 #            old_value = achievement[key]
-#            print(f"Key '{key}' löytyi. Päivitetään: Old='{old_value}', New='{new_value}'")
+#            achievement[key] = new_value
 #        else:
-#            print(f"Key '{key}' puuttui. Lisätään se: New='{new_value}'")
-#        achievement[key] = new_value
-#        print(f"Achievement päivitetty: ID={achievement_id}, Key='{key}', Value='{new_value}'")
+#            achievement[key] = new_value
 #        return True
-
 #    except IndexError:
-#        print(f"Virhe: ID={achievement_id} ei ole kelvollinen.")
 #        return False
 #    except Exception as e:
 #        print(f"Tuntematon virhe: {e}")
