@@ -22,6 +22,7 @@ class Write:
     def run(self):
         achievements = self.tero.get_achievements()
         print("write debugmessage no:1")
+    
         #achievements = vdf2.value_dict() 
         
         if self.file_format == ".xml":
@@ -63,6 +64,7 @@ class Write:
     def write_to_csv(self, achievements):
         # Using DictWriter to write to a CSV file
         with open(self.file_name, "w", newline='') as f:  # Open the file for writing with newline handling
+            print(self.tero)#debugmessage
             writer = csv.DictWriter(f, fieldnames=[])  # Define field names for the CSV
             writer.writeheader()
             writer.writerows(achievements)  # Write all rows from the achievements list
