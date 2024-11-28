@@ -42,11 +42,11 @@ class Tero:
         False
     
     def add_data_to_all_achievements(self,key,new_value): #replace value in all achievements
-       for achievement in self.achievement_list:
-        if key in achievement: #checks if it exists
-            achievement[key] = new_value
-        else:
-            achievement[key]= new_value #adds it if it doesnt exist
+        for achievement in self.achievement_list:
+            if key in achievement: #checks if it exists
+                achievement[key] = new_value
+            else:
+                achievement[key]= new_value #adds it if it doesnt exist
         return self.achievement_list    
   
 #    def update_achievement_data(self, achievement_id, key, new_value):

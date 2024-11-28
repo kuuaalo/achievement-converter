@@ -19,9 +19,9 @@ class AchievementConverter:
         self.tero = Tero(False, False) #init and give parameters
         #acmt_list = vdf.value_dict() #get temporary template dict
         
-        self.gui = AchievementConverterGUI(self.root, self.file_handler) #call gui give ref to root and file handler
+        self.gui = AchievementConverterGUI(self.root, self) #call gui give ref to root and file handler
 
-    def file_handler(self, selected_path, command):
+    def file_handler(self, selected_path = None, command = None):
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
                     self.acmt_file_path = selected_path
@@ -47,6 +47,16 @@ class AchievementConverter:
         else:
             print("Error: no command given or command unknown.")
     
+    def data_handler(self, key, new_value, index = None):
+        if index is not None:
+            acmt_list = self.tero.update_achievement_data(key, new_value, index)
+        else:
+            acmt_list = self.tero.add_data_to_all_achievements(key, new_value)
+            
+        print(acmt_list)
+        
+
+
     def get_file_extension(self, selected_path):
         return os.path.splitext(selected_path)[1].lower()  # returns file extension
 

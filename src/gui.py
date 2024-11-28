@@ -6,21 +6,17 @@ from tkinter.messagebox import showinfo
 
 class AchievementConverterGUI:
 
-    def __init__(self, root, file_handler):
+    def __init__(self, root, controller):
         
         self.root = root
         self.root.title("Achievement Converter") #window name
-        self.file_handler = file_handler #give reference to function in main on init
-        self.selected_path = None #empty variable for file path, should the config be used here?
+        self.controller = controller#give reference to function in main on init
+        #self.selected_path = None #empty variable for file path, should the config be used here?
         
-
-
         self.root.geometry("1200x600")
         self.root.title("Achievement Converter")
 
         self.create_menu() #call function to create menu
-
-        #self.create_table()
 
         self.create_buttons()
 
@@ -71,23 +67,28 @@ class AchievementConverterGUI:
             else:
                 self.table.insert('', index='end', values=list(item.values()))
         
-    def edit_value(self, event):
-        #selected_item = self.table.selection() #select achievement based on row
+    def edit_value(self, event): #OBJEKTI TÄSTÄ?
+
         edit_frame = tk.Frame(self.root)
         tree = event.widget
         region = tree.identify("region", event.x, event.y)
         row_id = tree.identify_row(event.y)  # Get row
         column_id = tree.identify_column(event.x)  # Get column
-        if row_id and column_id: # CONTINUE HERE. GET COLUMN NAME AND CELL VALUE
+        
+        if row_id and column_id: #
             print(row_id)
             print(column_id)
-            title = tree.set(row_id)  # Get cell value
+            column_key = tree.column(column_id, 'id')
+            #list_index = int(row_id) FIX GET LIST INDEX
             value = tree.set(row_id, column_id)  # Get cell value
-            #print(value)
-            field_label = ttk.Label(edit_frame, text=title)
+            print(column_key)
+            field_label = ttk.Label(edit_frame, text=column_key)
             value_label = ttk.Label(edit_frame, text=value)
+            self.field = ttk.Entry(edit_frame)
+            
             field_label.pack(side=tk.LEFT, expand=False)
             value_label.pack(side = tk.LEFT,expand=False)
+            self.field.pack(side = tk.LEFT,expand=False)
             
         
 
@@ -95,35 +96,17 @@ class AchievementConverterGUI:
             edit_frame,
             text="Replace value in all achievements",
             #command=self.file_handler(key, var, 4)
-            command=lambda:self.tero.add_data_to_achievement(field_vars) #TERO KUTSU TÄHÄN
+            command=lambda:self.handle_submit(column_key)   #TERO KUTSU TÄHÄN
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in this achievement",
-            command=lambda:self.tero.add_data_to_all_achievements(field_vars) #TOINEN TERO KUTSU TÄHÄN
+            command=lambda:self.handle_submit(column_key, list_index) #TOINEN TERO KUTSU TÄHÄN
         )
-        replaceall_button.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
+        replaceall_button.pack(side = tk.BOTTOM, expand=False, padx=30, pady=30)
 
-        #field_vars = {} #dict to store new values
-        #test_dict2 = self.acmt_list[0] #KORJAA. ei käytä oikeita valueita!!
-        
-        #for index, key in enumerate(test_dict2):
-            #field_frame = tk.Frame(edit_frame)
-            #field_string = tk.StringVar()
-            #field_vars[key] = field_string
-            #value = test_dict2[key]
-
-            #field_label = ttk.Label(field_frame, text=key)
-            #value_label = ttk.Label(field_frame, text=value)
-            #field = ttk.Entry(field_frame)
-            
-            #field_label.pack(side=tk.LEFT, expand=False)
-            #value_label.pack(side = tk.LEFT,expand=False)
-            #field.pack(side = tk.LEFT,expand=False)
-            #field_frame.pack(side = tk.TOP, expand=False, padx=10, pady=10)
-    
         edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
-        # print(field_vars)
+
 
 
     def create_buttons(self):
@@ -162,6 +145,11 @@ class AchievementConverterGUI:
         save_button.pack(side=tk.LEFT, expand=False)
         exit_button.pack(side=tk.LEFT, expand=False)
 
+    def handle_submit(self, key, index = None):
+        new_value = self.field.get()
+
+        self.controller.data_handler(key, new_value, index)
+
     
     
   
@@ -176,6 +164,6 @@ class AchievementConverterGUI:
         elif (command == 3): #prompt to save a project file
             file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt")])
         
-        self.file_handler(file_path, command) #callback function, new path and variable to main
+        self.controller.file_handler(file_path, command) #callback function, new path and variable to main
         print(file_path)
 
