@@ -43,15 +43,26 @@ class Write:
         doc.appendChild(root)
 
         for achievement in achievements:
-            ach_elem = doc.createElement('Achievement')  # Create an Achievement element
             print("write debugmessage no:2")
-            name_elem = doc.createElement('Name')  # Create a Name element
-            name_elem.appendChild(doc.createTextNode(achievement['Name']))
-            ach_elem.appendChild(name_elem)  # Append the Name element to Achievement
 
-            status_elem = doc.createElement('Status')  # Create a Status element
-            status_elem.appendChild(doc.createTextNode(achievement['Status']))
-            ach_elem.appendChild(status_elem)  # Append the Status element to Achievement
+            ach_elem = doc.createElement('Achievement')  # Create an Achievement element
+            name_elem = doc.createElement('AchievementNameID')  # Create a Name element
+            name_elem.appendChild(doc.createTextNode(achievement['AchievementNameID']))
+            ach_elem.appendChild(name_elem)  # Append the AchievementNameID element to Achievement
+
+            status_elem = doc.createElement('BaseAchievement')  # Create a Status element
+            status_elem.appendChild(doc.createTextNode(achievement['BaseAchievement']))
+            ach_elem.appendChild(status_elem)  # Append the BaseAchievement element to Achievement
+
+            status_elem = doc.createElement('DisplayOrder')  # Create a Status element
+            status_elem.appendChild(doc.createTextNode(achievement['DisplayOrder']))
+            ach_elem.appendChild(status_elem)  # Append the DisplayOrder element to Achievement
+
+            status_elem = doc.createElement('LockedDescriptionId')  # Create a Status element
+            status_elem.appendChild(doc.createTextNode(achievement['LockedDescriptionId']))
+            ach_elem.appendChild(status_elem)  # Append the LockedDescriptionId element to Achievement
+
+
 
             root.appendChild(ach_elem)  # Append the Achievement element to the root
 
