@@ -49,20 +49,20 @@ class Tero:
                 achievement[key]= new_value #adds it if it doesnt exist
         return self.achievement_list    
   
-#    def update_achievement_data(self, achievement_id, key, new_value):
-#    try:
-#        achievement = achievement_list[achievement_id]
-#        if key in achievement:
-#            old_value = achievement[key]
-#            achievement[key] = new_value
-#        else:
-#            achievement[key] = new_value
-#        return True
-#    except IndexError:
-#        return False
-#    except Exception as e:
-#        print(f"Tuntematon virhe: {e}")
-#        return False
+    def update_achievement_data(self, achievement_id, key, new_value):
+        try:
+            achievement = self.achievement_list[int(achievement_id)] #!!rauli added int to convert index from string 
+            if key in achievement:
+                old_value = achievement[key]
+                achievement[key] = new_value
+            else:
+                achievement[key] = new_value
+            return True
+        except IndexError:
+            return False
+        except Exception as e:
+            print(f"Tuntematon virhe: {e}")
+        return False
 
 
 

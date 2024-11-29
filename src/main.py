@@ -1,6 +1,4 @@
 import config
-import read.vdfparse as vdf
-from tkinter import filedialog as fd
 import tkinter as tk
 import os
 
@@ -17,11 +15,10 @@ class AchievementConverter:
         self.root = tk.Tk()
 
         self.tero = Tero(False, False) #init and give parameters
-        #acmt_list = vdf.value_dict() #get temporary template dict
         
         self.gui = AchievementConverterGUI(self.root, self) #call gui give ref to root and file handler
 
-    def file_handler(self, selected_path = None, command = None):
+    def file_handler(self, selected_path, command):
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
                     self.acmt_file_path = selected_path
@@ -47,9 +44,12 @@ class AchievementConverter:
         else:
             print("Error: no command given or command unknown.")
     
-    def data_handler(self, key, new_value, index = None):
-        if index is not None:
-            acmt_list = self.tero.update_achievement_data(key, new_value, index)
+    def data_handler(self, key, new_value, id = None):
+        print(key)
+        print(new_value)
+        print(id)
+        if id is not None:
+            acmt_list = self.tero.update_achievement_data(id, key, new_value)
         else:
             acmt_list = self.tero.add_data_to_all_achievements(key, new_value)
             

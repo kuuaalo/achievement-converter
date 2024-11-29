@@ -60,12 +60,12 @@ class AchievementConverterGUI:
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
 
     def populate_table(self):
-        for item in self.acmt_list:
+        for index, item in enumerate(self.acmt_list):
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
-                self.table.insert('', index='end', values=list(item.values()), tags=('null_value',))
+                self.table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
-                self.table.insert('', index='end', values=list(item.values()))
+                self.table.insert('', index='end', iid=str(index), values=list(item.values()))
         
     def edit_value(self, event): #OBJEKTI TÄSTÄ?
 
@@ -79,7 +79,6 @@ class AchievementConverterGUI:
             print(row_id)
             print(column_id)
             column_key = tree.column(column_id, 'id')
-            #list_index = int(row_id) FIX GET LIST INDEX
             value = tree.set(row_id, column_id)  # Get cell value
             print(column_key)
             field_label = ttk.Label(edit_frame, text=column_key)
@@ -95,15 +94,15 @@ class AchievementConverterGUI:
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in all achievements",
-            #command=self.file_handler(key, var, 4)
-            command=lambda:self.handle_submit(column_key)   #TERO KUTSU TÄHÄN
+            command=lambda:self.handle_submit(column_key)
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in this achievement",
-            command=lambda:self.handle_submit(column_key, list_index) #TOINEN TERO KUTSU TÄHÄN
+            command=lambda:self.handle_submit(column_key, row_id)
         )
         replaceall_button.pack(side = tk.BOTTOM, expand=False, padx=30, pady=30)
+        replacethis_button.pack(side = tk.BOTTOM, expand=False, padx=30, pady=30)
 
         edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
 
@@ -147,20 +146,17 @@ class AchievementConverterGUI:
 
     def handle_submit(self, key, index = None):
         new_value = self.field.get()
-
-        self.controller.data_handler(key, new_value, index)
-
-    
-    
-  
+        if id is not None:
+            self.controller.data_handler(key, new_value, index)
+        else:
+            self.controller.data_handler(key, new_value)
         
-
 
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing
-            file_path = fd.askopenfilename()
+            file_path = fd.askopenfilename(title="Import achievement file")
         elif (command == 2): #prompt to pick directory to export file
-            file_path = fd.asksaveasfilename(title="Save project file as", filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
+            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
         elif (command == 3): #prompt to save a project file
             file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt")])
         
