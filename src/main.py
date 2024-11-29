@@ -10,8 +10,8 @@ from read.read import Read #import all functions from read
 
 class AchievementConverter:
     def __init__(self):
-        self.acmt_platform = config.DEFAULT_FILE_FORMAT #use default format
-        self.acmt_file_path = config.DEFAULT_FILE_PATH #use default path
+        #self.acmt_platform = config.DEFAULT_FILE_FORMAT #use default format
+        #self.acmt_file_path = config.DEFAULT_FILE_PATH #use default path
         self.root = tk.Tk()
 
         self.tero = Tero(False, False) #init and give parameters
@@ -21,12 +21,13 @@ class AchievementConverter:
     def file_handler(self, selected_path, command):
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
-                    self.acmt_file_path = selected_path
-                    self.read = Read(self.acmt_file_path, self.acmt_platform, self.tero) #init read and give params, does it need platform?
-                    self.read.run_fake() #run read
+                    acmt_file_path = selected_path
+                    acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
+                    self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
+                    self.read.run() #run read
                     acmt_list = self.tero.get_achievements()
                     self.gui.create_table(acmt_list)
-                    self.gui.populate_table() #send to gui to display values
+                    self.gui.populate_table(acmt_list) #send to gui to display values
 
         elif(command==2): #export
                 if selected_path != None:
@@ -52,10 +53,11 @@ class AchievementConverter:
             acmt_list = self.tero.update_achievement_data(id, key, new_value)
         else:
             acmt_list = self.tero.add_data_to_all_achievements(key, new_value)
-            
+        
+        #acmt_list = self.tero.get_achievements()
+        #self.gui.populate_table(acmt_list) #send to gui to display values
         print(acmt_list)
         
-
 
     def get_file_extension(self, selected_path):
         return os.path.splitext(selected_path)[1].lower()  # returns file extension

@@ -19,6 +19,7 @@ class AchievementConverterGUI:
         self.create_menu() #call function to create menu
 
         self.create_buttons()
+        
 
 
     def create_menu(self):
@@ -59,52 +60,50 @@ class AchievementConverterGUI:
         self.table.bind("<Double-1>", lambda event: self.edit_value(event))
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
 
-    def populate_table(self):
-        for index, item in enumerate(self.acmt_list):
+    def populate_table(self, acmt_list):
+        for index, item in enumerate(acmt_list):
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
                 self.table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
                 self.table.insert('', index='end', iid=str(index), values=list(item.values()))
         
-    def edit_value(self, event): #OBJEKTI TÄSTÄ?
+    def edit_value(self, event):
 
-        edit_frame = tk.Frame(self.root)
-        tree = event.widget
-        region = tree.identify("region", event.x, event.y)
-        row_id = tree.identify_row(event.y)  # Get row
-        column_id = tree.identify_column(event.x)  # Get column
+        edit_frame = tk.Toplevel(self.root) #pop-up window 
+        tree = event.widget #get widget based on event
+        row_id = tree.identify_row(event.y)  # get row
+        column_id = tree.identify_column(event.x)  # get column
         
-        if row_id and column_id: #
-            print(row_id)
-            print(column_id)
-            column_key = tree.column(column_id, 'id')
-            value = tree.set(row_id, column_id)  # Get cell value
-            print(column_key)
-            field_label = ttk.Label(edit_frame, text=column_key)
-            value_label = ttk.Label(edit_frame, text=value)
-            self.field = ttk.Entry(edit_frame)
-            
-            field_label.pack(side=tk.LEFT, expand=False)
-            value_label.pack(side = tk.LEFT,expand=False)
-            self.field.pack(side = tk.LEFT,expand=False)
-            
-        
+        if row_id and column_id: 
+            column_key = tree.column(column_id, 'id') #get the key name from column
+            value = tree.set(row_id, column_id)  #get the clicked value
+            field_label = ttk.Label(edit_frame, text="Key name is: " + column_key) #display key
+            value_label = ttk.Label(edit_frame, text="The value to change is: " + value) #display value
 
+            edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") #display prompt
+            self.field = ttk.Entry(edit_frame) #display an edit box
+            
+            field_label.pack(expand=True)
+            value_label.pack(expand=True)
+            edit_label.pack(expand = True)
+            self.field.pack(expand=True)
+            
+       
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
-            text="Replace value in all achievements",
+            text="Replace value in ALL achievements",
             command=lambda:self.handle_submit(column_key)
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
-            text="Replace value in this achievement",
+            text="Replace the value in this achievement",
             command=lambda:self.handle_submit(column_key, row_id)
         )
-        replaceall_button.pack(side = tk.BOTTOM, expand=False, padx=30, pady=30)
-        replacethis_button.pack(side = tk.BOTTOM, expand=False, padx=30, pady=30)
+        replaceall_button.pack(expand=True, padx=10, pady=10)
+        replacethis_button.pack(expand=True, padx=10, pady=10)
 
-        edit_frame.pack(side = tk.LEFT, expand=False, padx=30, pady=30)
+        edit_frame.pack(side = tk.TOP, expand=True, padx=60, pady=60)
 
 
 

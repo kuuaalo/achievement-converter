@@ -63,13 +63,13 @@ class Read:
 
 
     def run (self):
-        if self.format == "vdf":
-            self.run_vdf(self)
+        if self.format == ".txt": #jussi ja vivi vaihoin näihin tän mitä mun main oikeesti lähettää (eli . extensionin edessä)
+            self.run_vdf()
 
-        elif self.format == "xml":
+        elif self.format == ".xml":
             pass
 
-        elif self.format == "csv":
+        elif self.format == ".csv":
             pass
 
         else:
