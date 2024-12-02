@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, Menu
 from tkinter import Tk, Text
 from tkinter import filedialog as fd
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showerror, showwarning, showinfo
 
 class AchievementConverterGUI:
 
@@ -57,16 +57,18 @@ class AchievementConverterGUI:
 
 
         #listens to double click on table, send info to edit value function
-        self.table.bind("<Double-1>", lambda event: self.edit_value(event))
+        #self.table.bind("<Double-1>", lambda event: self.edit_value(event))
+        self.table.bind("<Double-1>", lambda event: self.open_acmt(column_list, self.table.selection()))
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
+        return self.table
 
-    def populate_table(self, acmt_list):
+    def populate_table(self, table, acmt_list):
         for index, item in enumerate(acmt_list):
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
-                self.table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
+                table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
-                self.table.insert('', index='end', iid=str(index), values=list(item.values()))
+                table.insert('', index='end', iid=str(index), values=list(item.values()))
         
     def edit_value(self, event):
 
@@ -79,12 +81,16 @@ class AchievementConverterGUI:
             column_key = tree.column(column_id, 'id') #get the key name from column
             value = tree.set(row_id, column_id)  #get the clicked value
             field_label = ttk.Label(edit_frame, text="Key name is: " + column_key) #display key
+            separator = ttk.Separator(edit_frame, orient='horizontal')
+            
             value_label = ttk.Label(edit_frame, text="The value to change is: " + value) #display value
 
             edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") #display prompt
             self.field = ttk.Entry(edit_frame) #display an edit box
             
+            
             field_label.pack(expand=True)
+            separator.pack(fill='x')
             value_label.pack(expand=True)
             edit_label.pack(expand = True)
             self.field.pack(expand=True)
@@ -103,8 +109,63 @@ class AchievementConverterGUI:
         replaceall_button.pack(expand=True, padx=10, pady=10)
         replacethis_button.pack(expand=True, padx=10, pady=10)
 
-        edit_frame.pack(side = tk.TOP, expand=True, padx=60, pady=60)
+        
+    
+    def open_acmt(self, column_list, row):
 
+        
+        acmt_frame = tk.Toplevel(self.root) #pop-up window 
+        
+        scrollbary = ttk.Scrollbar(acmt_frame, orient="vertical")
+        scrollbarx = ttk.Scrollbar(acmt_frame, orient="horizontal")
+        scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
+        scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
+
+        #row_values = table.item(row, "values")
+        
+        #column_list = tuple(row) #create a tuple of column names from dict keys
+        table = ttk.Treeview(acmt_frame, columns=column_list, show = 'headings') #create table with tuple
+
+        scrollbary.configure(command=table.yview)
+        table.configure(yscrollcommand=scrollbary.set)
+        scrollbarx.configure(command=table.xview)
+        table.configure(xscrollcommand=scrollbarx.set)
+        table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        
+
+        for col in table["columns"]: #iterate trough the columns
+            table.heading(col, text = col) #set column names as headers
+        
+        
+        for index, item in enumerate(column_list): #CONTINUE HERE BROKEn
+            row_values = list(item.values()) 
+            table.insert('', index='end', values=row_values(index), tags=('null_value',))
+        
+        # if row_id and column_id: 
+        #     column_key = tree.column(column_id, 'id') #get the key name from column
+        #     value = tree.set(row_id, column_id)  #get the clicked value
+        #     field_label = ttk.Label(edit_frame, text="Key name is: " + column_key) #display key
+        #     separator = ttk.Separator(edit_frame, orient='horizontal')
+            
+        #     value_label = ttk.Label(edit_frame, text="The value to change is: " + value) #display value
+
+        #     edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") #display prompt
+        #     self.field = ttk.Entry(edit_frame) #display an edit box
+            
+            
+        #     field_label.pack(expand=True)
+        #     separator.pack(fill='x')
+        #     value_label.pack(expand=True)
+        #     edit_label.pack(expand = True)
+        #     self.field.pack(expand=True)
+            
+        
+
+
+        #listens to double click on table, send info to edit value function
+        self.table.bind("<Double-1>", lambda event: self.edit_value(event))
+
+        
 
 
     def create_buttons(self):
@@ -142,6 +203,9 @@ class AchievementConverterGUI:
         export_button.pack(side=tk.LEFT, expand=False)
         save_button.pack(side=tk.LEFT, expand=False)
         exit_button.pack(side=tk.LEFT, expand=False)
+    
+    def show_error(self, error_title, error_msg): #shows error pop-up
+        showwarning(title=error_title, message=error_msg)
 
     def handle_submit(self, key, index = None):
         new_value = self.field.get()

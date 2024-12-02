@@ -26,8 +26,8 @@ class AchievementConverter:
                     self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
                     acmt_list = self.tero.get_achievements()
-                    self.gui.create_table(acmt_list)
-                    self.gui.populate_table(acmt_list) #send to gui to display values
+                    new_table = self.gui.create_table(acmt_list)
+                    self.gui.populate_table(new_table, acmt_list) #send to gui to display values
 
         elif(command==2): #export
                 if selected_path != None:
