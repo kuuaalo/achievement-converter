@@ -38,9 +38,11 @@ class Tero:
     def get_achievements(self):#write calls this, and this returns list of dicts
         return self.achievement_list
    
-    def get_achievement_by_data(self,data):#should be able to fetch achievement by certain data
-        False
-    
+   #RAULI TÄMÄN LISÄSIN
+    def get_achievement_by_data(self, index):#should be able to fetch achievement by certain data
+        acmt_dict = self.achievement_list[int(index)] 
+        return acmt_dict
+ 
     def add_data_to_all_achievements(self,key,new_value): #replace value in all achievements
         for achievement in self.achievement_list:
             if key in achievement: #checks if it exists
