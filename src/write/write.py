@@ -47,33 +47,38 @@ class Write:
         doc.appendChild(root)
 
         for achievement in achievements:
-            print("write debugmessage no:2")    
+            print("processing achievement")#debug.no1
+            achievement_element = doc.createElement('Achievement')
+    
             xml_tags_map= {
-    "AchievementNameId": "name_id",
-    "BaseAchievement": "hidden",
-    "DisplayOrder": "acmt_num",
-    "LockedDescriptionId": "desc_locked",
-    "UnlockedDescriptionId": "desc_en",
-    "IsHidden": "hidden",
-    "AchievementId": "name_id",
-    "IconImageId": "icon"
+                "AchievementNameId": "name_id",
+                "BaseAchievement": "hidden",
+                "DisplayOrder": "acmt_num",
+                "LockedDescriptionId": "desc_locked",
+                "UnlockedDescriptionId": "desc_en",
+                "IsHidden": "hidden",
+               "AchievementId": "name_id",
+                "IconImageId": "icon"
 }
             for xml_tag, achievement_key in xml_tags_map.items():
                 if achievement_key in achievement and achievement[achievement_key] is not None:
+  # Add the current XML tag
+                    element = doc.createElement(xml_tag)
+                    element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
+                    
+                    achievement_element.appendChild(element)
         # Before adding the 'UnlockedDescriptionId', insert 'Rewards' with gamerscore nest
-                    if xml_tag == "UnlockedDescriptionId":
-            # Create the Rewards element
+                    if "UnlockedDescriptionId" in xml_tags_map.values():
+            # Create the Rewards element and inside it the gamerscore nest
                         rewards_element = doc.createElement("Rewards")
                         gamerscore = doc.createElement("Gamerscore")
                         gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore", 0)))) #FOR NOW, CREATES A FORCED VALUE HERE
                         rewards_element.appendChild(gamerscore)
-                        root.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
-        # Add the current XML tag
-            element = doc.createElement(xml_tag)
-            element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
-            root.appendChild(element)
+                        achievement_element.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
+      
 
-        root.appendChild(root)
+
+                    root.appendChild(achievement_element) #Adds achievement to main element
 
         xml_str = doc.toprettyxml(indent="  ")  # Convert the document to a pretty-printed XML string
         with open(self.file_name, "w") as f:
