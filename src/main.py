@@ -26,8 +26,10 @@ class AchievementConverter:
                     self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
                     acmt_list = self.tero.get_achievements()
-                    new_table = self.gui.create_table(acmt_list)
-                    self.gui.populate_table(new_table, acmt_list) #send to gui to display values
+                    acmt_dict = self.tero.get_achievement_by_data(0)
+                    print(acmt_dict)
+                    self.new_table = self.gui.create_table(acmt_dict)
+                    self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
 
         elif(command==2): #export
                 if selected_path != None:
@@ -45,19 +47,14 @@ class AchievementConverter:
         else:
             print("Error: no command given or command unknown.")
     
-    def data_handler(self, key, new_value, id = None):
-        print(key)
-        print(new_value)
-        print(id)
-        if id is not None:
-            acmt_list = self.tero.update_achievement_data(id, key, new_value)
-        else:
+    def data_handler(self, command, key, new_value, id = None):
+        if(command==1):
             acmt_list = self.tero.add_data_to_all_achievements(key, new_value)
+        elif(command==2):
+            acmt_list = self.tero.update_achievement_data(id, key, new_value)
         
-        #acmt_list = self.tero.get_achievements()
-        #self.gui.populate_table(acmt_list) #send to gui to display values
-        print(acmt_list)
-        
+        self.gui.refresh_table(self.new_table) 
+        self.gui.populate_table(self.new_table, acmt_list)
 
     def get_file_extension(self, selected_path):
         return os.path.splitext(selected_path)[1].lower()  # returns file extension

@@ -59,12 +59,15 @@ class Tero:
                 achievement[key] = new_value
             else:
                 achievement[key] = new_value
-            return True
+            #return True
+            return self.achievement_list #en osannu diilata näitten true/false kanssa
         except IndexError:
-            return False
+            #return False
+            return self.achievement_list
         except Exception as e:
             print(f"Tuntematon virhe: {e}")
-        return False
+        return self.achievement_list 
+        
 
 
 

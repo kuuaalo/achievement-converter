@@ -34,16 +34,16 @@ class AchievementConverterGUI:
             menu=file_menu
         )
     
-    def create_table(self, acmt_list):
-        self.acmt_list = acmt_list
+    def create_table(self, acmt_dict):
         frame = tk.Frame(self.root, width=400, height=300)
         scrollbary = ttk.Scrollbar(frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
-        test_dict = self.acmt_list[0]
-        column_list = tuple(test_dict.keys()) #create a tuple of column names from dict keys
+        
+        
+        column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
         self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
         scrollbary.configure(command=self.table.yview)
         self.table.configure(yscrollcommand=scrollbary.set)
@@ -57,8 +57,7 @@ class AchievementConverterGUI:
 
 
         #listens to double click on table, send info to edit value function
-        #self.table.bind("<Double-1>", lambda event: self.edit_value(event))
-        self.table.bind("<Double-1>", lambda event: self.open_acmt(column_list, self.table.selection()))
+        self.table.bind("<Double-1>", lambda event: self.open_acmt(event, acmt_dict))
         self.table.tag_configure('null_value', background='red') #tag to display red color for null values
         return self.table
 
@@ -69,62 +68,65 @@ class AchievementConverterGUI:
                 table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
+    
+    def refresh_table(self, table):
+        table.delete(*table.get_children())
+        return True
         
-    def edit_value(self, event):
+    def edit_value(self, event, acmt_id):
 
-        edit_frame = tk.Toplevel(self.root) #pop-up window 
-        tree = event.widget #get widget based on event
+        edit_frame = tk.Toplevel(self.root) # pop-up window 
+        tree = event.widget # get widget based on event
         row_id = tree.identify_row(event.y)  # get row
-        column_id = tree.identify_column(event.x)  # get column
         
-        if row_id and column_id: 
-            column_key = tree.column(column_id, 'id') #get the key name from column
-            value = tree.set(row_id, column_id)  #get the clicked value
-            field_label = ttk.Label(edit_frame, text="Key name is: " + column_key) #display key
-            separator = ttk.Separator(edit_frame, orient='horizontal')
+        print(row_id)
+        key_name = tree.set(row_id, 'key')  # get the clicked value
+        value_name = tree.set(row_id, 'value')  # get the clicked value
+        
+        field_label = ttk.Label(edit_frame, text="Key name is: " + key_name) # display key
+        separator = ttk.Separator(edit_frame, orient='horizontal')
             
-            value_label = ttk.Label(edit_frame, text="The value to change is: " + value) #display value
+        value_label = ttk.Label(edit_frame, text="The value to change is: " + value_name) # display value
 
-            edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") #display prompt
-            self.field = ttk.Entry(edit_frame) #display an edit box
+        edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") # display prompt
+        self.field = ttk.Entry(edit_frame) # display an edit box
             
             
-            field_label.pack(expand=True)
-            separator.pack(fill='x')
-            value_label.pack(expand=True)
-            edit_label.pack(expand = True)
-            self.field.pack(expand=True)
+        field_label.pack(expand=True)
+        separator.pack(fill='x')
+        value_label.pack(expand=True)
+        edit_label.pack(expand = True)
+        self.field.pack(expand=True)
             
        
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in ALL achievements",
-            command=lambda:self.handle_submit(column_key)
+            command=lambda:self.handle_submit(1, key_name)
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace the value in this achievement",
-            command=lambda:self.handle_submit(column_key, row_id)
+            command=lambda:self.handle_submit(2, key_name, acmt_id)
         )
         replaceall_button.pack(expand=True, padx=10, pady=10)
         replacethis_button.pack(expand=True, padx=10, pady=10)
 
-        
     
-    def open_acmt(self, column_list, row):
-
+    def open_acmt(self, event, acmt_dict):
         
-        acmt_frame = tk.Toplevel(self.root) #pop-up window 
+        tree = event.widget #get widget based on event
+        acmt_id = tree.identify_row(event.y)  # get row
+
+        acmt_frame = tk.Toplevel(self.root) # pop-up window 
         
         scrollbary = ttk.Scrollbar(acmt_frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(acmt_frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
 
-        #row_values = table.item(row, "values")
         
-        #column_list = tuple(row) #create a tuple of column names from dict keys
-        table = ttk.Treeview(acmt_frame, columns=column_list, show = 'headings') #create table with tuple
+        table = ttk.Treeview(acmt_frame, columns=('key', 'value'), show = 'headings') # create table with tuple
 
         scrollbary.configure(command=table.yview)
         table.configure(yscrollcommand=scrollbary.set)
@@ -132,38 +134,13 @@ class AchievementConverterGUI:
         table.configure(xscrollcommand=scrollbarx.set)
         table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         
-
-        for col in table["columns"]: #iterate trough the columns
-            table.heading(col, text = col) #set column names as headers
+        for col in table["columns"]: # set column names as headers
+            table.heading(col, text = col) 
         
-        
-        for index, item in enumerate(column_list): #CONTINUE HERE BROKEn
-            row_values = list(item.values()) 
-            table.insert('', index='end', values=row_values(index), tags=('null_value',))
-        
-        # if row_id and column_id: 
-        #     column_key = tree.column(column_id, 'id') #get the key name from column
-        #     value = tree.set(row_id, column_id)  #get the clicked value
-        #     field_label = ttk.Label(edit_frame, text="Key name is: " + column_key) #display key
-        #     separator = ttk.Separator(edit_frame, orient='horizontal')
-            
-        #     value_label = ttk.Label(edit_frame, text="The value to change is: " + value) #display value
+        for index, key in enumerate(acmt_dict):
+            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
 
-        #     edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") #display prompt
-        #     self.field = ttk.Entry(edit_frame) #display an edit box
-            
-            
-        #     field_label.pack(expand=True)
-        #     separator.pack(fill='x')
-        #     value_label.pack(expand=True)
-        #     edit_label.pack(expand = True)
-        #     self.field.pack(expand=True)
-            
-        
-
-
-        #listens to double click on table, send info to edit value function
-        self.table.bind("<Double-1>", lambda event: self.edit_value(event))
+        table.bind("<Double-1>", lambda event: self.edit_value(event, acmt_id)) 
 
         
 
@@ -207,12 +184,15 @@ class AchievementConverterGUI:
     def show_error(self, error_title, error_msg): #shows error pop-up
         showwarning(title=error_title, message=error_msg)
 
-    def handle_submit(self, key, index = None):
+    def handle_submit(self, command, key, index = None):
         new_value = self.field.get()
-        if id is not None:
-            self.controller.data_handler(key, new_value, index)
-        else:
-            self.controller.data_handler(key, new_value)
+        print(new_value)
+        print(key)
+        if (command == 1): 
+            self.controller.data_handler(command, key, new_value)
+        elif(command == 2):
+            self.controller.data_handler(command, key, new_value, index)
+            
         
 
     def select_file(self, command): #should these be in main?
