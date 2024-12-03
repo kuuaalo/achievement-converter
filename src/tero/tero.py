@@ -66,10 +66,7 @@ class Tero:
 
 
 
-#tällaisia asioita tarvitaan:
-#selected_id = 2,3,5,7,8  # GUI:n kautta saatu ID
-#key_to_update = "acmt_xp"  # GUI:n kautta valittu key
-#new_value = 100  # Uusi arvo käyttäjältä
+
 
 
 

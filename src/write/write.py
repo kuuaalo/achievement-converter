@@ -37,34 +37,43 @@ class Write:
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
 
-    def write_to_xml(self, achievements):
+
+
+
+
+    def write_to_xml(self, achievements): # File now goes through the function, and makes an xml file. It still doesn't work and only prints one line. The test version in a separate file worked perfectly.
         doc = minidom.Document()  # Create a new XML document
         root = doc.createElement('Achievements')  # Create the root element
         doc.appendChild(root)
 
         for achievement in achievements:
-            print("write debugmessage no:2")
+            print("write debugmessage no:2")    
+            xml_tags_map= {
+    "AchievementNameId": "name_id",
+    "BaseAchievement": "hidden",
+    "DisplayOrder": "acmt_num",
+    "LockedDescriptionId": "desc_locked",
+    "UnlockedDescriptionId": "desc_en",
+    "IsHidden": "hidden",
+    "AchievementId": "name_id",
+    "IconImageId": "icon"
+}
+            for xml_tag, achievement_key in xml_tags_map.items():
+                if achievement_key in achievement and achievement[achievement_key] is not None:
+        # Before adding the 'UnlockedDescriptionId', insert 'Rewards' with gamerscore nest
+                    if xml_tag == "UnlockedDescriptionId":
+            # Create the Rewards element
+                        rewards_element = doc.createElement("Rewards")
+                        gamerscore = doc.createElement("Gamerscore")
+                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore", 0)))) #FOR NOW, CREATES A FORCED VALUE HERE
+                        rewards_element.appendChild(gamerscore)
+                        root.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
+        # Add the current XML tag
+            element = doc.createElement(xml_tag)
+            element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
+            root.appendChild(element)
 
-            ach_elem = doc.createElement('Achievement')  # Create an Achievement element
-            name_elem = doc.createElement('AchievementNameID')  # Create a Name element
-            name_elem.appendChild(doc.createTextNode(achievement['AchievementNameID']))
-            ach_elem.appendChild(name_elem)  # Append the AchievementNameID element to Achievement
-
-            status_elem = doc.createElement('BaseAchievement')  # Create a Status element
-            status_elem.appendChild(doc.createTextNode(achievement['BaseAchievement']))
-            ach_elem.appendChild(status_elem)  # Append the BaseAchievement element to Achievement
-
-            status_elem = doc.createElement('DisplayOrder')  # Create a Status element
-            status_elem.appendChild(doc.createTextNode(achievement['DisplayOrder']))
-            ach_elem.appendChild(status_elem)  # Append the DisplayOrder element to Achievement
-
-            status_elem = doc.createElement('LockedDescriptionId')  # Create a Status element
-            status_elem.appendChild(doc.createTextNode(achievement['LockedDescriptionId']))
-            ach_elem.appendChild(status_elem)  # Append the LockedDescriptionId element to Achievement
-
-
-
-            root.appendChild(ach_elem)  # Append the Achievement element to the root
+        root.appendChild(root)
 
         xml_str = doc.toprettyxml(indent="  ")  # Convert the document to a pretty-printed XML string
         with open(self.file_name, "w") as f:
