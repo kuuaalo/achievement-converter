@@ -1,8 +1,3 @@
-#import sys
-#sys.path.insert(0,r"C:\Users\rauli\Documents\GitHub\achievement-converter\achievement-converter\src\read")
-#from read import Read
-#import read
-
 
 
 class Tero:
@@ -70,54 +65,18 @@ class Tero:
         
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #tero.update_achievement_data(achievement_list, selected_id, key_to_update, new_value)
-
-
-
-
-
 
 #functions still in progress start 
 #millaisena main antaa valuet?
 
-
-
    #inner functions
 
-
-
 #Kaksi funktiota, tee muutos yhteen, tee muutos kaikkiin
-
-
-
-
-
     #    def get_achievement(self, index=0):#write calls this, and this returns achievement in dict
 #        if len(self.achievement_list) > index:
 #            return {"Name":"achievement01","Status":"end"}
 #        return None
-
-
-
-
 # R = Read(test_file_location, self)
 # R.run_fakef()
 #filename tarvitsee korvata omalla
