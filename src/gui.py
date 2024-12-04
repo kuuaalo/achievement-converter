@@ -3,6 +3,7 @@ from tkinter import ttk, Menu
 from tkinter import Tk, Text
 from tkinter import filedialog as fd
 from tkinter.messagebox import showerror, showwarning, showinfo
+import config
 
 class AchievementConverterGUI:
 
@@ -85,11 +86,13 @@ class AchievementConverterGUI:
         
         field_label = ttk.Label(edit_frame, text="Key name is: " + key_name) # display key
         separator = ttk.Separator(edit_frame, orient='horizontal')
-            
-        value_label = ttk.Label(edit_frame, text="The value to change is: " + value_name) # display value
-
         edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") # display prompt
-        self.field = ttk.Entry(edit_frame) # display an edit box
+        entry_var = tk.StringVar()
+        self.field = ttk.Entry(edit_frame, textvariable=entry_var) # display an edit box
+            
+        value_label = ttk.Label(edit_frame, text="The value to change is: " + entry_var.get()) # display value
+
+        
             
             
         field_label.pack(expand=True)
@@ -193,15 +196,14 @@ class AchievementConverterGUI:
         elif(command == 2):
             self.controller.data_handler(command, key, new_value, index)
             
-        
 
     def select_file(self, command): #should these be in main?
         if (command == 1): #prompt to open file for importing
             file_path = fd.askopenfilename(title="Import achievement file")
         elif (command == 2): #prompt to pick directory to export file
-            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
+            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
         elif (command == 3): #prompt to save a project file
-            file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+            file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt")])
         
         self.controller.file_handler(file_path, command) #callback function, new path and variable to main
         print(file_path)

@@ -11,7 +11,6 @@ from read.read import Read #import all functions from read
 class AchievementConverter:
     def __init__(self):
         #self.acmt_platform = config.DEFAULT_FILE_FORMAT #use default format
-        #self.acmt_file_path = config.DEFAULT_FILE_PATH #use default path
         self.root = tk.Tk()
 
         self.tero = Tero(False, False) #init and give parameters
