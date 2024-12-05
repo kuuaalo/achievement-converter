@@ -21,7 +21,8 @@ class AchievementConverterGUI:
 
         self.create_buttons()
         
-
+        self.show_error("Gotcha", "JUMPSCARE!!!!!!!!!!")
+        
 
     def create_menu(self):
         #menu creation (in progress)
@@ -35,32 +36,36 @@ class AchievementConverterGUI:
             menu=file_menu
         )
     
+
     def create_table(self, acmt_dict):
+        
         frame = tk.Frame(self.root, width=400, height=300)
+        
         scrollbary = ttk.Scrollbar(frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
-        
-        
         column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
-        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
-        scrollbary.configure(command=self.table.yview)
-        self.table.configure(yscrollcommand=scrollbary.set)
-        scrollbarx.configure(command=self.table.xview)
-        self.table.configure(xscrollcommand=scrollbarx.set)
-        self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
+        scrollbary.configure(command=table.yview)
+        table.configure(yscrollcommand=scrollbary.set)
+        scrollbarx.configure(command=table.xview)
+        table.configure(xscrollcommand=scrollbarx.set)
+        table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         frame.pack(fill=tk.BOTH,expand=True, padx=30, pady=30)
 
-        for col in self.table["columns"]: #iterate trough the columns
-            self.table.heading(col, text = col) #set column names as headers
+        for col in table["columns"]: #iterate trough the columns
+            table.heading(col, text = col) #set column names as headers
 
-
-        #listens to double click on table, send info to edit value function
-        self.table.bind("<Double-1>", lambda event: self.open_acmt(event, acmt_dict))
-        self.table.tag_configure('null_value', background='red') #tag to display red color for null values
-        return self.table
+        return table
+    
+    #listens to double click on table, send info to edit value function
+    def bind_events(self, table, acmt_dict):
+        table.bind("<Double-1>", lambda event: self.open_acmt(event, acmt_dict))
+    
+    def configure_table(self, table):
+        table.tag_configure('null_value', background='red') #tag to display red color for null values
 
     def populate_table(self, table, acmt_list):
         for index, item in enumerate(acmt_list):
@@ -73,6 +78,19 @@ class AchievementConverterGUI:
     def refresh_table(self, table):
         table.delete(*table.get_children())
         return True
+    
+    def open_acmt(self, event, acmt_dict): #called when user selects acmt from table
+        tree = event.widget #get widget based on event
+        acmt_id = tree.identify_row(event.y)  # get row
+        
+        col_dict = {'key': 'None', 'value': 'None'}
+        table = self.create_table(col_dict)
+        
+        for index, key in enumerate(acmt_dict):
+            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+
+        table.bind("<Double-1>", lambda event: self.edit_value(event, acmt_id)) 
+
         
     def edit_value(self, event, acmt_id):
 
@@ -80,7 +98,6 @@ class AchievementConverterGUI:
         tree = event.widget # get widget based on event
         row_id = tree.identify_row(event.y)  # get row
         
-        print(row_id)
         key_name = tree.set(row_id, 'key')  # get the clicked value
         value_name = tree.set(row_id, 'value')  # get the clicked value
         
@@ -93,8 +110,6 @@ class AchievementConverterGUI:
         value_label = ttk.Label(edit_frame, text="The value to change is: " + entry_var.get()) # display value
 
         
-            
-            
         field_label.pack(expand=True)
         separator.pack(fill='x')
         value_label.pack(expand=True)
@@ -115,39 +130,31 @@ class AchievementConverterGUI:
         replaceall_button.pack(expand=True, padx=10, pady=10)
         replacethis_button.pack(expand=True, padx=10, pady=10)
 
+    def create_filter(self, table):
+        lf = ttk.LabelFrame(self.root, text='Filter')
+        lf.pack()
+
+        format_var = tk.StringVar()
+        formats = ('Steam', 'Epic', 'MS Store')
+
+        for format in formats:
+            # create a radio button
+            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.filter_values(format_var, table), variable=format_var)
+            radio.pack(side=tk.LEFT, expand=False)
+
+    def filter_values(self, format_var, table):
+        format = format_var.get()
+        print(format)
+
+        current_columns = list(table['columns'])
+
+        if (format == 'Steam'): # IN PROGRESS, CONSIDER USING TAGS INSTEAD?
+            current_columns.remove('icon_locked')
+            table['columns'] = current_columns
+            for col in current_columns:
+                table.heading(col, text=col)  
+
     
-    def open_acmt(self, event, acmt_dict):
-        
-        tree = event.widget #get widget based on event
-        acmt_id = tree.identify_row(event.y)  # get row
-
-        acmt_frame = tk.Toplevel(self.root) # pop-up window 
-        
-        scrollbary = ttk.Scrollbar(acmt_frame, orient="vertical")
-        scrollbarx = ttk.Scrollbar(acmt_frame, orient="horizontal")
-        scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
-        scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
-
-        
-        table = ttk.Treeview(acmt_frame, columns=('key', 'value'), show = 'headings') # create table with tuple
-
-        scrollbary.configure(command=table.yview)
-        table.configure(yscrollcommand=scrollbary.set)
-        scrollbarx.configure(command=table.xview)
-        table.configure(xscrollcommand=scrollbarx.set)
-        table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
-        
-        for col in table["columns"]: # set column names as headers
-            table.heading(col, text = col) 
-        
-        for index, key in enumerate(acmt_dict):
-            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
-
-        table.bind("<Double-1>", lambda event: self.edit_value(event, acmt_id)) 
-
-        
-
-
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
         button_frame.pack(fill=tk.BOTH, expand=False)
@@ -189,8 +196,6 @@ class AchievementConverterGUI:
 
     def handle_submit(self, command, key, index = None):
         new_value = self.field.get()
-        print(new_value)
-        print(key)
         if (command == 1): 
             self.controller.data_handler(command, key, new_value)
         elif(command == 2):

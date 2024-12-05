@@ -28,7 +28,10 @@ class AchievementConverter:
                     acmt_dict = self.tero.get_achievement_by_data(0)
                     print(acmt_dict)
                     self.new_table = self.gui.create_table(acmt_dict)
+                    self.gui.bind_events(self.new_table, acmt_dict)
+                    self.gui.configure_table(self.new_table)
                     self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
+                    self.gui.create_filter(self.new_table)
 
         elif(command==2): #export
                 if selected_path != None:
