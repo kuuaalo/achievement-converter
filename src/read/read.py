@@ -28,11 +28,12 @@
 import os
 import vdf
 import csv
+import xml.etree.ElementTree as ET
 import pprint
 # from tero import tero
 #miten importoidaan tero
 
-# test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+# test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
 
 # tero = 1
 
@@ -53,6 +54,9 @@ class Read:
             print("väärin")
             return None
 
+        self.vdf_params_outer = ["undefined", "stats", "1"]
+        self.vdf_params_inner = ['bits']
+
         if tero:
             self.tero = tero
             print("self_tero")
@@ -63,14 +67,14 @@ class Read:
 
 
     def run (self):
-        if self.format == ".txt": #jussi ja vivi vaihoin näihin tän mitä mun main oikeesti lähettää (eli . extensionin edessä)
+        if self.format == ".txt":
             self.run_vdf()
 
         elif self.format == ".xml":
-            pass
+            self.run_xml()
 
         elif self.format == ".csv":
-            pass
+            self.run_csv()
 
         else:
             print("format not recognized: ")
@@ -78,6 +82,22 @@ class Read:
             return False
 
         return True
+
+    def vdf_dict_peeling (d = {}, l = []):
+        if d == {}:
+            return False
+
+        if l == []:
+            return d
+
+        curd = d
+
+        for x in l:
+            #tarvii assertin
+            curd = curd[x]
+
+        return curd
+
 
     def run_vdf (self):
 
@@ -87,9 +107,13 @@ class Read:
 
         self.steamid = list(d)[0]
 
+        pl = self.vdf_params_outer
+
+        pl[0] = self.steamid
 
         # tämän voi siirtää parametriksi
-        j = d[self.steamid]['stats']['1']
+        # j = d[self.steamid]['stats']['1']
+        j = vdf_dict_peeling(d, pl)
 
         # halutaan joku mainin määrittämä tapa miten saada käyttäjälle näkyville
         if (j['type'] == 'ACHIEVEMENTS'):
@@ -100,12 +124,14 @@ class Read:
             # self.df("type in j is not correct")
             return False
 
-        m = j['bits']
+        # m = j['bits']
+        m = vdf_dict_peeling(j, self.vdf_params_inner)
 
         ml = list(m)
 
         ol = []
 
+        #this is hardcoded, might need to refactor it to more generic
         for x in ml:
             z = {}
             y = m[x]
@@ -119,7 +145,6 @@ class Read:
             z["hidden"] = y["display"]["hidden"]
             z["icon"] = y["display"]["icon"]
             z["icon_locked"] = y["display"]["icon_gray"]
-
             ol.append(z)
 
         print("printing ol")
@@ -138,6 +163,33 @@ class Read:
 
         for l in g:
             print(l)
+
+    def run_xml(self):
+        acmt = self.open_file_debug()
+        print("printing acmt")
+        print(acmt)
+        namespace = {'ns': "http://config.mgt.xboxlive.com/schema/achievements2017/1"}
+
+        aet = ET.parse("C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml")
+        print("printing aet")
+        pprint.pp(aet)
+
+
+        tag = aet.find("ns:Achievement", namespace)
+        print("printing tag")
+        pprint.pp(tag)
+
+        for a in aet.findall("ns:Achievement", namespace):
+            print("printing a")
+            pprint.pp(a)
+
+            for c in a.iter():
+                print("printing c")
+                pprint.pp(c)
+                print("printing c tag")
+                pprint.pp(c.tag)
+                print("printing c text")
+                pprint.pp(c.text)
 
 
 # tämä on testifunktio Teroa varten
@@ -207,7 +259,7 @@ class Read:
         self.df = df
 
 # R = Read(test_file_location, "dummy", tero)
-# R.run_csv()
+# R.run_xml()
 
         # except FileNotFoundError:
         #     print(f"File {self.file_name} not found.")
