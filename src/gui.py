@@ -12,29 +12,15 @@ class AchievementConverterGUI:
         self.root = root
         self.root.title("Achievement Converter") #window name
         self.controller = controller#give reference to function in main on init
-        #self.selected_path = None #empty variable for file path, should the config be used here?
         
         self.root.geometry("1200x600")
         self.root.title("Achievement Converter")
 
-        self.create_menu() #call function to create menu
-
         self.create_buttons()
-        
-        self.show_error("Gotcha", "JUMPSCARE!!!!!!!!!!")
-        
 
-    def create_menu(self):
-        #menu creation (in progress)
-        menubar = Menu(self.root)
-        self.root.config(menu=menubar)
+        self.acmt_table = None
+        self.edit_frame = None
 
-        file_menu = Menu(menubar)
-
-        menubar.add_cascade(
-            label="File",
-            menu=file_menu
-        )
     
 
     def create_table(self, acmt_dict):
@@ -47,22 +33,22 @@ class AchievementConverterGUI:
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
         column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
-        table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
-        scrollbary.configure(command=table.yview)
-        table.configure(yscrollcommand=scrollbary.set)
-        scrollbarx.configure(command=table.xview)
-        table.configure(xscrollcommand=scrollbarx.set)
-        table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
+        scrollbary.configure(command=self.table.yview)
+        self.table.configure(yscrollcommand=scrollbary.set)
+        scrollbarx.configure(command=self.table.xview)
+        self.table.configure(xscrollcommand=scrollbarx.set)
+        self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         frame.pack(fill=tk.BOTH,expand=True, padx=30, pady=30)
 
-        for col in table["columns"]: #iterate trough the columns
-            table.heading(col, text = col) #set column names as headers
+        for col in self.table["columns"]: #iterate trough the columns
+            self.table.heading(col, text = col) #set column names as headers
 
-        return table
+        return self.table
     
     #listens to double click on table, send info to edit value function
-    def bind_events(self, table, acmt_dict):
-        table.bind("<Double-1>", lambda event: self.open_acmt(event, acmt_dict))
+    def bind_events(self, table):
+        table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
     
     def configure_table(self, table):
         table.tag_configure('null_value', background='red') #tag to display red color for null values
@@ -79,57 +65,115 @@ class AchievementConverterGUI:
         table.delete(*table.get_children())
         return True
     
-    def open_acmt(self, event, acmt_dict): #called when user selects acmt from table
-        tree = event.widget #get widget based on event
-        acmt_id = tree.identify_row(event.y)  # get row
+    def identify_id(self, event):
+        self.tree = event.widget #get widget based on event
+        acmt_id = self.tree.identify_row(event.y)  # get row
+
+        return acmt_id
+
+    
+    def open_acmt(self, acmt_id = None, event = None): #called when user selects acmt from table
         
-        col_dict = {'key': 'None', 'value': 'None'}
-        table = self.create_table(col_dict)
+        if acmt_id is None:
+            acmt_id = self.identify_id(event)
         
+        print(acmt_id)
+        acmt_dict = self.controller.fetch_acmt_dict(acmt_id)
+
+        col_dict = {'key': 'None', 'value': 'None'} #columns for the table
+        
+        if self.acmt_table is not None: #create new acmt table
+            print("Window is already open!")
+            self.refresh_table(self.acmt_table)
+        else:
+            self.acmt_table = self.create_table(col_dict)
+    
+        for index, key in enumerate(acmt_dict): #fill values
+            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+
+        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) 
+
+        
+    def edit_value(self, acmt_id, event = None):
+
+        self.acmt_id = acmt_id
+
+        if self.edit_frame is None:
+            self.edit_frame = tk.Toplevel(self.root) # pop-up window 
+            self.row_id = self.identify_id(event)
+            self.key_name = self.tree.set(self.row_id, 'key')  # get the clicked value
+            value_name = self.tree.set(self.row_id, 'value')  # get the clicked value
+        
+            field_label = ttk.Label(self.edit_frame, text="Key name is: " + self.key_name) # display key
+            separator = ttk.Separator(self.edit_frame, orient='horizontal')
+            edit_label = ttk.Label(self.edit_frame, text="Input text to change value for this data.") # display prompt
+            entry_var = tk.StringVar()
+            self.field = ttk.Entry(self.edit_frame, textvariable=entry_var) # display an edit box
+            
+            value_label = ttk.Label(self.edit_frame, text="The value to change is: " + entry_var.get()) # display value
+
+            field_label.pack(expand=True)
+            separator.pack(fill='x')
+            value_label.pack(expand=True)
+            edit_label.pack(expand = True)
+            self.field.pack(expand=True)
+            self.create_edit_menu_buttons(self.edit_frame)
+        else:
+            print("Window already open")
+    
+    def populate_acmt_table(self, acmt_dict):
+        print(acmt_dict)
         for index, key in enumerate(acmt_dict):
-            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
-
-        table.bind("<Double-1>", lambda event: self.edit_value(event, acmt_id)) 
-
+            print(key)
+            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
         
-    def edit_value(self, event, acmt_id):
+        
+   
 
-        edit_frame = tk.Toplevel(self.root) # pop-up window 
-        tree = event.widget # get widget based on event
-        row_id = tree.identify_row(event.y)  # get row
-        
-        key_name = tree.set(row_id, 'key')  # get the clicked value
-        value_name = tree.set(row_id, 'value')  # get the clicked value
-        
-        field_label = ttk.Label(edit_frame, text="Key name is: " + key_name) # display key
-        separator = ttk.Separator(edit_frame, orient='horizontal')
-        edit_label = ttk.Label(edit_frame, text="Input text to change value for this data.") # display prompt
-        entry_var = tk.StringVar()
-        self.field = ttk.Entry(edit_frame, textvariable=entry_var) # display an edit box
-            
-        value_label = ttk.Label(edit_frame, text="The value to change is: " + entry_var.get()) # display value
-
-        
-        field_label.pack(expand=True)
-        separator.pack(fill='x')
-        value_label.pack(expand=True)
-        edit_label.pack(expand = True)
-        self.field.pack(expand=True)
-            
+    def move_to_next_acmt(self, index):
        
+        print("move to next")
+        current_row = self.table.next(index)
+
+        self.table.selection_set(current_row)
+
+        self.refresh_table(self.acmt_table)
+
+        acmt_dict = self.controller.fetch_acmt_dict(current_row)
+
+        print(acmt_dict)
+
+        self.populate_acmt_table(acmt_dict)
+        self.edit_value(current_row, None)
+       
+
+
+    def create_edit_menu_buttons(self, tree):
+        
+        edit_frame = tree
+
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in ALL achievements",
-            command=lambda:self.handle_submit(1, key_name)
+            command=lambda:self.handle_submit(1, self.key_name, self.acmt_id)
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace the value in this achievement",
-            command=lambda:self.handle_submit(2, key_name, acmt_id)
+            command=lambda:self.handle_submit(2, self.key_name, self.acmt_id)
         )
+        next_acmt_button = ttk.Button(
+            edit_frame,
+            text="Edit next achievement",
+            command=lambda:self.move_to_next_acmt(self.acmt_id)
+        )
+
         replaceall_button.pack(expand=True, padx=10, pady=10)
         replacethis_button.pack(expand=True, padx=10, pady=10)
+        next_acmt_button.pack(expand=True, padx=10, pady=10)
 
+
+    
     def create_filter(self, table):
         lf = ttk.LabelFrame(self.root, text='Filter')
         lf.pack()
@@ -194,12 +238,15 @@ class AchievementConverterGUI:
     def show_error(self, error_title, error_msg): #shows error pop-up
         showwarning(title=error_title, message=error_msg)
 
-    def handle_submit(self, command, key, index = None):
+    def handle_submit(self, command, key, index):
         new_value = self.field.get()
         if (command == 1): 
             self.controller.data_handler(command, key, new_value)
         elif(command == 2):
             self.controller.data_handler(command, key, new_value, index)
+        self.refresh_table(self.acmt_table)
+        acmt_dict = self.controller.fetch_acmt_dict(index)
+        self.populate_acmt_table(acmt_dict)
             
 
     def select_file(self, command): #should these be in main?

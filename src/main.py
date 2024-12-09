@@ -24,11 +24,12 @@ class AchievementConverter:
                     acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
                     self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
-                    acmt_list = self.tero.get_achievements()
-                    acmt_dict = self.tero.get_achievement_by_data(0)
+                    acmt_list = self.tero.get_achievements() #get list of all achievements
+                    acmt_dict = self.fetch_acmt_dict()
                     print(acmt_dict)
                     self.new_table = self.gui.create_table(acmt_dict)
-                    self.gui.bind_events(self.new_table, acmt_dict)
+                    
+                    self.gui.bind_events(self.new_table) #tästä lähtien paskana
                     self.gui.configure_table(self.new_table)
                     self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
                     self.gui.create_filter(self.new_table)
@@ -49,6 +50,10 @@ class AchievementConverter:
         else:
             print("Error: no command given or command unknown.")
     
+    def fetch_acmt_dict(self, index = 0):
+        acmt_dict = self.tero.get_achievement_by_data(index) #get a single achievement and it's values
+        return acmt_dict
+         
     def data_handler(self, command, key, new_value, id = None):
         if(command==1):
             acmt_list = self.tero.add_data_to_all_achievements(key, new_value)
