@@ -21,8 +21,9 @@ class Write:
 
     def run(self):
         achievements = self.tero.get_achievements()
+        oikea_lista = self.tero.fill_missing_values() 
+        print("Achievements fetched:", oikea_lista) #two lines of debugging to check if tero is initialized correcty, this prints the fetched acmts correctly so all good!!
         print("write debugmessage no:1")
-    
         #achievements = vdf2.value_dict() 
         
         if self.file_format == ".xml":
@@ -41,46 +42,48 @@ class Write:
 
 
 
-    def write_to_xml(self, achievements): # File now goes through the function, and makes an xml file. It still doesn't work and only prints one line. The test version in a separate file worked perfectly.
+    def write_to_xml(self, achievements): 
         doc = minidom.Document()  # Create a new XML document
         root = doc.createElement('Achievements')  # Create the root element
         doc.appendChild(root)
 
         for achievement in achievements:
-            print("processing achievement")#debug.no1
+            print("processing achievement")  # debug message
             achievement_element = doc.createElement('Achievement')
-    
-            xml_tags_map= {
+
+            xml_tags_map = {
                 "AchievementNameId": "name_id",
                 "BaseAchievement": "hidden",
                 "DisplayOrder": "acmt_num",
                 "LockedDescriptionId": "desc_locked",
                 "UnlockedDescriptionId": "desc_en",
                 "IsHidden": "hidden",
-               "AchievementId": "name_id",
+                "AchievementId": "name_id",
                 "IconImageId": "icon"
-}
+            }
+
+        # Iterate over the xml_tags_map to create XML elements
             for xml_tag, achievement_key in xml_tags_map.items():
                 if achievement_key in achievement and achievement[achievement_key] is not None:
-  # Add the current XML tag
-                    element = doc.createElement(xml_tag)
-                    element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
-                    
-                    achievement_element.appendChild(element)
-        # Before adding the 'UnlockedDescriptionId', insert 'Rewards' with gamerscore nest
-                    if "UnlockedDescriptionId" in xml_tags_map.values():
-            # Create the Rewards element and inside it the gamerscore nest
+                # Check if we are processing the "UnlockedDescriptionId" key
+                    if xml_tag == "UnlockedDescriptionId":
+                    # Create the Rewards element and inside it the gamerscore nest
                         rewards_element = doc.createElement("Rewards")
                         gamerscore = doc.createElement("Gamerscore")
-                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore", 0)))) #FOR NOW, CREATES A FORCED VALUE HERE
+                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore", 0))))  # Default 0 if not available
                         rewards_element.appendChild(gamerscore)
                         achievement_element.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
-      
 
+                # Add the current XML tag
+                    element = doc.createElement(xml_tag)
+                    element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
+                    achievement_element.appendChild(element)
 
-                    root.appendChild(achievement_element) #Adds achievement to main element
+        # Append the achievement element to the root
+            root.appendChild(achievement_element)
 
-        xml_str = doc.toprettyxml(indent="  ")  # Convert the document to a pretty-printed XML string
+    # Convert the document to a pretty-printed XML string
+        xml_str = doc.toprettyxml(indent="  ")  
         with open(self.file_name, "w") as f:
             f.write(xml_str)  # Write the XML string to the file
 

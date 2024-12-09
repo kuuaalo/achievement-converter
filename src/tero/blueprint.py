@@ -18,4 +18,5 @@ acmt_dict = {
     "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
     "ag_type":None, #aggregationType epic stats.csv
     "flavor_txt": None, # flavorText epic achievementLocalizations.csv
+    "gamerscore": None, #spesific for Ms store achievements
 }
