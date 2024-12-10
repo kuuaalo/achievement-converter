@@ -30,16 +30,10 @@ class Write:
             self.write_to_xml(achievements) # Write to XML if format is XML
         elif self.file_format == ".csv":
             self.write_to_csv(achievements) # Write to CSV if format is CSV
-        elif self.file_format == ".txt":
-            #self.write_to_txt(achievements) # write to TXT if formar is TXT
-            self.write_to_vdf(achievements)
         elif self.file_format == ".vdf":
             self.write_to_vdf(achievements) # Write to VDF if format is VDF
         else:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
-
-
-
 
 
     def write_to_xml(self, achievements): 
@@ -89,15 +83,38 @@ class Write:
 
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
 
-    def write_to_csv(self, achievements):
-        # Using DictWriter to write to a CSV file
-        with open(self.file_name, "w", newline='') as f:  # Open the file for writing with newline handling
-            print(self.tero)#debugmessage
-            writer = csv.DictWriter(f, fieldnames=[])  # Define field names for the CSV
-            writer.writeheader()
-            writer.writerows(achievements)  # Write all rows from the achievements list
+def write_to_csv(self, achievement):
+        acmt_list = self.get_achievements()
+        if not acmt_list:
+            print("No achievements to write.")
+            return
 
-        print(f"Data written to {self.file_name} in CSV format.")  # Confirm the write operation
+        csv_field_map = {
+            "AchievementNameId": "name_id",
+            "BaseAchievement": "hidden",
+            "DisplayOrder": "acmt_num",
+            "LockedDescriptionId": "desc_locked",
+            "UnlockedDescriptionId": "desc_en",
+            "IsHidden": "hidden",
+            "AchievementId": "name_id",
+            "IconImageId": "icon"
+        }
+
+        fieldnames = list(csv_field_map.keys())
+
+        with open(self.file_name, "w", newline='') as f:
+            print(self.tero)#debugmessage
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for achievement in acmt_list:
+                row = {}
+                for csv_key, data_key in csv_field_map.items():
+                    row[csv_key] = achievement.get(data_key, None)
+                writer.writerow(row)
+
+        print(f"Data written to {self.file_name} in CSV format.")
+
 
     def write_to_vdf(self, achievements):
         # Create a nested structure for the achievements in VDF format
@@ -110,27 +127,3 @@ class Write:
             f.write(vdf_text)
 
         print(f"Data written to {self.file_name_vdf} in nested VDF format.")
-
-# This method writes the achievements to a plain text file
-    def write_to_txt(self, achievements):
-        # Write the achievements in a readable plain text format
-        with open(self.file_name_txt, "w") as f:
-            # First, write game-level information (id, version, etc.)
-            f.write(f"Game Information:\n")
-            f.write(f"ID: {achievements['id']}\n")
-            f.write(f"Version: {achievements['version']}\n")
-            f.write(f"Game Name: {achievements['gamename']}\n")
-            f.write(f"Stats Type: {achievements['stats_type']}\n")
-            f.write("\n")
-
-            # Write achievements inside the "Achievements" block
-            f.write("Achievements:\n")
-            for achievement_id, details in achievements["Achievements"].items():
-                f.write(f"Achievement ID: {achievement_id}\n")
-                for subkey, subvalue in details.items():
-                    f.write(f"  {subkey}: {subvalue}\n")
-                f.write("\n")
-
-        print(f"Data written to {self.file_name_txt} in plain text format.")
-
-    
