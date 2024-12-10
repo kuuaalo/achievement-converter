@@ -21,11 +21,11 @@ class Write:
 
     def run(self):
         achievements = self.tero.get_achievements()
-        oikea_lista = self.tero.fill_missing_values() 
+        oikea_lista = self.tero.fill_missing_values()
         print("Achievements fetched:", oikea_lista) #two lines of debugging to check if tero is initialized correcty, this prints the fetched acmts correctly so all good!!
         print("write debugmessage no:1")
-        #achievements = vdf2.value_dict() 
-        
+        #achievements = vdf2.value_dict()
+
         if self.file_format == ".xml":
             self.write_to_xml(achievements) # Write to XML if format is XML
         elif self.file_format == ".csv":
@@ -36,7 +36,7 @@ class Write:
             print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
 
 
-    def write_to_xml(self, achievements): 
+    def write_to_xml(self, achievements):
         doc = minidom.Document()  # Create a new XML document
         root = doc.createElement('Achievements')  # Create the root element
         doc.appendChild(root)
@@ -77,14 +77,15 @@ class Write:
             root.appendChild(achievement_element)
 
     # Convert the document to a pretty-printed XML string
-        xml_str = doc.toprettyxml(indent="  ")  
+        xml_str = doc.toprettyxml(indent="  ")
         with open(self.file_name, "w") as f:
             f.write(xml_str)  # Write the XML string to the file
 
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
 
-def write_to_csv(self, achievement):
-        acmt_list = self.get_achievements()
+
+    def write_to_csv(self, achievement):
+        acmt_list = self.tero.get_achievements()
         if not acmt_list:
             print("No achievements to write.")
             return

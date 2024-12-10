@@ -83,7 +83,7 @@ class Read:
 
         return True
 
-    def vdf_dict_peeling (d = {}, l = []):
+    def vdf_dict_peeling (self, d = {}, l = []):
         if d == {}:
             return False
 
@@ -113,7 +113,7 @@ class Read:
 
         # tämän voi siirtää parametriksi
         # j = d[self.steamid]['stats']['1']
-        j = vdf_dict_peeling(d, pl)
+        j = self.vdf_dict_peeling(d, pl)
 
         # halutaan joku mainin määrittämä tapa miten saada käyttäjälle näkyville
         if (j['type'] == 'ACHIEVEMENTS'):
@@ -125,7 +125,7 @@ class Read:
             return False
 
         # m = j['bits']
-        m = vdf_dict_peeling(j, self.vdf_params_inner)
+        m = self.vdf_dict_peeling(j, self.vdf_params_inner)
 
         ml = list(m)
 
@@ -163,6 +163,11 @@ class Read:
 
         for l in g:
             print(l)
+
+        # with open('esimerkki.csv', mode='r', encoding='utf-8') as file:
+        # csv_reader = csv.DictReader(file)
+        # for row in csv_reader:
+        #     print(row)
 
     def run_xml(self):
         acmt = self.open_file_debug()
