@@ -91,14 +91,10 @@ class Write:
             return
 
         csv_field_map = {
-            "AchievementNameId": "name_id",
-            "BaseAchievement": "hidden",
-            "DisplayOrder": "acmt_num",
-            "LockedDescriptionId": "desc_locked",
-            "UnlockedDescriptionId": "desc_en",
-            "IsHidden": "hidden",
-            "AchievementId": "name_id",
-            "IconImageId": "icon"
+            "name": "name_id",
+            "hidden": "hidden",
+            "statThresholds": "acmt_stat_tres",
+            "user_epic_achievements_xp": "acmt_xp",
         }
 
         fieldnames = list(csv_field_map.keys())
