@@ -27,9 +27,10 @@ class AchievementConverter:
                     acmt_list = self.tero.get_achievements() #get list of all achievements
                     acmt_dict = self.fetch_acmt_dict()
                     print(acmt_dict)
+                    
                     self.new_table = self.gui.create_table(acmt_dict)
                     
-                    self.gui.bind_events(self.new_table) #tästä lähtien paskana
+                    self.gui.bind_events(self.new_table)
                     self.gui.configure_table(self.new_table)
                     self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
                     self.gui.create_filter(self.new_table)

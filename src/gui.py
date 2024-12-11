@@ -179,7 +179,7 @@ class AchievementConverterGUI:
         lf.pack()
 
         format_var = tk.StringVar()
-        formats = ('Steam', 'Epic', 'MS Store')
+        formats = ('Steam', 'Epic', 'MS Store', 'All', 'HideLocalisations')
 
         for format in formats:
             # create a radio button
@@ -188,15 +188,32 @@ class AchievementConverterGUI:
 
     def filter_values(self, format_var, table):
         format = format_var.get()
-        print(format)
+        print(format) #hidelocalisations to work with specific formats
+        column_config = {
+            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
+            'MS Store': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'desc_locked', 'gamerscore'),
+            'Epic': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'acmt_stat_tres', 'desc_locked', 'acmt_xp', 'acmt_stat_tres', 'ag_type', 'flavor_txt'),
+            'HideLocalisations':('version', 'game_name', 'acmt_num', 'name_id', 'name_locked', 'name_token', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp','desc_locked', 'gamerscore','acmt_stat_tres', 'ag_type', 'flavor_txt'),
+            'All': '#all'
 
-        current_columns = list(table['columns'])
+        }
 
-        if (format == 'Steam'): # IN PROGRESS, CONSIDER USING TAGS INSTEAD?
-            current_columns.remove('icon_locked')
-            table['columns'] = current_columns
-            for col in current_columns:
-                table.heading(col, text=col)  
+        # Get all available columns
+        all_columns = table['columns']
+
+        if format in column_config:
+            if column_config[format] == '#all':
+                # Show all columns
+                table["displaycolumns"] = '#all'
+            else:
+                # Filter columns that exist in all_columns
+                valid_columns = [col for col in column_config[format] if col in all_columns]
+                table["displaycolumns"] = valid_columns
+        else:
+            self.show_error("Unknown format", f"Filter didn't recognize the format: {format}")
+
+
+
 
     
     def create_buttons(self):
