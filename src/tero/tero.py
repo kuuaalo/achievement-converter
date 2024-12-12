@@ -67,9 +67,9 @@ class Tero:
     def get_achievements(self):                                  # write calls this, and this returns list of dicts
         return self.achievement_list
    
-   #RAULI TÄMÄN LISÄSIN
+   
     def get_achievement_by_data(self, index):
-        print("kakka haisee")  # Debug-tulostus                    #should be able to fetch achievement by certain data
+        print("testi >:(")  # Debug-tulostus                    #should be able to fetch achievement by certain data
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
 

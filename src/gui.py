@@ -174,17 +174,17 @@ class AchievementConverterGUI:
 
 
     
-    def create_filter(self, table):
-        lf = ttk.LabelFrame(self.root, text='Filter')
-        lf.pack()
+    def create_filter(self, table, filter_names, filter_label):
+        lf = ttk.LabelFrame(self.root, text=filter_label)
+        lf.pack(side=tk.LEFT, expand=True)
 
         format_var = tk.StringVar()
-        formats = ('Steam', 'Epic', 'MS Store', 'All', 'HideLocalisations')
+        formats = filter_names
 
         for format in formats:
             # create a radio button
             radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.filter_values(format_var, table), variable=format_var)
-            radio.pack(side=tk.LEFT, expand=False)
+            radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
     def filter_values(self, format_var, table):
         format = format_var.get()
@@ -193,8 +193,14 @@ class AchievementConverterGUI:
             'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
             'MS Store': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'desc_locked', 'gamerscore'),
             'Epic': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'acmt_stat_tres', 'desc_locked', 'acmt_xp', 'acmt_stat_tres', 'ag_type', 'flavor_txt'),
-            'HideLocalisations':('version', 'game_name', 'acmt_num', 'name_id', 'name_locked', 'name_token', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp','desc_locked', 'gamerscore','acmt_stat_tres', 'ag_type', 'flavor_txt'),
             'All': '#all'
+
+        }
+        locale_config = {
+            'HideLocalisations':('name_fi', 'desc_fi','name_en', 'desc_en'),
+            'English':('name_en', 'desc_en'),
+            'Finnish':('name_fi', 'desc_fi'),
+            'ShowLocalisation':'#all'
 
         }
 
@@ -205,16 +211,35 @@ class AchievementConverterGUI:
             if column_config[format] == '#all':
                 # Show all columns
                 table["displaycolumns"] = '#all'
+                self.valid_columns = table["displaycolumns"]
             else:
                 # Filter columns that exist in all_columns
-                valid_columns = [col for col in column_config[format] if col in all_columns]
-                table["displaycolumns"] = valid_columns
+                self.valid_columns = [col for col in column_config[format] if col in all_columns]
+                table["displaycolumns"] = self.valid_columns
         else:
-            self.show_error("Unknown format", f"Filter didn't recognize the format: {format}")
+            if self.valid_colums is None:
+                all_columns = all_columns.get() #FIX FILTERING
+            else:
+                all_columns = self.valid_columns.get() #FIX FILTERING
+                print("got here")
+
+            if locale_config[format] == '#all':
+                table["displaycolumns"] = '#all'
+            else:
+                for locale in locale_config[format]:
+                    print(locale)
+                    if locale in all_columns:
+                        all_columns.remove(locale)
+
+                table["displaycolumns"] = all_columns
+
+    
 
 
 
+        
 
+    
     
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)

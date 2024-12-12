@@ -24,16 +24,21 @@ class AchievementConverter:
                     acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
                     self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
-                    acmt_list = self.tero.get_achievements() #get list of all achievements
+                    #acmt_list = self.tero.get_achievements() #get list of all achievements
+                    acmt_list = self.tero.fill_missing_values()
                     acmt_dict = self.fetch_acmt_dict()
-                    print(acmt_dict)
+                    
                     
                     self.new_table = self.gui.create_table(acmt_dict)
                     
                     self.gui.bind_events(self.new_table)
                     self.gui.configure_table(self.new_table)
                     self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
-                    self.gui.create_filter(self.new_table)
+
+                    formats = ('Steam', 'Epic', 'MS Store', 'All')
+                    options = ('HideLocalisations', 'English', 'Finnish', 'ShowLocalisations')
+                    self.gui.create_filter(self.new_table, formats, 'formats')
+                    self.gui.create_filter(self.new_table, options, 'options')
 
         elif(command==2): #export
                 if selected_path != None:
