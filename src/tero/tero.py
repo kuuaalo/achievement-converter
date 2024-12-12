@@ -1,4 +1,4 @@
-
+import json
 
 
 
@@ -7,8 +7,12 @@
 class Tero:
 
     def __init__(self, resume=False, achievement_list=None):
-        self.achievement_list = achievement_list if achievement_list is not None else []  
-    
+        if achievement_list is False or achievement_list is None:
+            self.achievement_list = []
+            print(self.achievement_list)
+        else: 
+            self.achievement_list = achievement_list
+            
 
 
     def add_achievement(self,achievement):                      # Takes a dict and passes it where it is needed
@@ -64,10 +68,13 @@ class Tero:
         return self.achievement_list
    
    #RAULI TÄMÄN LISÄSIN
-    def get_achievement_by_data(self, index):                    #should be able to fetch achievement by certain data
+    def get_achievement_by_data(self, index):
+        print("kakka haisee")  # Debug-tulostus                    #should be able to fetch achievement by certain data
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
- 
+
+
+
     def add_data_to_all_achievements(self,key,new_value):        #replace value in all achievements
         for achievement in self.achievement_list: 
             if key in achievement:                               #checks if it exists
@@ -77,7 +84,7 @@ class Tero:
         return self.achievement_list    
   
     def update_achievement_data(self, achievement_id, key, new_value):
-        try:
+#        try:
             achievement = self.achievement_list[int(achievement_id)] #!!rauli added int to convert index from string 
             if key in achievement:
                 old_value = achievement[key]
@@ -86,10 +93,19 @@ class Tero:
                 achievement[key] = new_value
             
             return self.achievement_list                           #en osannu diilata näitten true/false kanssa
-        except IndexError:
-            return self.achievement_list
-        except Exception as e:
-            print(f"Tuntematon virhe: {e}")
-        return self.achievement_list 
+#        except IndexError:
+#            return self.achievement_list
+#        except Exception as e:
+#            print(f"Tuntematon virhe: {e}")
+#        return self.achievement_list 
         
     
+
+    def save_data(self): #Writes data to disk as JSON if necessary, and next one loads it
+        with open('data.json', 'w') as f:
+            json.dump(data, f)
+        return True
+
+    def load_data(self):
+        loaded_data = json.load(f)
+        return True
