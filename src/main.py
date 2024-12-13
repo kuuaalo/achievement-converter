@@ -1,4 +1,4 @@
-import config
+
 import tkinter as tk
 import os
 
@@ -10,24 +10,25 @@ from read.read import Read #import all functions from read
 
 class AchievementConverter:
     def __init__(self):
-        #self.acmt_platform = config.DEFAULT_FILE_FORMAT #use default format
-        self.root = tk.Tk()
+        self.root = tk.Tk() #set tkinter as root
 
         self.tero = Tero(False, False) #init and give parameters
         
-        self.gui = AchievementConverterGUI(self.root, self) #call gui give ref to root and file handler
+        self.gui = AchievementConverterGUI(self.root, self) #init gui with root and self
 
-    def file_handler(self, selected_path, command):
+        self.new_table = None
+
+    def file_handler(self, selected_path, command): #gui calls this to respond to user input
         if(command==1): #import
                 if selected_path != None: #if user changed path use it and it's not null
+                    
                     acmt_file_path = selected_path
-                    acmt_platform = self.get_file_extension(selected_path) #send path to func and get extension
+                    acmt_platform = self.get_file_extension(selected_path) #get file extension
                     self.read = Read(acmt_file_path, acmt_platform, self.tero) #init read and give params, does it need platform?
                     self.read.run() #run read
                     #acmt_list = self.tero.get_achievements() #get list of all achievements
                     acmt_list = self.tero.fill_missing_values()
                     acmt_dict = self.fetch_acmt_dict()
-                    
                     
                     self.new_table = self.gui.create_table(acmt_dict)
                     
@@ -36,9 +37,8 @@ class AchievementConverter:
                     self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
 
                     formats = ('Steam', 'Epic', 'MS Store', 'All')
-                    options = ('HideLocalisations', 'English', 'Finnish', 'ShowLocalisations')
+                
                     self.gui.create_filter(self.new_table, formats, 'formats')
-                    self.gui.create_filter(self.new_table, options, 'options')
 
         elif(command==2): #export
                 if selected_path != None:
@@ -58,6 +58,9 @@ class AchievementConverter:
     
     def fetch_acmt_dict(self, index = 0):
         acmt_dict = self.tero.get_achievement_by_data(index) #get a single achievement and it's values
+        return acmt_dict
+    def fetch_filtered_dict(self, key_list, index = 0):
+        acmt_dict = self.tero.get_achievement_keys_from_dict(key_list, index)
         return acmt_dict
          
     def data_handler(self, command, key, new_value, id = None):

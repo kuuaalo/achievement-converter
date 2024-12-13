@@ -74,8 +74,14 @@ class Tero:
         print("testi >:(")  # Debug-tulostus                    #should be able to fetch achievement by certain data
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
-
-
+    
+    def get_achievement_keys_from_dict(self, key_list, index):         #returns a dictionary of the given keys in achievement
+        acmt_dict = self.achievement_list[int(index)] 
+        new_dict = {}
+        for key in acmt_dict:
+            if key in key_list:
+                new_dict[key] = acmt_dict[key]
+        return new_dict
 
     def add_data_to_all_achievements(self,key,new_value):        #replace value in all achievements
         for achievement in self.achievement_list: 

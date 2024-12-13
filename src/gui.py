@@ -76,6 +76,7 @@ class AchievementConverterGUI:
         
         if acmt_id is None:
             acmt_id = self.identify_id(event)
+        self.current_acmt_id = acmt_id 
         
         print(acmt_id)
         acmt_dict = self.controller.fetch_acmt_dict(acmt_id)
@@ -127,8 +128,7 @@ class AchievementConverterGUI:
             print(key)
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
         
-        
-   
+
 
     def move_to_next_acmt(self, index):
        
@@ -176,7 +176,7 @@ class AchievementConverterGUI:
     
     def create_filter(self, table, filter_names, filter_label):
         lf = ttk.LabelFrame(self.root, text=filter_label)
-        lf.pack(side=tk.LEFT, expand=True)
+        lf.pack(side=tk.TOP, expand=True)
 
         format_var = tk.StringVar()
         formats = filter_names
@@ -190,13 +190,13 @@ class AchievementConverterGUI:
         format = format_var.get()
         print(format) #hidelocalisations to work with specific formats
         column_config = {
-            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
-            'MS Store': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'desc_locked', 'gamerscore'),
-            'Epic': ('name_id', 'name_en', 'name_fi', 'name_locked', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp', 'acmt_stat_tres', 'desc_locked', 'acmt_xp', 'acmt_stat_tres', 'ag_type', 'flavor_txt'),
+            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
+            'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
+            'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
             'All': '#all'
 
         }
-        locale_config = {
+        locale_config = { #abandoned for now
             'HideLocalisations':('name_fi', 'desc_fi','name_en', 'desc_en'),
             'English':('name_en', 'desc_en'),
             'Finnish':('name_fi', 'desc_fi'),
@@ -217,30 +217,16 @@ class AchievementConverterGUI:
                 self.valid_columns = [col for col in column_config[format] if col in all_columns]
                 table["displaycolumns"] = self.valid_columns
         else:
-            if self.valid_colums is None:
-                all_columns = all_columns.get() #FIX FILTERING
-            else:
-                all_columns = self.valid_columns.get() #FIX FILTERING
-                print("got here")
-
-            if locale_config[format] == '#all':
-                table["displaycolumns"] = '#all'
-            else:
-                for locale in locale_config[format]:
-                    print(locale)
-                    if locale in all_columns:
-                        all_columns.remove(locale)
-
-                table["displaycolumns"] = all_columns
-
-    
-
-
-
+            print("Unknown format")
         
-
-    
-    
+        #for getting acmt_view filtering
+        filter_list = column_config[format]
+        id = self.current_acmt_id
+        print(id)
+        new_dict = self.controller.fetch_filtered_dict(filter_list, id)
+        self.refresh_table(self.acmt_table)
+        self.populate_acmt_table(new_dict)
+        
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
         button_frame.pack(fill=tk.BOTH, expand=False)
