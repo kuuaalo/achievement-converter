@@ -40,6 +40,7 @@ class Tero:
             "name_fi": None, 
             "name_locked": None, 
             "name_token": None, 
+            "desc_id":None,
             "desc_en": None, 
             "desc_fi": None, 
             "desc_token": None, 
@@ -51,7 +52,8 @@ class Tero:
             "acmt_stat_tres": None, 
             "ag_type": None, 
             "flavor_txt": None, 
-            "gamerscore": None,
+            "base_acmt":None,
+            "display_order":None,
         }
 
         
