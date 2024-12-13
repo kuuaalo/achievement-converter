@@ -156,93 +156,86 @@ class Read:
 
     def run_csv(self):
 
-        acmt = self.open_file_debug()
-        g = csv.reader(acmt)
-        print("printing g")
-        pprint.pp(g)
+        acmt = self.file_name
+        ol = []
 
-        for l in g:
-            print(l)
+        with open(acmt, mode='r', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                for row in csv_reader:
+                    acmt_dict = {
+                        "name_id": row.get("name"),
+                        "hidden": row.get("hidden"),
+                        "acmt_xp": row.get("user_epic_achievements_xp"),
+                        "acmt_stat_tres": row.get("statTresholds"),
+                    }
+                    ol.append(acmt_dict)
+        pprint.pp(ol)
+        self.tero.add_achievements(ol)
 
-        # with open('esimerkki.csv', mode='r', encoding='utf-8') as file:
-        # csv_reader = csv.DictReader(file)
-        # for row in csv_reader:
-        #     print(row)
 
     def run_xml(self):
-        acmt = self.open_file_debug()
+
+        acmt = self.file_name
         print("printing acmt")
         print(acmt)
+        ol = []
+        with open(acmt, "r", encoding="utf-8") as f:
+            aet = ET.parse(f)
         namespace = {'ns': "http://config.mgt.xboxlive.com/schema/achievements2017/1"}
-
-        aet = ET.parse("C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml")
-        print("printing aet")
-        pprint.pp(aet)
-
-
-        tag = aet.find("ns:Achievement", namespace)
-        print("printing tag")
-        pprint.pp(tag)
-
         for a in aet.findall("ns:Achievement", namespace):
-            print("printing a")
-            pprint.pp(a)
+            acmt_dict = {
+            "name_id": None,
+            "desc_id":None,
+            "hidden": None,
+            "icon": None,
+            "desc_locked": None,
+            "acmt_xp": None,
+            "base_acmt": None,
+            "display_order":None,
+            }
 
-            for c in a.iter():
-                print("printing c")
-                pprint.pp(c)
-                print("printing c tag")
-                pprint.pp(c.tag)
-                print("printing c text")
-                pprint.pp(c.text)
+            acmt_dict["name_id"] = a.find("ns:AchievementNameId", namespace).text if a.find("ns:AchievementNameId", namespace) is not None else None
+            acmt_dict["desc_id"] = a.find("ns:UnlockedDescriptionId", namespace).text if a.find("ns:UnlockedDescriptionId", namespace) is not None else None
+            acmt_dict["hidden"] = a.find("ns:IsHidden", namespace).text if a.find("ns:IsHidden", namespace) is not None else None
+            acmt_dict["icon"] = a.find("ns:IconImageId", namespace).text if a.find("ns:IconImageId", namespace) is not None else None
+            acmt_dict["desc_locked"] = a.find("ns:LockedDescriptionId", namespace).text if a.find("ns:LockedDescriptionId", namespace) is not None else None
+            acmt_dict["acmt_xp"] = a.find("ns:Gamerscore", namespace).text if a.find("ns:Gamerscore", namespace) is not None else None
+            acmt_dict["base_acmt"] = a.find("ns:BaseAchievement", namespace).text if a.find("ns:BaseAchievement", namespace) is not None else None
+            acmt_dict["display_order"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
+            ol.append(acmt_dict)
+        # Print or process each achievement dictionary
+        print("Parsed achievement:")
+        pprint.pp(ol)
+
+        self.tero.add_achievements(ol)
+
+        return True
 
 
-# tämä on testifunktio Teroa varten
-    def run_fake(self):
-        self.run_vdf()
-    #     fdict1 = {"version": None, #Steam version in file
-    #                 "game_name": None, #Steam game name in file
-    #                 "acmt_num": None, #display order/ identifier in file for multiple achievements
-    #                 "name_id": "achievement 1",
-    #                 "name_en": None, #Name/title in english
-    #                 "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
-    #                 "name_locked": None, #locked acmt title. ! for all localizations? !
-    #                 "name_token": None, #ref to steam description
-    #                 "desc_en": None, #description in english ! for all localizations? !
-    #                 "desc_fi": None, #description in english ! for all localizations? !
-    #                 "desc_token": None, #ref to steam description
-    #                 "hidden": None, #hidden achievement true/false
-    #                 "icon": None, #icon for achievements
-    #                 "icon_locked": None, #gray icon for locked achievements
-    #                 "desc_locked":None, #description for locked achievements ! for all localizations? !
-    #                 "acmt_xp":None, #amount of xp gained by achieving
-    #                 "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
-    #                 "ag_type":None, #aggregationType epic stats.csv
-    #                 "flavor_txt": None, # flavorText epic achievementLocalizations.csv
-    #             }
-    #     fdict2 = {"version": None, #Steam version in file
-    #                 "game_name": None, #Steam game name in file
-    #                 "acmt_num": None, #display order/ identifier in file for multiple achievements
-    #                 "name_id": "achievement 2",
-    #                 "name_en": None, #Name/title in english
-    #                 "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
-    #                 "name_locked": None, #locked acmt title. ! for all localizations? !
-    #                 "name_token": None, #ref to steam description
-    #                 "desc_en": None, #description in english ! for all localizations? !
-    #                 "desc_fi": None, #description in english ! for all localizations? !
-    #                 "desc_token": None, #ref to steam description
-    #                 "hidden": None, #hidden achievement true/false
-    #                 "icon": None, #icon for achievements
-    #                 "icon_locked": None, #gray icon for locked achievements
-    #                 "desc_locked":None, #description for locked achievements ! for all localizations? !
-    #                 "acmt_xp":None, #amount of xp gained by achieving
-    #                 "acmt_stat_tres":None, #statTresholds epic achievementDefinitions.csv
-    #                 "ag_type":None, #aggregationType epic stats.csv
-    #                 "flavor_txt": None, # flavorText epic achievementLocalizations.csv
-    #             }
-    #     flist = [fdict1, fdict2]
-    #     self.tero.add_achievements(flist)
-    #     return True
+        #aet = ET.parse("C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml")
+        
+        
+        #print("printing aet")
+        #pprint.pp(aet)
+
+
+        # tag = aet.find("ns:Achievement", namespace)
+        # print("printing tag")
+        # pprint.pp(tag)
+
+        # for a in aet.findall("ns:Achievement", namespace):
+        #     print("printing a")
+        #     pprint.pp(a)
+
+        #     for c in a.iter():
+        #         print("printing c")
+        #         pprint.pp(c)
+        #         print("printing c tag")
+        #         pprint.pp(c.tag)
+        #         print("printing c text")
+        #         pprint.pp(c.text)
+
 
     def read_file(self, file_name= False ):
         if file_name:
