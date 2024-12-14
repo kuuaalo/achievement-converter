@@ -50,15 +50,17 @@ class AchievementConverter:
         elif(command==3): #save as txt to project file !INCOMPLETE!
                 if selected_path != None: 
                     self.acmt_file_path = selected_path
-                    self.acmt_platform = ".txt" #txt format
-                    self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #init write in the future pass path
-                    self.write.run() #run write
+                    #self.acmt_platform = ".txt" #txt format
+                    #self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #init write in the future pass path
+                    #self.write.run() #run write
+                    self.tero.save_data()
         else:
             print("Error: no command given or command unknown.")
     
     def fetch_acmt_dict(self, index = 0):
         acmt_dict = self.tero.get_achievement_by_data(index) #get a single achievement and it's values
         return acmt_dict
+    
     def fetch_filtered_dict(self, key_list, index = 0):
         acmt_dict = self.tero.get_achievement_keys_from_dict(key_list, index)
         return acmt_dict
