@@ -20,6 +20,7 @@ class AchievementConverterGUI:
 
         self.acmt_table = None
         self.edit_frame = None
+        self.current_dict = None
 
     
 
@@ -53,7 +54,10 @@ class AchievementConverterGUI:
     def configure_table(self, table):
         table.tag_configure('null_value', background='red') #tag to display red color for null values
 
-    def populate_table(self, table, acmt_list):
+    def populate_table(self, table, acmt_list, acmt_dict):
+        
+        self.current_dict = acmt_dict
+        
         for index, item in enumerate(acmt_list):
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
@@ -92,46 +96,61 @@ class AchievementConverterGUI:
         for index, key in enumerate(acmt_dict): #fill values
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
 
-        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) 
+        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) #send clicked achievement's id and event
 
         
-    def edit_value(self, acmt_id, event = None):
-
-        self.acmt_id = acmt_id
-
-        if self.edit_frame is None:
-            self.edit_frame = tk.Toplevel(self.root) # pop-up window 
-            self.row_id = self.identify_id(event)
-            self.key_name = self.tree.set(self.row_id, 'key')  # get the clicked value
-            value_name = self.tree.set(self.row_id, 'value')  # get the clicked value
+    def edit_value(self, acmt_id, event=None):
         
-            field_label = ttk.Label(self.edit_frame, text="Key name is: " + self.key_name) # display key
-            separator = ttk.Separator(self.edit_frame, orient='horizontal')
-            edit_label = ttk.Label(self.edit_frame, text="Input text to change value for this data.") # display prompt
-            entry_var = tk.StringVar()
-            self.field = ttk.Entry(self.edit_frame, textvariable=entry_var) # display an edit box
-            
-            value_label = ttk.Label(self.edit_frame, text="The value to change is: " + entry_var.get()) # display value
+        if event != None: #if event was given
+            self.row_id = self.identify_id(event) #identify row to find out which key:value pair was clicked
+        
+        self.acmt_id = acmt_id #set given achievement's id
 
-            field_label.pack(expand=True)
-            separator.pack(fill='x')
-            value_label.pack(expand=True)
-            edit_label.pack(expand = True)
-            self.field.pack(expand=True)
-            self.create_edit_menu_buttons(self.edit_frame)
-        else:
-            print("Window already open")
+        self.edit_frame = tk.Toplevel(self.root)
+        
+        self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
+        print("this is the current key" + self.current_key)
+        
+        self.keys_list = list(self.current_dict.keys())         # create a list of all keys from the dictionary
+        print(self.current_dict)
+        
+        self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
+        print("this is the list it's being looked from")
+        print(self.keys_list)
+        print("this is it's index")
+        print(self.current_key_index)
+        self.display_edit_value()
+        
     
-    def populate_acmt_table(self, acmt_dict):
-        print(acmt_dict)
-        for index, key in enumerate(acmt_dict):
-            print(key)
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+    def display_edit_value(self):
+
+        current_value = self.current_dict[self.current_key] # Get the value for the current key
+        
+        
+        for widget in self.edit_frame.winfo_children():
+            widget.destroy()
+
+        # Create widgets for displaying and editing
+        field_label = ttk.Label(self.edit_frame, text="Key: " + self.current_key)  # Show the key
+        separator = ttk.Separator(self.edit_frame, orient='horizontal')
+        edit_label = ttk.Label(self.edit_frame, text="Edit value for this key:")
+        
+        # Entry field for the value
+        self.entry_var = tk.StringVar(value=current_value)
+        self.field = ttk.Entry(self.edit_frame, textvariable=self.entry_var)  # Entry box for value editing
+
+
+        field_label.pack(expand=True)
+        separator.pack(fill='x')
+        edit_label.pack(expand=True)
+        self.field.pack(expand=True)
+        self.create_edit_menu_buttons(self.edit_frame)
+        
         
 
 
     def move_to_next_acmt(self, index):
-       
+
         print("move to next")
         current_row = self.table.next(index)
 
@@ -141,10 +160,30 @@ class AchievementConverterGUI:
 
         acmt_dict = self.controller.fetch_acmt_dict(current_row)
 
-        print(acmt_dict)
-
         self.populate_acmt_table(acmt_dict)
-        self.edit_value(current_row, None)
+        self.edit_value(current_row)
+    
+    def move_to_next_value(self):
+        
+        new_key_index = (self.current_key_index + 1) % len(self.keys_list) #move to next index in acmt_dict
+        self.current_key_index = new_key_index #set current index as new key index
+        self.current_key = self.keys_list[new_key_index]  # update current key from list
+        self.acmt_table.selection_set(new_key_index)
+        
+        self.display_edit_value() #display widgets to show change to new key
+        
+
+
+    
+    def populate_acmt_table(self, acmt_dict):
+        print(acmt_dict)
+        for index, key in enumerate(acmt_dict):
+            print(key)
+            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+    
+
+ 
+
        
 
 
@@ -155,22 +194,28 @@ class AchievementConverterGUI:
         replaceall_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace value in ALL achievements",
-            command=lambda:self.handle_submit(1, self.key_name, self.acmt_id)
+            command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
         )
         replacethis_button = ttk.Button( #button to import file
             edit_frame,
             text="Replace the value in this achievement",
-            command=lambda:self.handle_submit(2, self.key_name, self.acmt_id)
+            command=lambda:self.handle_submit(2, self.current_key, self.acmt_id)
         )
         next_acmt_button = ttk.Button(
             edit_frame,
             text="Edit next achievement",
             command=lambda:self.move_to_next_acmt(self.acmt_id)
         )
+        next_value_button = ttk.Button(
+            edit_frame,
+            text="Edit next value",
+            command=lambda:self.move_to_next_value()
+        )
 
         replaceall_button.pack(expand=True, padx=10, pady=10)
         replacethis_button.pack(expand=True, padx=10, pady=10)
         next_acmt_button.pack(expand=True, padx=10, pady=10)
+        next_value_button.pack(expand=True, padx=10, pady=10)
 
 
     
@@ -194,14 +239,6 @@ class AchievementConverterGUI:
             'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
             'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
             'All': '#all'
-
-        }
-        locale_config = { #abandoned for now
-            'HideLocalisations':('name_fi', 'desc_fi','name_en', 'desc_en'),
-            'English':('name_en', 'desc_en'),
-            'Finnish':('name_fi', 'desc_fi'),
-            'ShowLocalisation':'#all'
-
         }
 
         # Get all available columns
@@ -226,6 +263,7 @@ class AchievementConverterGUI:
         new_dict = self.controller.fetch_filtered_dict(filter_list, id)
         self.refresh_table(self.acmt_table)
         self.populate_acmt_table(new_dict)
+        self.current_dict = new_dict
         
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
@@ -254,8 +292,6 @@ class AchievementConverterGUI:
             text="Exit",
             command=lambda: self.root.quit() #quit program exits the mainloop
         )
-
- 
 
         #button placement on grid
         open_button.pack(side=tk.LEFT, expand=False)

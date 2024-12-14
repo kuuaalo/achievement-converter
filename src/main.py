@@ -28,13 +28,13 @@ class AchievementConverter:
                     self.read.run() #run read
                     #acmt_list = self.tero.get_achievements() #get list of all achievements
                     acmt_list = self.tero.fill_missing_values()
-                    acmt_dict = self.fetch_acmt_dict()
+                    self.acmt_dict = self.fetch_acmt_dict()
                     
-                    self.new_table = self.gui.create_table(acmt_dict)
+                    self.new_table = self.gui.create_table(self.acmt_dict)
                     
                     self.gui.bind_events(self.new_table)
                     self.gui.configure_table(self.new_table)
-                    self.gui.populate_table(self.new_table, acmt_list) #send to gui to display values
+                    self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) #send to gui to display values
 
                     formats = ('Steam', 'Epic', 'MS Store', 'All')
                 
