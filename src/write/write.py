@@ -22,8 +22,6 @@ class Write:
     def run(self):
         achievements = self.tero.get_achievements()
         oikea_lista = self.tero.fill_missing_values()
-        print("Achievements fetched:", oikea_lista) #two lines of debugging to check if tero is initialized correcty, this prints the fetched acmts correctly so all good!!
-        print("write debugmessage no:1")
         #achievements = vdf2.value_dict()
 
         if self.file_format == ".xml":
@@ -114,13 +112,47 @@ class Write:
 
 
     def write_to_vdf(self, achievements):
-        # Create a nested structure for the achievements in VDF format
-        nested_data = {"GameInfo": achievements}
+        # Create a dictionary for all achievements (this is where the loop starts)
+        nested_data = {
+            "123456": {  # This is the game identifier, adjust as necessary
+                "stats": {}
+            }
+        }
+
+        for i, achievement in enumerate(achievements, start=1):
+            # Create the structure for each achievement
+            achievement_data = {
+                "bits": {
+                    str(i): {
+                        "name": achievement.get("name_id", ""),
+                        "display": {
+                            "name": {
+                                "english": achievement.get("name_en", ""),
+                                "finnish": achievement.get("name_fi", ""),
+                                "token": achievement.get("name_token", ""),
+                            },
+                            "desc": {
+                                "english": achievement.get("desc_en", ""),
+                                "finnish": achievement.get("desc_fi", ""),
+                                "token": achievement.get("desc_token", ""),
+                            },
+                            "hidden": str(achievement.get("hidden", "false")),
+                            "icon": achievement.get("icon", ""),
+                            "icon_gray": achievement.get("icon_locked", ""),
+                        }
+                    }
+                },
+                "type": "ACHIEVEMENTS"
+            }
+
+            # Add the achievement to the stats section
+            nested_data["123456"]["stats"][str(i)] = achievement_data
 
         # Convert the dictionary to VDF format
         vdf_text = vdf.dumps(nested_data, pretty=True)
 
-        with open(self.file_name_vdf, "w") as f:
+        # Write to the VDF file
+        with open(self.file_name, "w") as f:
             f.write(vdf_text)
 
-        print(f"Data written to {self.file_name_vdf} in nested VDF format.")
+        print(f"Data written to {self.file_name} in nested VDF format.")

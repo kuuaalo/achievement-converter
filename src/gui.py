@@ -281,7 +281,8 @@ class AchievementConverterGUI:
         if (command == 1): #prompt to open file for importing
             file_path = fd.askopenfilename(title="Import achievement file")
         elif (command == 2): #prompt to pick directory to export file
-            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
+            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("VDF files", "*.vdf"), ("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
+            #lisäsin tähän VDF tuen
         elif (command == 3): #prompt to save a project file
             file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt")])
         

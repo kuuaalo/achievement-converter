@@ -92,7 +92,6 @@ class Tero:
         return self.achievement_list    
   
     def update_achievement_data(self, achievement_id, key, new_value):
-#        try:
             achievement = self.achievement_list[int(achievement_id)] #!!rauli added int to convert index from string 
             if key in achievement:
                 old_value = achievement[key]
