@@ -75,7 +75,7 @@ class Tero:
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
     
-    def get_achievement_keys_from_dict(self, key_list, index):         #returns a dictionary of the given keys in achievement
+    def get_achievement_keys_from_dict(self, key_list, index):  #returns a dictionary of the given keys in achievement
         acmt_dict = self.achievement_list[int(index)] 
         new_dict = {}
         for key in acmt_dict:
@@ -107,12 +107,14 @@ class Tero:
 #        return self.achievement_list 
         
     
-
-    def save_data(self): #Writes data to disk as JSON if necessary, and next one loads it
-        with open('data.json', 'w') as f:
-            json.dump(data, f)
+    def save_data(self,file_path):                                  #Saves data to selected file path as JSON
+        with open(file_path, 'w') as f:
+            json.dump(self.achievement_list, f)  
+        print(f"Data saved to {file_path}")
         return True
 
-    def load_data(self):
-        loaded_data = json.load(f)
-        return True
+    def load_data(self,file_path):                                  #Loads JSON data from selected path
+        with open(file_path, 'r') as f:
+            loaded_data = json.load(f)
+        print(f"Data saved to {file_path}")
+        return loaded_data                                         #Still wondering if this should return as achievement_list just to clarify overall structure?

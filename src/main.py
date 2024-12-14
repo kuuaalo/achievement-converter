@@ -53,7 +53,7 @@ class AchievementConverter:
                     #self.acmt_platform = ".txt" #txt format
                     #self.write = Write(self.acmt_file_path, self.acmt_platform, self.tero) #init write in the future pass path
                     #self.write.run() #run write
-                    self.tero.save_data()
+                    self.tero.save_data(self.acmt_file_path)
         else:
             print("Error: no command given or command unknown.")
     
