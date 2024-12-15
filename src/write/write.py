@@ -1,7 +1,6 @@
 import xml.dom.minidom as minidom
 import csv
 import vdf
-# from tero import tero
 import read.vdfparse as vdf2
 
 class Write:
@@ -111,16 +110,14 @@ class Write:
         print(f"Data written to {self.file_name} in CSV format.")
 
 
-    def write_to_vdf(self, achievements):
-        # Create a dictionary for all achievements (this is where the loop starts)
+    def write_to_vdf(self, achievements):  # Create a dictionary for all achievements 
         nested_data = {
-            "123456": {  # This is the game identifier, adjust as necessary
+            "123456": {                    # This is some kind of game identifier, adjust when informed what and how
                 "stats": {}
             }
         }
 
-        for i, achievement in enumerate(achievements, start=1):
-            # Create the structure for each achievement
+        for i, achievement in enumerate(achievements, start=1):  # Create the structure for each achievement with a map, this is pretty 
             achievement_data = {
                 "bits": {
                     str(i): {
@@ -145,14 +142,10 @@ class Write:
                 "type": "ACHIEVEMENTS"
             }
 
-            # Add the achievement to the stats section
-            nested_data["123456"]["stats"][str(i)] = achievement_data
-
-        # Convert the dictionary to VDF format
-        vdf_text = vdf.dumps(nested_data, pretty=True)
-
-        # Write to the VDF file
-        with open(self.file_name, "w") as f:
+            nested_data["123456"]["stats"][str(i)] = achievement_data  # Add the achievement to the stats section
+        vdf_text = vdf.dumps(nested_data, pretty=True)     # Convert the dictionary to VDF format
+        
+        with open(self.file_name, "w") as f:  # Write to the VDF file
             f.write(vdf_text)
 
         print(f"Data written to {self.file_name} in nested VDF format.")

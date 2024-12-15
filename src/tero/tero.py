@@ -70,8 +70,7 @@ class Tero:
         return self.achievement_list
    
    
-    def get_achievement_by_data(self, index):
-        print("testi >:(")  # Debug-tulostus                    #should be able to fetch achievement by certain data
+    def get_achievement_by_data(self, index):                  #should be able to fetch achievement by certain data
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
     
@@ -100,12 +99,7 @@ class Tero:
                 achievement[key] = new_value
             
             return self.achievement_list                           #en osannu diilata näitten true/false kanssa
-#        except IndexError:
-#            return self.achievement_list
-#        except Exception as e:
-#            print(f"Tuntematon virhe: {e}")
-#        return self.achievement_list 
-        
+
     
     def save_data(self,file_path):                                  #Saves data to selected file path as JSON
         with open(file_path, 'w') as f:
@@ -117,4 +111,4 @@ class Tero:
         with open(file_path, 'r') as f:
             loaded_data = json.load(f)
         print(f"Data saved to {file_path}")
-        return loaded_data                                         #Still wondering if this should return as achievement_list just to clarify overall structure?
+        return loaded_data                                           #Still wondering if this should return as achievement_list just to clarify overall structure?
