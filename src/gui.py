@@ -18,13 +18,12 @@ class AchievementConverterGUI:
 
         self.create_buttons()
 
-        self.acmt_table = None
-        self.edit_frame = None
-        self.current_dict = None
+        self.acmt_table = None #single achievement display table
+        self.edit_frame = None 
+        self.current_dict = None #current dict in use for table headings
 
-    
 
-    def create_table(self, acmt_dict):
+    def create_table(self, acmt_dict): #general function for creating table objects
         
         frame = tk.Frame(self.root, width=400, height=300)
         
@@ -34,11 +33,14 @@ class AchievementConverterGUI:
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
         column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
-        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table with tuple
-        scrollbary.configure(command=self.table.yview)
+        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table from tuple
+        
+        #scrollbar setup
+        scrollbary.configure(command=self.table.yview) 
         self.table.configure(yscrollcommand=scrollbary.set)
         scrollbarx.configure(command=self.table.xview)
         self.table.configure(xscrollcommand=scrollbarx.set)
+        
         self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         frame.pack(fill=tk.BOTH,expand=True, padx=30, pady=30)
 
@@ -47,25 +49,24 @@ class AchievementConverterGUI:
 
         return self.table
     
-    #listens to double click on table, send info to edit value function
     def bind_events(self, table):
         table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
     
     def configure_table(self, table):
-        table.tag_configure('null_value', background='red') #tag to display red color for null values
+        table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
 
     def populate_table(self, table, acmt_list, acmt_dict):
         
-        self.current_dict = acmt_dict
+        self.current_dict = acmt_dict #save current keys and values
         
-        for index, item in enumerate(acmt_list):
+        for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
             row_values = list(item.values()) 
             if (None in row_values): #add tag if acmt has null value
                 table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
-    def refresh_table(self, table):
+    def refresh_table(self, table): #empty given table
         table.delete(*table.get_children())
         return True
     
@@ -76,27 +77,26 @@ class AchievementConverterGUI:
         return acmt_id
 
     
-    def open_acmt(self, acmt_id = None, event = None): #called when user selects acmt from table
+    def open_acmt(self, acmt_id = None, event = None): # called when user selects acmt from table
         
         if acmt_id is None:
-            acmt_id = self.identify_id(event)
+            acmt_id = self.identify_id(event) # identify id if it was not given 
         self.current_acmt_id = acmt_id 
         
-        print(acmt_id)
-        acmt_dict = self.controller.fetch_acmt_dict(acmt_id)
+        acmt_dict = self.controller.fetch_acmt_dict(acmt_id) # get a dictionary of specified achievement's keys and values
 
-        col_dict = {'key': 'None', 'value': 'None'} #columns for the table
+        col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
         
-        if self.acmt_table is not None: #create new acmt table
+        if self.acmt_table is not None: 
             print("Window is already open!")
-            self.refresh_table(self.acmt_table)
+            self.refresh_table(self.acmt_table) # clear old table
         else:
-            self.acmt_table = self.create_table(col_dict)
+            self.acmt_table = self.create_table(col_dict) # create new acmt table
     
-        for index, key in enumerate(acmt_dict): #fill values
+        for index, key in enumerate(acmt_dict): # fill values
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
 
-        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) #send clicked achievement's id and event
+        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
 
         
     def edit_value(self, acmt_id, event=None):
@@ -106,20 +106,15 @@ class AchievementConverterGUI:
         
         self.acmt_id = acmt_id #set given achievement's id
 
-        self.edit_frame = tk.Toplevel(self.root)
+        self.edit_frame = tk.Toplevel(self.root) # create frame for editing
         
         self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
-        print("this is the current key" + self.current_key)
         
-        self.keys_list = list(self.current_dict.keys())         # create a list of all keys from the dictionary
-        print(self.current_dict)
+        self.keys_list = list(self.current_dict.keys()) # create a list of all keys from the dictionary
         
         self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
-        print("this is the list it's being looked from")
-        print(self.keys_list)
-        print("this is it's index")
-        print(self.current_key_index)
-        self.display_edit_value()
+       
+        self.display_edit_value() # function to create labels etc widgets
         
     
     def display_edit_value(self):
@@ -127,12 +122,12 @@ class AchievementConverterGUI:
         current_value = self.current_dict[self.current_key] # Get the value for the current key
         
         
-        for widget in self.edit_frame.winfo_children():
+        for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
             widget.destroy()
 
         # Create widgets for displaying and editing
         field_label = ttk.Label(self.edit_frame, text="Key: " + self.current_key)  # Show the key
-        separator = ttk.Separator(self.edit_frame, orient='horizontal')
+        separator = ttk.Separator(self.edit_frame, orient='horizontal') 
         edit_label = ttk.Label(self.edit_frame, text="Edit value for this key:")
         
         # Entry field for the value
@@ -146,10 +141,8 @@ class AchievementConverterGUI:
         self.field.pack(expand=True)
         self.create_edit_menu_buttons(self.edit_frame)
         
-        
 
-
-    def move_to_next_acmt(self, index):
+    def move_to_next_acmt(self, index): 
 
         print("move to next")
         current_row = self.table.next(index)
@@ -166,26 +159,20 @@ class AchievementConverterGUI:
     def move_to_next_value(self):
         
         new_key_index = (self.current_key_index + 1) % len(self.keys_list) #move to next index in acmt_dict
-        self.current_key_index = new_key_index #set current index as new key index
+        self.current_key_index = new_key_index # set current index as new key index
         self.current_key = self.keys_list[new_key_index]  # update current key from list
-        self.acmt_table.selection_set(new_key_index)
+        self.acmt_table.selection_set(new_key_index) # move the selection to next value too
         
-        self.display_edit_value() #display widgets to show change to new key
+        self.display_edit_value() # display widgets to show change to new key
         
-
-
     
-    def populate_acmt_table(self, acmt_dict):
+    def populate_acmt_table(self, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
+        
         print(acmt_dict)
         for index, key in enumerate(acmt_dict):
             print(key)
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
     
-
- 
-
-       
-
 
     def create_edit_menu_buttons(self, tree):
         
@@ -219,7 +206,7 @@ class AchievementConverterGUI:
 
 
     
-    def create_filter(self, table, filter_names, filter_label):
+    def create_filter(self, table, filter_names, filter_label): #create a filter
         lf = ttk.LabelFrame(self.root, text=filter_label)
         lf.pack(side=tk.TOP, expand=True)
 
@@ -232,17 +219,16 @@ class AchievementConverterGUI:
             radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
     def filter_values(self, format_var, table):
-        format = format_var.get()
-        print(format) #hidelocalisations to work with specific formats
-        column_config = {
+        format = format_var.get() # get format variable from widget
+
+        column_config = { #all the possible keys in a filter
             'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
             'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
             'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
             'All': '#all'
         }
 
-        # Get all available columns
-        all_columns = table['columns']
+        all_columns = table['columns'] # Get all available columns
 
         if format in column_config:
             if column_config[format] == '#all':
@@ -256,8 +242,8 @@ class AchievementConverterGUI:
         else:
             print("Unknown format")
         
-        #for getting acmt_view filtering
-        filter_list = column_config[format]
+        #for getting acmt_view filtering, in the future use this for all filtering
+        filter_list = column_config[format] 
         id = self.current_acmt_id
         print(id)
         new_dict = self.controller.fetch_filtered_dict(filter_list, id)
@@ -302,8 +288,8 @@ class AchievementConverterGUI:
     def show_error(self, error_title, error_msg): #shows error pop-up
         showwarning(title=error_title, message=error_msg)
 
-    def handle_submit(self, command, key, index):
-        new_value = self.field.get()
+    def handle_submit(self, command, key, index): # sends submitted value to main
+        new_value = self.field.get() #get new value from widget
         if (command == 1): 
             self.controller.data_handler(command, key, new_value)
         elif(command == 2):
@@ -313,13 +299,12 @@ class AchievementConverterGUI:
         self.populate_acmt_table(acmt_dict)
             
 
-    def select_file(self, command): #should these be in main?
-        if (command == 1): #prompt to open file for importing
+    def select_file(self, command):
+        if (command == 1): 
             file_path = fd.askopenfilename(title="Import achievement file")
-        elif (command == 2): #prompt to pick directory to export file
+        elif (command == 2): 
             file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("VDF files", "*.vdf"), ("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
-            #lisäsin tähän VDF tuen
-        elif (command == 3): #prompt to save a project file
+        elif (command == 3):
             file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("JSON", "*.json")])
         
         self.controller.file_handler(file_path, command) #callback function, new path and variable to main
