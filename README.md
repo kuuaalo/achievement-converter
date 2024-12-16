@@ -2,27 +2,43 @@
 ## Description
 Achievement Converter is a python program for converting achievement files and from different store platforms' formats.
 Currently supported formats are Steam (.vdf), MS Store (.xml) and Epic (.csv).
-## Table of contents
 ## Installation
 ### Dependencies
 Python version 3.13.0 or newer to run.
 vdf 3.4. library (https://pypi.org/project/vdf/)
 
 ### Update python
-See which version you have installed with 
+See which version you have installed with:
+```
 python --version
+```
 For Windows: download latest version of python (https://www.python.org/downloads/windows/)
+
 For MAC: download latest version of python from (https://www.python.org/downloads/macos/)
-Linux/Debian-based: run sudo apt install python3 to update run sudo apt-get update and sudo apt-get updgrade
+
+Linux/Debian-based: 
+```
+sudo apt install python3
+```
+sudo apt-get update
+```
+sudo apt-get updgrade
+```
 
 Use pip (https://pip.pypa.io/en/stable/) to install the vdf library:
+```
 pip install vdf
+```
 
 ## Usage
 Run the program from terminal with 
+```
 achievement-converter\src\python main.py
+```
 or
+```
 achievement-converter\src\python3 main.py
+```
 depending on your settings.
 
 This will open the graphical user interface. 
@@ -39,7 +55,7 @@ When you are happy with the changes you've made, you can choose 'export' to conv
 Choose the save folder and format and click export. You can also save the imported file as a .json-file, for later editing. Loading the .json still in progress.
 
 ## List of keys and their explanations
-
+```
 version: Steam. version
 game_name: Steam. game name
 acmt_num: Steam | MS Store display order/identifier in file for multiple achievements
@@ -61,6 +77,7 @@ acmt_xp: Amount of xp/gamerscore/etc. gained by achieving
 acmt_stat_tres:  Epic statTresholds.
 ag_type: Epic aggregationType 
 flavor_txt: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
+```
 
 ## Future/Roadmap
 
