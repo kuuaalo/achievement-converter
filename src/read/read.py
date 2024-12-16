@@ -192,7 +192,7 @@ class Read:
             "desc_locked": None,
             "acmt_xp": None,
             "base_acmt": None,
-            "display_order":None,
+            "acmt_num":None,
             }
 
             acmt_dict["name_id"] = a.find("ns:AchievementNameId", namespace).text if a.find("ns:AchievementNameId", namespace) is not None else None
@@ -202,7 +202,7 @@ class Read:
             acmt_dict["desc_locked"] = a.find("ns:LockedDescriptionId", namespace).text if a.find("ns:LockedDescriptionId", namespace) is not None else None
             acmt_dict["acmt_xp"] = a.find("ns:Gamerscore", namespace).text if a.find("ns:Gamerscore", namespace) is not None else None
             acmt_dict["base_acmt"] = a.find("ns:BaseAchievement", namespace).text if a.find("ns:BaseAchievement", namespace) is not None else None
-            acmt_dict["display_order"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
+            acmt_dict["acmt_num"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
             ol.append(acmt_dict)
         # Print or process each achievement dictionary
         print("Parsed achievement:")

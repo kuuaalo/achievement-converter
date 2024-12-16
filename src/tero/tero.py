@@ -33,7 +33,8 @@ class Tero:
        
         blueprint = {                                           # Define blueprint for all values, so that write fill have something to print
             "version": None, 
-            "game_name": None, 
+            "game_name": None,
+            "game_id": None,
             "acmt_num": None, 
             "name_id": None, 
             "name_en": None, 
@@ -53,7 +54,6 @@ class Tero:
             "ag_type": None, 
             "flavor_txt": None, 
             "base_acmt":None,
-            "display_order":None,
         }
 
         

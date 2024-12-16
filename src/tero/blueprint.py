@@ -1,7 +1,8 @@
 acmt_dict = {
     "version": None, #Steam version in file
     "game_name": None, #Steam game name in file
-    "acmt_num": None, #display order/ identifier in file for multiple achievements
+    "game_id": None, #Steam game id in html
+    "acmt_num": None, #Steam/MS display order/ identifier in file for multiple achievements
     "name_id": None, #Achievement ID, identifier
     "name_en": None, #Name/title in english
     "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
@@ -20,5 +21,4 @@ acmt_dict = {
     "ag_type":None, #Epic aggregationType tats.csv
     "flavor_txt": None, # Epic flavorText  achievementLocalizations.csv
     "base_acmt": None, #MS store specific
-    "display_order":None, #MS store specific
 }
