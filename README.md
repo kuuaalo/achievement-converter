@@ -35,53 +35,50 @@ Run the program from terminal with
 ```
 achievement-converter\src\python main.py
 ```
-or
+or, depending on your settings.
 ```
 achievement-converter\src\python3 main.py
 ```
-depending on your settings.
+This will open the graphical user interface. 
 
 ### Import
-This will open the graphical user interface. 
-From here you can choose to import a new achievement file. 
-Importing the file lists all of the achievements in a table. You can find the explanations for all of the key:value pairs from this document.
+From the gui you can choose to 'import' a new achievement file. 
+Importing the file lists all of the achievements in a table. You can find the explanations for all of the key:value pairs from the "List of keys and their explanations" -section of this document.
 You can filter the values with the filter options provided. This shows only the values needed for the chosen platform's achievement-file.
 
 ### Edit
-Select an achievement from the table by double-clicking it. This displays it's contents in a new table.
-Here you can click on a value you wish to edit to open up the edit-menu.
+Select an achievement from the table by double-clicking it. This displays it's contents in a new table. Here you can click on a value you wish to edit to open up the edit-menu.
 The edit-pop up menu has four buttons. You can either replace the value in this single specific achievement, or all of the achievements you imported. 
-You can also edit the next value or open the same value but, in the next achievement.
+You can also edit the next value in the same achievement, or open the same value in the next achievement.
 
 ### Export
-When you are happy with the changes you've made, you can choose 'export' to convert the achievements to your desired format.
-Choose the save folder and format and click export. You can also save the imported file as a .json-file, for later editing. Loading the .json still in progress.
+When you are happy with the changes you've made, you can convert the achievements to your desired format.
+Choose the save folder and format and click 'export'. You can also save the imported file as a .json-file for later editing. Loading the .json still in progress.
 
 ## List of keys and their explanations
 
-* version: Steam. version
-* game_name: Steam. game name -->
-* acmt_num: Steam | MS Store display order/identifier in file for multiple achievements
-* name_token: Steam. Reference to name
-
 ```
-name_id: Achievement ID, identifier
-name_en: Name/title in english
-name_fi: Name/title in finnish
-name_locked: Locked achievement title
-base_acmt:  MS store. Is the achievement unlockable in base-game
-desc_id: MS store. Description indentifier.
-desc_en: Description in english
-desc_fi: Description in finnish
-desc_token: Steam reference to description.
-hidden: Hidden achievement true/false
-icon: Icon for achievement
-icon_locked: Locked achievement icon
-desc_locked: Description for a locked achievement
-acmt_xp: Amount of xp/gamerscore/etc. gained by achieving
-acmt_stat_tres:  Epic statTresholds.
-ag_type: Epic aggregationType 
-flavor_txt: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
+**version**: Steam. version.
+**game_name**: Steam. game name.
+**acmt_num**: Steam & MS Store. Display order/identifier in file for multiple achievements
+**name_token**: Steam. Reference to name.
+**name_id**: Achievement identifier.
+**name_en**: Name/title in english.
+**name_fi**: Name/title in finnish.
+**name_locked**: Locked achievement title.
+**base_acmt**: MS store. Is the achievement unlockable in base-game.
+**desc_id**: MS store. Description indentifier.
+**desc_env: Description in english.
+**desc_fi**: Description in finnish.
+**desc_token**: Steam reference to description.
+**hiddenv: Hidden achievement true/false.
+**icon**: Icon for achievement.
+**icon_locked**: Locked achievement icon.
+**desc_locked**: Description for a locked achievement.
+****: Amount of xp/gamerscore/etc. gained by achieving.
+**acmt_stat_tres**: Epic statTresholds.
+**ag_type**: Epic aggregationType.
+**flavor_txt**: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
 ```
 
 ## Authors
@@ -92,7 +89,7 @@ flavor_txt: Epic. Localized flavor text that can be used by the game in an arbit
 @nibizax
 
 ## License
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the [NAME HERE] License - see the link for details.
 
 ## Contributing
 Feel free to send pull requests and raise issues.
