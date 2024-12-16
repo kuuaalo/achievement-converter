@@ -21,7 +21,6 @@ class Write:
     def run(self):
         achievements = self.tero.get_achievements()
         oikea_lista = self.tero.fill_missing_values()
-        #achievements = vdf2.value_dict()
 
         if self.file_format == ".xml":
             self.write_to_xml(achievements) # Write to XML if format is XML
@@ -82,11 +81,13 @@ class Write:
 
 
     def write_to_csv(self, achievement):
+        # Retrieve the list of achievements from the Tero
         acmt_list = self.tero.get_achievements()
         if not acmt_list:
             print("No achievements to write.")
             return
 
+        # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
             "name": "name_id",
             "hidden": "hidden",
@@ -94,16 +95,19 @@ class Write:
             "user_epic_achievements_xp": "acmt_xp",
         }
 
+        # Extract the CSV column names from the keys of csv_field_map
         fieldnames = list(csv_field_map.keys())
 
+        # Open the CSV file for writing. Using newline='' prevents extra blank lines
         with open(self.file_name, "w", newline='') as f:
-            print(self.tero)#debugmessage
+            print(self.tero) #debugmessage
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
 
             for achievement in acmt_list:
                 row = {}
                 for csv_key, data_key in csv_field_map.items():
+                    # Retrieve the value from the achievement dictionary. If the key doesn't exist, use None
                     row[csv_key] = achievement.get(data_key, None)
                 writer.writerow(row)
 
