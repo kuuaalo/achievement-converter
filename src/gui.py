@@ -116,12 +116,15 @@ class AchievementConverterGUI:
         self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
        
         self.display_edit_value() # function to create labels etc widgets
-        
+
+    def update_current_dict(self): #come back to later
+        new_dict = self.controller.get_current_dict()
     
     def display_edit_value(self):
-
+        new_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
+        self.current_dict = new_dict
         current_value = self.current_dict[self.current_key] # Get the value for the current key
-        
+        self.edit_frame.geometry("300x300")
         
         for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
             widget.destroy()
@@ -177,32 +180,40 @@ class AchievementConverterGUI:
     def create_edit_menu_buttons(self, tree):
         
         edit_frame = tree
+        
+        replace_frame = tk.Frame(edit_frame)
+        replace_frame.pack(side=tk.TOP, fill='x', expand=True)
 
-        replaceall_button = ttk.Button( #button to import file
-            edit_frame,
-            text="Replace value in ALL achievements",
-            command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
-        )
+        next_frame = tk.Frame(edit_frame)
+        next_frame.pack(side=tk.TOP, fill='x', expand=True)
+        
         replacethis_button = ttk.Button( #button to import file
-            edit_frame,
-            text="Replace the value in this achievement",
+            replace_frame,
+            text="Replace value",
             command=lambda:self.handle_submit(2, self.current_key, self.acmt_id)
         )
+        replaceall_button = ttk.Button( #button to import file
+            replace_frame,
+            text="Replace in ALL",
+            command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
+        )
         next_acmt_button = ttk.Button(
-            edit_frame,
+            next_frame,
             text="Edit next achievement",
             command=lambda:self.move_to_next_acmt(self.acmt_id)
         )
         next_value_button = ttk.Button(
-            edit_frame,
+            next_frame,
             text="Edit next value",
             command=lambda:self.move_to_next_value()
         )
+    
 
-        replaceall_button.pack(expand=True, padx=10, pady=10)
-        replacethis_button.pack(expand=True, padx=10, pady=10)
-        next_acmt_button.pack(expand=True, padx=10, pady=10)
-        next_value_button.pack(expand=True, padx=10, pady=10)
+        replacethis_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
+        replaceall_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
+
+        next_acmt_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
+        next_value_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
 
 
     

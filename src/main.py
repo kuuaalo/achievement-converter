@@ -14,6 +14,7 @@ class AchievementConverter:
         self.tero = Tero(False, False) # init and give parameters
         self.gui = AchievementConverterGUI(self.root, self) # init gui with root and self
         self.new_table = None
+        self.current_dict = None
 
     def file_handler(self, selected_path, command): # gui calls this to respond to user input
         if(command==1): # import
@@ -27,6 +28,7 @@ class AchievementConverter:
 
                 # table creation starts here
                 self.acmt_dict = self.fetch_acmt_dict() # get dict for table headers
+                self.current_dict = self.acmt_dict
                     
                 if self.new_table is None: 
                     self.new_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
@@ -55,11 +57,16 @@ class AchievementConverter:
     
     def fetch_acmt_dict(self, index = 0):
         acmt_dict = self.tero.get_achievement_by_data(index) # get a single achievement and it's values
+        self.current_dict = acmt_dict
         return acmt_dict
     
     def fetch_filtered_dict(self, key_list, index = 0): # get a single achievement's specified keys and values
         acmt_dict = self.tero.get_achievement_keys_from_dict(key_list, index)
+        self.current_dict = acmt_dict
         return acmt_dict
+    
+    def get_current_dict(self):
+        return self.current_dict
          
     def data_handler(self, command, key, new_value, id = None): # sends new values to be added to dict
         if(command==1):
