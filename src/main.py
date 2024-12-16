@@ -22,20 +22,23 @@ class AchievementConverter:
                 self.read = Read(acmt_file_path, acmt_platform, self.tero) # init read and give params
                 self.read.run() # run read
                 acmt_list = self.tero.fill_missing_values() # get list of all achievements and keys
-                    
+
+
+
                 # table creation starts here
                 self.acmt_dict = self.fetch_acmt_dict() # get dict for table headers
                     
-                if self.new_table == None: 
+                if self.new_table is None: 
                     self.new_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
                     self.gui.bind_events(self.new_table) # bind key press events to table
                     self.gui.configure_table(self.new_table) # et some styling
                     formats = ('Steam', 'Epic', 'MS Store', 'All') # values for filter creation
                     self.gui.create_filter(self.new_table, formats, 'formats') # create filter
+                    self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) #first round didn't render any data, added this to populate first import
                 else:
                     self.gui.refresh_table(self.new_table) # if table already exists, clear it
+                    self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table  
 
-                self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table
 
         elif(command==2): # export
                 self.acmt_platform = self.get_file_extension(selected_path) # send path to func and get extension
@@ -64,9 +67,11 @@ class AchievementConverter:
         elif(command==2):
             acmt_list = self.tero.update_achievement_data(id, key, new_value)
         
-        self.gui.refresh_table(self.new_table) 
-        self.gui.populate_table(self.new_table, acmt_list)
+        acmt_dict = self.fetch_acmt_dict() ## added fetch so populate_table knows what to deal with ##
 
+        self.gui.refresh_table(self.new_table) 
+        self.gui.populate_table(self.new_table,acmt_list, acmt_dict)  ##  added missing argument here ##
+ 
     def get_file_extension(self, selected_path): # returns file extension
         return os.path.splitext(selected_path)[1].lower()  
 

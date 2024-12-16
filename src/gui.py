@@ -21,7 +21,7 @@ class AchievementConverterGUI:
         self.acmt_table = None #single achievement display table
         self.edit_frame = None 
         self.current_dict = None #current dict in use for table headings
-
+        self.current_acmt_id = None #init the id so when filtering is called, it has something 
 
     def create_table(self, acmt_dict): #general function for creating table objects
         
@@ -33,6 +33,7 @@ class AchievementConverterGUI:
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
         
         column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
+        print("making table") ###################debug stuff #########################
         self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table from tuple
         
         #scrollbar setup
@@ -56,7 +57,7 @@ class AchievementConverterGUI:
         table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
 
     def populate_table(self, table, acmt_list, acmt_dict):
-        
+        print(f"Populating table")                                           #debug stuff ################
         self.current_dict = acmt_dict #save current keys and values
         
         for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
@@ -92,7 +93,7 @@ class AchievementConverterGUI:
             self.refresh_table(self.acmt_table) # clear old table
         else:
             self.acmt_table = self.create_table(col_dict) # create new acmt table
-    
+            
         for index, key in enumerate(acmt_dict): # fill values
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
 
@@ -167,7 +168,6 @@ class AchievementConverterGUI:
         
     
     def populate_acmt_table(self, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
-        
         print(acmt_dict)
         for index, key in enumerate(acmt_dict):
             print(key)
