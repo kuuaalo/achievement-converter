@@ -7,7 +7,7 @@ Currently supported formats are Steam (.vdf), MS Store (.xml) and Epic (.csv).
 Python version 3.13.0 or newer to run.
 vdf 3.4. library (https://pypi.org/project/vdf/)
 
-### Update python
+### Installing
 See which version you have installed with:
 ```
 python --version
@@ -41,25 +41,30 @@ achievement-converter\src\python3 main.py
 ```
 depending on your settings.
 
+### Import
 This will open the graphical user interface. 
 From here you can choose to import a new achievement file. 
 Importing the file lists all of the achievements in a table. You can find the explanations for all of the key:value pairs from this document.
 You can filter the values with the filter options provided. This shows only the values needed for the chosen platform's achievement-file.
 
+### Edit
 Select an achievement from the table by double-clicking it. This displays it's contents in a new table.
 Here you can click on a value you wish to edit to open up the edit-menu.
 The edit-pop up menu has four buttons. You can either replace the value in this single specific achievement, or all of the achievements you imported. 
 You can also edit the next value or open the same value but, in the next achievement.
 
+### Export
 When you are happy with the changes you've made, you can choose 'export' to convert the achievements to your desired format.
 Choose the save folder and format and click export. You can also save the imported file as a .json-file, for later editing. Loading the .json still in progress.
 
 ## List of keys and their explanations
+
+* version: Steam. version
+* game_name: Steam. game name -->
+* acmt_num: Steam | MS Store display order/identifier in file for multiple achievements
+* name_token: Steam. Reference to name
+
 ```
-version: Steam. version
-game_name: Steam. game name
-acmt_num: Steam | MS Store display order/identifier in file for multiple achievements
-name_token: Steam. Reference to name
 name_id: Achievement ID, identifier
 name_en: Name/title in english
 name_fi: Name/title in finnish
@@ -79,16 +84,25 @@ ag_type: Epic aggregationType
 flavor_txt: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
 ```
 
-## Future/Roadmap
-
-
-## Contribution
-
-## Credits
-
-
-
+## Authors
+@kuuaalo
+@Raulimakinen
+@sotuo
+@jhannunen
+@nibizax
 
 ## License
+This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+
+## Contributing
+Feel free to send pull requests and raise issues.
+
+## Acknowledgments
+Repositories used for inspiration or reference:
+
+
+
+
+
 
 
