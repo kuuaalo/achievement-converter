@@ -1,6 +1,6 @@
-# Achievement Converter - Program for game achievement file conversion. 
+# Achievement Converter
 ## Description
-Achievement Converter is a python program for converting achievement files and from different store platforms' formats.
+Achievement Converter is a python program for converting achievement files to and from different store platforms' formats.
 Currently supported formats are Steam (.vdf), MS Store (.xml) and Epic (.csv).
 ## Installation
 ### Dependencies
@@ -58,27 +58,27 @@ Choose the save folder and format and click 'export'. You can also save the impo
 ## List of keys and their explanations
 
 ```
-**version**: Steam. version.
-**game_name**: Steam. game name.
-**acmt_num**: Steam & MS Store. Display order/identifier in file for multiple achievements
-**name_token**: Steam. Reference to name.
-**name_id**: Achievement identifier.
-**name_en**: Name/title in english.
-**name_fi**: Name/title in finnish.
-**name_locked**: Locked achievement title.
-**base_acmt**: MS store. Is the achievement unlockable in base-game.
-**desc_id**: MS store. Description indentifier.
-**desc_env: Description in english.
-**desc_fi**: Description in finnish.
-**desc_token**: Steam reference to description.
-**hiddenv: Hidden achievement true/false.
-**icon**: Icon for achievement.
-**icon_locked**: Locked achievement icon.
-**desc_locked**: Description for a locked achievement.
-****: Amount of xp/gamerscore/etc. gained by achieving.
-**acmt_stat_tres**: Epic statTresholds.
-**ag_type**: Epic aggregationType.
-**flavor_txt**: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
+version: Steam. version.
+game_name: Steam. game name.
+acmt_num: Steam & MS Store. Display order/identifier in file for multiple achievements
+name_token: Steam. Reference to name.
+name_id: Achievement identifier.
+name_en: Name/title in english.
+name_fi: Name/title in finnish.
+name_locked: Locked achievement title.
+base_acmt: MS store. Is the achievement unlockable in base-game.
+desc_id: MS store. Description indentifier.
+desc_env: Description in english.
+desc_fi: Description in finnish.
+desc_token: Steam reference to description.
+hidden: Hidden achievement true/false.
+icon: Icon for achievement.
+icon_locked: Locked achievement icon.
+desc_locked: Description for a locked achievement.
+acmt_xp: Amount of xp/gamerscore/etc. gained by achieving.
+acmt_stat_tres: Epic statTresholds.
+ag_type: Epic aggregationType.
+flavor_txt: Epic. Localized flavor text that can be used by the game in an arbitrary manner. 
 ```
 
 ## Authors
