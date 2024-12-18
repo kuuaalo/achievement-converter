@@ -1,37 +1,9 @@
-#readin pitää sisältää osat:
-# tiedoston (pathin) valinta ja haku käyttäjältä = choose, get, (mainin homma?)
-# tiedoston tunnistaminen = identify (main)
-# ottaa vastaan tiedoston
-# tiedoston lukeminen = read (kirjasto)
-# achievementien erottelu ja jäsentäminen = separate, parse
-# tietojen muokkaus = edit
-# datan siirtäminen eteenpäin Terolle = funktion määrittely tulee teroon
-
-# readista tulee dictionary
-# rivi kerrallaan Terolle (maybe)
-# main käyttää readia
-# Tero on hyödyllinen idiootti ja main on disabled
-# msstore, epicgames, steam
-
-# tähän kerään syntyneitä ajatuksia, ja mahdollisia käytettäviä funktioita ynnä muuta
-# read luokalle runko, main perustaa oliot luokista, read luokan määrittely
-# set_fileformat
-# read.run
-# tietojen lisäämistä varten vastaavia kuin set_filename
-# read ei tiedä missä Tero on, mainin pitää pystyä kertomaan
-# yksi achievement on yksi dict
-# achievements on lista dictionaryja
-# parserin vuoro, xml, miten saa luettua että siitä voi tehdä jotain > set_achievement
-# opettele käyttämään parseria, xml, csv > dict > avain/arvo, tutki pythonin valmiita parsereita
-# mitä rauli haluaa: minkälaisen python tietorakenteen olettaa saavansa
-
 import os
 import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
 # from tero import tero
-#miten importoidaan tero
 
 # test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
 
@@ -67,6 +39,9 @@ class Read:
 
 
     def run (self):
+    # switcher for run
+    # decides which format is being used
+
         if self.format == ".txt":
             self.run_vdf()
 
@@ -100,6 +75,7 @@ class Read:
 
 
     def run_vdf (self):
+    # handles vdf files
 
         acmt = self.open_file_debug()
 
@@ -155,6 +131,7 @@ class Read:
         return True
 
     def run_csv(self):
+    # handles csv files
 
         acmt = self.file_name
         ol = []
@@ -175,6 +152,7 @@ class Read:
 
 
     def run_xml(self):
+    # handles xml files
 
         acmt = self.file_name
         print("printing acmt")
@@ -214,8 +192,8 @@ class Read:
 
 
         #aet = ET.parse("C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml")
-        
-        
+
+
         #print("printing aet")
         #pprint.pp(aet)
 
