@@ -3,15 +3,14 @@ import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
-# from tero import tero
 
 # test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
 
-# tero = 1
+# process = 1
 
 class Read:
 
-    def __init__(self, file_name, format, tero):
+    def __init__(self, file_name, format, process):
 
         if file_name:
             self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
@@ -29,12 +28,12 @@ class Read:
         self.vdf_params_outer = ["undefined", "stats", "1"]
         self.vdf_params_inner = ['bits']
 
-        if tero:
-            self.tero = tero
-            print("self_tero")
-            print(self.tero)
+        if process:
+            self.process = process
+            print("self_process")
+            print(self.process)
         else:
-            print("Error: no tero")
+            print("Error: no process")
             return None
 
 
@@ -126,7 +125,7 @@ class Read:
         print("printing ol")
         pprint.pp(ol)
 
-        self.tero.add_achievements(ol)
+        self.process.add_achievements(ol)
 
         return True
 
@@ -148,7 +147,7 @@ class Read:
                     }
                     ol.append(acmt_dict)
         pprint.pp(ol)
-        self.tero.add_achievements(ol)
+        self.process.add_achievements(ol)
 
 
     def run_xml(self):
@@ -186,7 +185,7 @@ class Read:
         print("Parsed achievement:")
         pprint.pp(ol)
 
-        self.tero.add_achievements(ol)
+        self.process.add_achievements(ol)
 
         return True
 
@@ -234,7 +233,7 @@ class Read:
     def register_debug(self, df):
         self.df = df
 
-# R = Read(test_file_location, "dummy", tero)
+# R = Read(test_file_location, "dummy", process)
 # R.run_xml()
 
         # except FileNotFoundError:

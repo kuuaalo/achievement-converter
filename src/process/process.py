@@ -1,10 +1,6 @@
 import json
 
-
-
-
-
-class Tero:
+class Process:
 
     def __init__(self, resume=False, achievement_list=None):
         if achievement_list is False or achievement_list is None:

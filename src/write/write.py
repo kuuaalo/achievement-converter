@@ -1,10 +1,9 @@
 import xml.dom.minidom as minidom
 import csv
 import vdf
-import read.vdfparse as vdf2
 
 class Write:
-    def __init__(self, file_name, file_format, tero):
+    def __init__(self, file_name, file_format, process):
         if file_name:
             self.file_name = file_name
         else:
@@ -16,11 +15,11 @@ class Write:
         else:
             print("Wrong format from write")  # Print error if file format is invalid
             return
-        self.tero=tero
+        self.process=process
 
     def run(self):
-        achievements = self.tero.get_achievements()
-        oikea_lista = self.tero.fill_missing_values()
+        achievements = self.process.get_achievements()
+        oikea_lista = self.process.fill_missing_values()
 
         if self.file_format == ".xml":
             self.write_to_xml(achievements) # Write to XML if format is XML
@@ -81,8 +80,8 @@ class Write:
 
 
     def write_to_csv(self, achievement):
-        # Retrieve the list of achievements from the Tero
-        acmt_list = self.tero.get_achievements()
+        # Retrieve the list of achievements from the process
+        acmt_list = self.process.get_achievements()
         if not acmt_list:
             print("No achievements to write.")
             return
@@ -100,7 +99,7 @@ class Write:
 
         # Open the CSV file for writing. Using newline='' prevents extra blank lines
         with open(self.file_name, "w", newline='') as f:
-            print(self.tero) #debugmessage
+            print(self.process) #debugmessage
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
 
