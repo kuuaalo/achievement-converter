@@ -1,2 +1,0 @@
-Name:jussi,Status:dead,Name:aalo,Status:dead
-Name:rauli,Status:alive and kicking,Name:vivi,Status:kömpelö
