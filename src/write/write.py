@@ -1,34 +1,48 @@
+"""
+This module provides functionality to write achievement data into different file formats.
+Depending on the specified file format, it writes the data to the appropriate 
+file format in a structured and formatted way.
+"""
+
 import xml.dom.minidom as minidom
 import csv
 import vdf
 
 class Write:
     def __init__(self, file_name, file_format, process):
+        
         if file_name:
             self.file_name = file_name
         else:
             print("Wrong file name")
             return
 
+        # Set the file format to lowercase
         if file_format:
-            self.file_format = file_format.lower()  # Set the file format to lowercase
+            self.file_format = file_format.lower()  
+        # Print error if file format is invalid
         else:
-            print("Wrong format from write")  # Print error if file format is invalid
+            print("Wrong format from write")  
             return
         self.process=process
 
     def run(self):
+        # Execute the writing process based on the specified file format.
         achievements = self.process.get_achievements()
         oikea_lista = self.process.fill_missing_values()
 
+        # Write to XML if format is XML
         if self.file_format == ".xml":
-            self.write_to_xml(achievements) # Write to XML if format is XML
+            self.write_to_xml(achievements) 
+        # Write to CSV if format is CSV
         elif self.file_format == ".csv":
-            self.write_to_csv(achievements) # Write to CSV if format is CSV
+            self.write_to_csv(achievements) 
+        # Write to VDF if format is VDF
         elif self.file_format == ".vdf":
-            self.write_to_vdf(achievements) # Write to VDF if format is VDF
+            self.write_to_vdf(achievements)
+        # Print error for unsupported formats
         else:
-            print(f"Unsupported format: {self.file_format}")  # Print error for unsupported formats
+            print(f"Unsupported format: {self.file_format}")  
 
 
     def write_to_xml(self, achievements):
@@ -112,8 +126,8 @@ class Write:
 
         print(f"Data written to {self.file_name} in CSV format.")
 
-
-    def write_to_vdf(self, achievements):  # Create a dictionary for all achievements 
+    # Create a dictionary for all achievements
+    def write_to_vdf(self, achievements):   
         nested_data = {
             "123456": {                    # This is some kind of game identifier, adjust when informed what and how
                 "stats": {}
