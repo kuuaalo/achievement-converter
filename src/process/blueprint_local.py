@@ -1,31 +1,15 @@
 blueprint_local = {
-        "achievement_id": None,
-        "locale": None,
-        "locked_title": None,
-        "locked_description":None,
-        "unlocked_title": None,
-        "unlocked_description":None,
-        "flavor_text": None,
-        "locked_icon": None,
-        "unlocked_icon": None,
-        
-
-        "lang": None,
-        "tokens":None,
-        "NEW_ACHIEVEMENT_1_[i]_NAME": None,
-        "NEW_ACHIEVEMENT_1_[i]_DESC":None,
-
-        "id" :None,
-        "id_locale" : None, #Ms store,text for title, needs some iterating again?
-        "id_locked_desc": None,
-        "locked_translation": None,
-        "id_unlocked_desc": None,
-        "unlocked_translation": None,
-        
-
-
-    }
+    "achievement_id": None,        # if exists, the id number or other indentification
+    "locale": None,                # language, "finnish" or "FI" etc
+    "locked_title": None,          # name, title etc when achievement locked
+    "locked_description": None,    # description when achievement is locked
+    "unlocked_title": None,        # name,title etc when unlocked, ie. "achievement 1"
+    "unlocked_description": None,  # unlocked description, or just description
+    "flavor_text": None,           # additional info
+    "locked_icon": None,           # locked icon 
+    "unlocked_icon": None,         # unlocked icon 
+}
 
 
 
-#Tarvitaan joku laskuri tai ynnääjä sille, montako riviä steam achievementiin tehdään 1_1, 1_2 
+

@@ -44,10 +44,10 @@ class Write:
         else:
             print(f"Unsupported format: {self.file_format}")  
 
-
+    # Writes achievements in XML format
     def write_to_xml(self, achievements):
-        doc = minidom.Document()  # Create a new XML document
-        root = doc.createElement('Achievements')  # Create the root element
+        doc = minidom.Document()  
+        root = doc.createElement('Achievements') 
         doc.appendChild(root)
 
         for achievement in achievements:
@@ -73,7 +73,7 @@ class Write:
                     # Create the Rewards element and inside it the gamerscore nest
                         rewards_element = doc.createElement("Rewards")
                         gamerscore = doc.createElement("Gamerscore")
-                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore", 0))))  # Default 0 if not available
+                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore")))) 
                         rewards_element.appendChild(gamerscore)
                         achievement_element.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
 
@@ -93,6 +93,9 @@ class Write:
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
 
 
+
+
+    # Writes achievements in CSV format
     def write_to_csv(self, achievement):
         # Retrieve the list of achievements from the process
         acmt_list = self.process.get_achievements()
@@ -134,7 +137,7 @@ class Write:
             }
         }
 
-        for i, achievement in enumerate(achievements, start=1):  # Create the structure for each achievement with a map, this is pretty 
+        for i, achievement in enumerate(achievements, start=1):  
             achievement_data = {
                 "bits": {
                     str(i): {

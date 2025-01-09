@@ -1,3 +1,9 @@
+"""
+Process module provides functionality to modify your data, it organizes achievements to maintain easy usability
+with different formats, and provides information and data to other modules. If you need to add more functionality
+to the program, this is the best place to do it, as all information passes through this module, and this module communicates with main 
+a lot. Here data is organized according to blueprints, and then used wherever it is needed.
+"""
 import json
 
 class Process:
@@ -10,24 +16,23 @@ class Process:
             self.achievement_list = achievement_list
             
 
-
-    def add_achievement(self,achievement):                      # Takes a dict and passes it where it is needed
+    # Takes a dict and adds achievement to achievement_list, then passes list where needed
+    def add_achievement(self,achievement):                      
         if isinstance(achievement,dict):
-            self.achievement_list.append(achievement)           # Adds achievement to achievement_list
-            return self.achievement_list                        # Returns all given achievements as list
+            self.achievement_list.append(achievement)           
+            return self.achievement_list                        
         else: return False
             
-
-    def add_achievements(self,achievements):                    # Takes a list of achievements  
+    # Takes a list of achievements and then it can be passed around  
+    def add_achievements(self,achievements):                   
         if isinstance(achievements,list): 
             self.achievement_list = achievements
-            return self.achievement_list                        # Returns the list of achievements for later use
+            return self.achievement_list                        
         else: return False
 
-    
+    # Define blueprint for all values, so that write fill have something to print
     def fill_missing_values(self):
-       
-        blueprint = {                                           # Define blueprint for all values, so that write fill have something to print
+        blueprint = {                                          
             "version": None, 
             "game_name": None,
             "game_id": None,
@@ -51,60 +56,70 @@ class Process:
             "flavor_txt": None, 
             "base_acmt":None,
         }
-
-        
-        for achievement in self.achievement_list:               # Iterate over the achievement list to fill missing values based on blueprint
+        # Iterate over the achievement list to fill missing values based on blueprint. 
+        # This sets None values to 0 to ensure printing of all nests and value pairs
+        for achievement in self.achievement_list:              
             for key, default_value in blueprint.items():
-                if key not in achievement:                      # If the key is missing from the achievement
+                if key not in achievement:                     
                     achievement[key] = default_value if default_value is not None else 0
-                elif achievement[key] is None:                   # If the value is None, set it to 0 (or default)
+                elif achievement[key] is None:                   
                     achievement[key] = 0                         
-        return self.achievement_list                             # Return the updated achievement_list
+        return self.achievement_list                             
   
 
-    def get_achievements(self):                                  # write calls this, and this returns list of dicts
+    # write calls this, and this returns list of dicts
+    def get_achievements(self):                                 
         return self.achievement_list
-   
-   
-    def get_achievement_by_data(self, index):                  #should be able to fetch achievement by certain data
+
+
+   # Fetch achievement by certain data 
+    def get_achievement_by_data(self, index):                   
         acmt_dict = self.achievement_list[int(index)] 
         return acmt_dict
     
-    def get_achievement_keys_from_dict(self, key_list, index):  #returns a dictionary of the given keys in achievement
+
+    # Returns a dictionary of the given keys in achievement
+    def get_achievement_keys_from_dict(self, key_list, index):  
         acmt_dict = self.achievement_list[int(index)] 
         new_dict = {}
         for key in acmt_dict:
             if key in key_list:
                 new_dict[key] = acmt_dict[key]
         return new_dict
+    
 
-    def add_data_to_all_achievements(self,key,new_value):        #replace value in all achievements
+    # Replace value in all achievements. Checks if it exists, adds if not
+    def add_data_to_all_achievements(self,key,new_value):        
         for achievement in self.achievement_list: 
-            if key in achievement:                               #checks if it exists
+            if key in achievement:                               
                 achievement[key] = new_value
             else:
-                achievement[key]= new_value                      #adds it if it doesnt exist
+                achievement[key]= new_value                     
         return self.achievement_list    
-  
+    
+    # Replace one value in achievement
     def update_achievement_data(self, achievement_id, key, new_value):
-            achievement = self.achievement_list[int(achievement_id)] #!!rauli added int to convert index from string 
+            achievement = self.achievement_list[int(achievement_id)] 
             if key in achievement:
                 old_value = achievement[key]
                 achievement[key] = new_value
             else:
                 achievement[key] = new_value
             
-            return self.achievement_list                           #en osannu diilata näitten true/false kanssa
+            return self.achievement_list                           
 
-    
-    def save_data(self,file_path):                                  #Saves data to selected file path as JSON
+
+    # Saves data to selected file path as JSON
+    def save_data(self,file_path):                                 
         with open(file_path, 'w') as f:
             json.dump(self.achievement_list, f)  
         print(f"Data saved to {file_path}")
         return True
 
-    def load_data(self,file_path):                                  #Loads JSON data from selected path
+
+    # To continue existing project, load JSON data from selected path
+    def load_data(self,file_path):                                  
         with open(file_path, 'r') as f:
             loaded_data = json.load(f)
         print(f"Data saved to {file_path}")
-        return loaded_data                                           #Still wondering if this should return as achievement_list just to clarify overall structure?
+        return loaded_data                                           
