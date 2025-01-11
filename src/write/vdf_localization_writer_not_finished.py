@@ -22,6 +22,8 @@ languages = {
     "turkish": "tr",
     "english": "en-US"
 }
+
+#Hard coded example data, but matches blueprint so future data will look like this
 blueprint_data = [
     {
         "achievement_id": "AchievementID1",
