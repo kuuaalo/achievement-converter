@@ -56,7 +56,7 @@ class Write:
 
             xml_tags_map = {
                 "AchievementNameId": "name_id",
-                "BaseAchievement": "hidden",
+                "BaseAchievement": "hidden",  # This is the only one without a meaningful value atm
                 "DisplayOrder": "acmt_num",
                 "LockedDescriptionId": "desc_locked",
                 "UnlockedDescriptionId": "desc_en",
