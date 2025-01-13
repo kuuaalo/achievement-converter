@@ -87,12 +87,10 @@ class Write:
 
     # Convert the document to a pretty-printed XML string
         xml_str = doc.toprettyxml(indent="  ")
-        with open(self.file_name, "w") as f:
+        with open(self.file_name, "w", encoding="utf-8") as f:
             f.write(xml_str)  # Write the XML string to the file
 
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
-
-
 
 
     # Writes achievements in CSV format
@@ -115,7 +113,7 @@ class Write:
         fieldnames = list(csv_field_map.keys())
 
         # Open the CSV file for writing. Using newline='' prevents extra blank lines
-        with open(self.file_name, "w", newline='') as f:
+        with open(self.file_name, "w", newline='', encoding="utf-8") as f:
             print(self.process) #debugmessage
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -165,7 +163,7 @@ class Write:
             nested_data["123456"]["stats"][str(i)] = achievement_data  # Add the achievement to the stats section
         vdf_text = vdf.dumps(nested_data, pretty=True)     # Convert the dictionary to VDF format
         
-        with open(self.file_name, "w") as f:  # Write to the VDF file
+        with open(self.file_name, "w", encoding="utf-8") as f:  # Write to the VDF file
             f.write(vdf_text)
 
         print(f"Data written to {self.file_name} in nested VDF format.")
