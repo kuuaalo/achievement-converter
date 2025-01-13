@@ -269,19 +269,25 @@ class AchievementConverterGUI:
         open_button = ttk.Button( #button to import file
             button_frame,
             text="Import achievement file",
-            command=lambda: self.select_file(1) #sends a parameter to select file
+            command=lambda: self.controller.import_file()
         )
         
         export_button = ttk.Button( #button to export file
             button_frame,
             text="Export achievement file",
-            command=lambda: self.select_file(2)
+            command=lambda: self.controller.export_file()
         )
 
         save_button = ttk.Button( #button to save project file
             button_frame,
             text="Save achievement file",
-            command=lambda: self.select_file(3)
+            command=lambda: self.controller.save_file()
+        )
+
+        load_button = ttk.Button( #button to save project file
+            button_frame,
+            text="Load achievement file",
+            command=lambda: self.controller.load_file()
         )
 
         exit_button = ttk.Button( #button to exit program
@@ -294,6 +300,7 @@ class AchievementConverterGUI:
         open_button.pack(side=tk.LEFT, expand=False)
         export_button.pack(side=tk.LEFT, expand=False)
         save_button.pack(side=tk.LEFT, expand=False)
+        load_button.pack(side=tk.LEFT, expand=False)
         exit_button.pack(side=tk.LEFT, expand=False)
     
     def show_error(self, error_title, error_msg): #shows error pop-up
@@ -308,16 +315,5 @@ class AchievementConverterGUI:
         self.refresh_table(self.acmt_table)
         acmt_dict = self.controller.fetch_acmt_dict(index)
         self.populate_acmt_table(acmt_dict)
-            
-
-    def select_file(self, command):
-        if (command == 1): 
-            file_path = fd.askopenfilename(title="Import achievement file")
-        elif (command == 2): 
-            file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("VDF files", "*.vdf"), ("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
-        elif (command == 3):
-            file_path = fd.asksaveasfilename(title="Save project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("JSON", "*.json")])
-        
-        self.controller.file_handler(file_path, command) #callback function, new path and variable to main
-        print(file_path)
+  
 
