@@ -1,20 +1,24 @@
+"""
+This module provides functionality to read achievement data from different file formats.
+It strips and converts the data from given files to a list of dictionaries.
+It then sends a list of dictionarys to the process.py module.
+"""
+
 import os
 import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
 
-# test_file_location = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
-
-# process = 1
-
 class Read:
 
     def __init__(self, file_name, format, process):
 
         if file_name:
-            self.file_name = file_name #todennäköisesti configista PATHNAME + file_name
+            self.file_name = file_name
             print(self.file_name)
+            self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+            self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
         else:
             print("Using test2.txt")
             return None
@@ -86,11 +90,8 @@ class Read:
 
         pl[0] = self.steamid
 
-        # tämän voi siirtää parametriksi
-        # j = d[self.steamid]['stats']['1']
         j = self.vdf_dict_peeling(d, pl)
 
-        # halutaan joku mainin määrittämä tapa miten saada käyttäjälle näkyville
         if (j['type'] == 'ACHIEVEMENTS'):
             print("type in j is correct")
             pass
@@ -130,24 +131,59 @@ class Read:
         return True
 
     def run_csv(self):
-    # handles csv files
-
+    # Handles parsing of CSV files and processes achievements data.
+        #reading main file
         acmt = self.file_name
         ol = []
-
         with open(acmt, mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                for row in csv_reader:
-                    acmt_dict = {
-                        "name_id": row.get("name"),
-                        "hidden": row.get("hidden"),
-                        "acmt_xp": row.get("user_epic_achievements_xp"),
-                        "acmt_stat_tres": row.get("statTresholds"),
-                    }
-                    ol.append(acmt_dict)
+                acmt_dict = {
+                    "name_id": row.get("name"),
+                    "hidden": row.get("hidden"),
+                    "acmt_xp": row.get("user_epic_achievements_xp"),
+                    "acmt_stat_tres": row.get("statTresholds"),
+                }
+                ol.append(acmt_dict)
         pprint.pp(ol)
-        self.process.add_achievements(ol)
+        # self.process.add_achievements(ol)
+
+        #reading localization file
+        locals = self.localization_filename
+        lol = []
+        with open(locals, mode='r', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                locals_dict = {
+                    "name_id": row.get("name"),
+                    "locale": row.get("locale"),
+                    "lockedTitle": row.get("lockedTitle"),
+                    "lockedDesc": row.get("lockedDescription"),
+                    "unlocked": row.get("unlockedTitle"),
+                    "unlockeddesc": row.get("unlockedDescription"),
+                    "flavor": row.get("flavorText"),
+                }
+                lol.append(locals_dict)
+        pprint.pp(lol)
+        for a in lol:
+            ID = a["name_id"]
+            LOCALE = a["locale"]
+            xl = []
+            for x in a:
+                if x == "name_id":
+                    continue
+                if x == "locale":
+                    continue
+                xl.append((x, a[x]))
+            print("printing xl")
+            pprint.pp(xl)
+
+
+            # self.process.add_localizations(a[ID], a[LOCALE], "list_of_valuepairs")
+            pprint.pp("printing localization items")
+            pprint.pp(a)
+
+# name,locale,lockedTitle,lockedDescription,unlockedTitle,unlockedDescription,flavorText,lockedIcon,unlockedIcon
 
 
     def run_xml(self):
@@ -190,36 +226,9 @@ class Read:
         return True
 
 
-        #aet = ET.parse("C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml")
-
-
-        #print("printing aet")
-        #pprint.pp(aet)
-
-
-        # tag = aet.find("ns:Achievement", namespace)
-        # print("printing tag")
-        # pprint.pp(tag)
-
-        # for a in aet.findall("ns:Achievement", namespace):
-        #     print("printing a")
-        #     pprint.pp(a)
-
-        #     for c in a.iter():
-        #         print("printing c")
-        #         pprint.pp(c)
-        #         print("printing c tag")
-        #         pprint.pp(c.tag)
-        #         print("printing c text")
-        #         pprint.pp(c.text)
-
-
     def read_file(self, file_name= False ):
         if file_name:
             self.file_name = file_name
-
-        #try:
-            #with
 
         f = open(self.file_name, "r")
         file_content = f.read()
@@ -233,22 +242,7 @@ class Read:
     def register_debug(self, df):
         self.df = df
 
-# R = Read(test_file_location, "dummy", process)
-# R.run_xml()
-
-        # except FileNotFoundError:
-        #     print(f"File {self.file_name} not found.")
-        #     return None
-
-
-
-#def achievements_to_txt(achievements):
-# 4. editing the files
-#   pass
-
-# 5. testing the function
-#if __name__=="__main__":
-    #file_path = "path/to/your/file.xml"
-    #result = read_main(file_path)
-    #print(result)
-
+# functions to test read by itself:
+test_filename= "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+R = Read(test_filename, "dummy", None)
+R.run_csv()
