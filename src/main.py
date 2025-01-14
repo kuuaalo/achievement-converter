@@ -28,24 +28,25 @@ class AchievementConverter:
         acmt_platform = self.get_file_extension(acmt_file_path)
         # init read and give params
         self.read = Read(acmt_file_path, acmt_platform, self.process)
+        #self.read = Read(acmt_file_path, locale_file_path, acmt_platform, self.process)
         self.read.run()
         # get list of all achievements and keys
         acmt_list = self.process.fill_missing_values()
 
         # table creation starts here
-        self.acmt_dict = self.fetch_acmt_dict() # get dict for table headers
-        self.current_dict = self.acmt_dict
+        self.table_keys = self.fetch_acmt_dict() # get dict for table headers
+        self.current_dict = self.table_keys
                     
         if self.new_table is None: 
-            self.new_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
+            self.new_table = self.gui.create_table(self.table_keys) # create a new table if there's none
             self.gui.bind_events(self.new_table) # bind key press events to table
             self.gui.configure_table(self.new_table) # et some styling
             formats = ('Steam', 'Epic', 'MS Store', 'All') # values for filter creation
             self.gui.create_filter(self.new_table, formats, 'formats') # create filter
-            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) #first round didn't render any data, added this to populate first import
+            self.gui.populate_table(self.new_table, acmt_list, self.table_keys) #first round didn't render any data, added this to populate first import
         else:
             self.gui.refresh_table(self.new_table) # if table already exists, clear it
-            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table  
+            self.gui.populate_table(self.new_table, acmt_list, self.table_keys) # add values to table  
     
     # export achievement file
     def export_file(self):
@@ -101,6 +102,9 @@ class AchievementConverter:
     #in progress..returns the dictionary that's currently in use for the table headers
     def get_current_dict(self):
         return self.current_dict
+    
+    def get_current_list(self, key_list):
+        return self.process.get_filtered_list(key_list)
     
     # send new values to be added to dict
     def data_handler(self, command, key, new_value, id = None): 

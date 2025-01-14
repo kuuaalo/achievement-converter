@@ -239,28 +239,43 @@ class AchievementConverterGUI:
             'All': '#all'
         }
 
-        all_columns = table['columns'] # Get all available columns
+        # all_columns = table['columns'] # Get all available columns
 
-        if format in column_config:
-            if column_config[format] == '#all':
-                # Show all columns
-                table["displaycolumns"] = '#all'
-                self.valid_columns = table["displaycolumns"]
-            else:
-                # Filter columns that exist in all_columns
-                self.valid_columns = [col for col in column_config[format] if col in all_columns]
-                table["displaycolumns"] = self.valid_columns
-        else:
-            print("Unknown format")
+        # if format in column_config:
+        #     if column_config[format] == '#all':
+        #         # Show all columns
+        #         table["displaycolumns"] = '#all'
+        #         self.valid_columns = table["displaycolumns"]
+        #     else:
+        #         # Filter columns that exist in all_columns
+        #         self.valid_columns = [col for col in column_config[format] if col in all_columns]
+        #         table["displaycolumns"] = self.valid_columns
+        # else:
+        #     print("Unknown format")
         
-        #for getting acmt_view filtering, in the future use this for all filtering
+        
+        
+        key_list = column_config[format] #CONTINUE HERE- how to filter...
+    
+        new_headers = self.controller.fetch_filtered_dict(key_list, 0)
+        current_list = self.controller.get_current_list(key_list)
+
+        table.destroy()
+        table = self.create_table(new_headers)
+        self.populate_table(table, current_list, new_headers)
+
+        #def populate_table(self, table, acmt_list, acmt_dict):
+        print(f"Populating table")                                           #debug stuff ################
+        #self.current_dict = acmt_dict #save current keys and values
+
+
+        #for getting acmt_view filtering
         filter_list = column_config[format] 
         id = self.current_acmt_id
         print(id)
         new_dict = self.controller.fetch_filtered_dict(filter_list, id)
         self.refresh_table(self.acmt_table)
         self.populate_acmt_table(new_dict)
-        self.current_dict = new_dict
         
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
