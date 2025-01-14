@@ -86,6 +86,15 @@ class Process:
             if key in key_list:
                 new_dict[key] = acmt_dict[key]
         return new_dict
+    
+    
+    def get_filtered_list(self, key_list):
+        new_list= []
+        for index, achievement in enumerate(self.achievement_list):
+            filtered_dict = self.get_achievement_keys_from_dict(key_list, index)
+            new_list.append(filtered_dict)
+
+        return new_list
 
 
     # Replace value in all achievements. Checks if it exists, adds if not
