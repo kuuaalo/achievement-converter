@@ -31,6 +31,9 @@ class Write:
         achievements = self.process.get_achievements()
         oikea_lista = self.process.fill_missing_values()
 
+        localizations = self.process.get_localizations()
+        localized_data = self.merge_achievements_and_localizations(achievements,localizations)
+
         # Write to XML if format is XML
         if self.file_format == ".xml":
             self.write_to_xml(achievements) 
@@ -43,6 +46,20 @@ class Write:
         # Print error for unsupported formats
         else:
             print(f"Unsupported format: {self.file_format}")  
+
+  #  def merge_achievements_and_localizations(self, achievements, localizations):
+    # combine achievements and localizations
+ #       for achievement in achievements:
+        # find localizations that match achievements
+ #           achievement_localizations = [
+ #               loc for loc in localizations if loc['achievement_id'] == achievement['name_id']
+ #           ]
+        #add localizations to achievements
+ #           achievement["localizations"] = achievement_localizations
+ #       return achievements
+    
+
+
 
     # Writes achievements in XML format
     def write_to_xml(self, achievements):
