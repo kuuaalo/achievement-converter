@@ -122,4 +122,5 @@ class Process:
         with open(file_path, 'r') as f:
             loaded_data = json.load(f)
         print(f"Data saved to {file_path}")
+        self.achievement_list = loaded_data ##Added this for now, maybe use resume in the future
         return loaded_data

@@ -22,6 +22,7 @@ class AchievementConverter:
     def import_file(self):
         # open filedialog and save path
         acmt_file_path = fd.askopenfilename(title="Import achievement file")
+        locale_file_path = fd.askopenfilename(title="Import localization file")
         
         # get file extension
         acmt_platform = self.get_file_extension(acmt_file_path)
@@ -66,6 +67,24 @@ class AchievementConverter:
         file_path = fd.askopenfilename(title="Load project file", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("JSON", "*.json")])
         self.acmt_file_path = file_path
         self.process.load_data(self.acmt_file_path)
+        
+        # get list of all achievements and keys
+        acmt_list = self.process.fill_missing_values()
+
+        # table creation starts here
+        self.acmt_dict = self.fetch_acmt_dict() # get dict for table headers
+        self.current_dict = self.acmt_dict
+                    
+        if self.new_table is None: 
+            self.new_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
+            self.gui.bind_events(self.new_table) # bind key press events to table
+            self.gui.configure_table(self.new_table) # et some styling
+            formats = ('Steam', 'Epic', 'MS Store', 'All') # values for filter creation
+            self.gui.create_filter(self.new_table, formats, 'formats') # create filter
+            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) #first round didn't render any data, added this to populate first import
+        else:
+            self.gui.refresh_table(self.new_table) # if table already exists, clear it
+            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table  
 
     # get a single achievement and it's values
     def fetch_acmt_dict(self, index = 0):
