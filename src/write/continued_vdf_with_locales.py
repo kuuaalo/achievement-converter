@@ -1,8 +1,43 @@
 
 main_button = 2
+import vdf
 
+# Oletetaan, että achievements on tällainen lista:
+achievements = [
+    {
+        "achievement_id": "AchievementID1",
+        "localizations": [
+            {
+                "locale": "fr",
+                "locked_title": "Récompense verrouillée 1",
+                "locked_description": "Description verrouillée de la récompense 1",
+                "unlocked_title": "Récompense 1",
+                "unlocked_description": "Description de la récompense 1"
+            },
+            {
+                "locale": "es-ES",
+                "locked_title": "Logro bloqueado 1",
+                "locked_description": "Descripción bloqueada del logro 1",
+                "unlocked_title": "Logro 1",
+                "unlocked_description": "Descripción del logro 1"
+            }
+        ]
+    },
+    {
+        "achievement_id": "AchievementID2",
+        "localizations": [
+            {
+                "locale": "en-US",
+                "locked_title": "Locked Achievement 2",
+                "locked_description": "Locked Description of Achievement 2",
+                "unlocked_title": "Achievement 2",
+                "unlocked_description": "Description of Achievement 2"
+            }
+        ]
+    }
+]
 
-def write_to_vdf(self, achievements):
+def write_to_vdf(file_name, achievements):
     nested_data = {
         "game_id": {
             "stats": {}
@@ -19,7 +54,6 @@ def write_to_vdf(self, achievements):
             "icon_gray": achievement.get("icon_locked", ""),
         }
 
-
         for localization in achievement.get("localizations", []):
             locale = localization.get("locale")
             if locale:
@@ -29,7 +63,7 @@ def write_to_vdf(self, achievements):
         achievement_data = {
             "bits": {
                 str(i): {
-                    "name": achievement.get("name_id", ""),
+                    "name": achievement.get("achievement_id", ""),
                     "display": display_data
                 }
             },
@@ -42,14 +76,11 @@ def write_to_vdf(self, achievements):
     # Muunna nested_data VDF-muotoon
     vdf_text = vdf.dumps(nested_data, pretty=True)
 
-    # Kirjoita VDF-data tiedostoon
-    with open(self.file_name, "w", encoding="utf-8") as f:
-        f.write(vdf_text)
+    # Tulosta VDF-data terminaaliin
+    print(vdf_text)
 
-
-    print(f"Data written to {self.file_name} in nested VDF format.")
-
-    
+# Testaa funktiota
+write_to_vdf("achievements.vdf", achievements)
 
 # fetch the lang and locale
 def get_language_from_locale(locale):
@@ -99,7 +130,3 @@ with open("lang_output.txt", "w", encoding="utf-8") as file:
     file.write(formatted_output)
 
  
-def write_vdf_localizations(self,localized_data)
-    self.get_language_from_locale()
-    self.generate_lang_format()
-    self.format_custom_lang
