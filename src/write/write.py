@@ -31,9 +31,6 @@ class Write:
         achievements = self.process.get_achievements()
         oikea_lista = self.process.fill_missing_values()
 
-        localizations = self.process.get_localizations()
-        localized_data = self.merge_achievements_and_localizations(achievements,localizations)
-
         # Write to XML if format is XML
         if self.file_format == ".xml":
             self.write_to_xml(achievements) 
@@ -46,20 +43,6 @@ class Write:
         # Print error for unsupported formats
         else:
             print(f"Unsupported format: {self.file_format}")  
-
-  #  def merge_achievements_and_localizations(self, achievements, localizations):
-    # combine achievements and localizations
- #       for achievement in achievements:
-        # find localizations that match achievements
- #           achievement_localizations = [
- #               loc for loc in localizations if loc['achievement_id'] == achievement['name_id']
- #           ]
-        #add localizations to achievements
- #           achievement["localizations"] = achievement_localizations
- #       return achievements
-    
-
-
 
     # Writes achievements in XML format
     def write_to_xml(self, achievements):
@@ -98,16 +81,17 @@ class Write:
                     element = doc.createElement(xml_tag)
                     element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
                     achievement_element.appendChild(element)
-
         # Append the achievement element to the root
             root.appendChild(achievement_element)
 
     # Convert the document to a pretty-printed XML string
         xml_str = doc.toprettyxml(indent="  ")
-        with open(self.file_name, "w", encoding="utf-8") as f:
+        with open(self.file_name, "w") as f:
             f.write(xml_str)  # Write the XML string to the file
 
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
+
+
 
 
     # Writes achievements in CSV format
@@ -130,7 +114,7 @@ class Write:
         fieldnames = list(csv_field_map.keys())
 
         # Open the CSV file for writing. Using newline='' prevents extra blank lines
-        with open(self.file_name, "w", newline='', encoding="utf-8") as f:
+        with open(self.file_name, "w", newline='') as f:
             print(self.process) #debugmessage
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -180,7 +164,7 @@ class Write:
             nested_data["123456"]["stats"][str(i)] = achievement_data  # Add the achievement to the stats section
         vdf_text = vdf.dumps(nested_data, pretty=True)     # Convert the dictionary to VDF format
         
-        with open(self.file_name, "w", encoding="utf-8") as f:  # Write to the VDF file
+        with open(self.file_name, "w") as f:  # Write to the VDF file
             f.write(vdf_text)
 
         print(f"Data written to {self.file_name} in nested VDF format.")
