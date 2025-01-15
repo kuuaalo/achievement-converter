@@ -1,0 +1,47 @@
+"lang"
+{
+	"english"
+	{
+		"Tokens"
+		{
+			"NEW_ACHIEVEMENT_1_1_NAME"	"Achievement 1"
+			"NEW_ACHIEVEMENT_1_1_DESC"	"Description of Achievement 1"
+			"NEW_ACHIEVEMENT_1_2_NAME"	"Achievement 2"
+			"NEW_ACHIEVEMENT_1_2_DESC"	"Description of Achievement 2"
+		}
+	}
+	"finnish"
+	{
+		"Tokens"
+		{
+			"NEW_ACHIEVEMENT_1_1_NAME"	"Saavutus 1"
+			"NEW_ACHIEVEMENT_1_1_DESC"	"Saavutus 1:en kuvaus"
+			"NEW_ACHIEVEMENT_1_2_NAME"	"Saavutus 2"
+			"NEW_ACHIEVEMENT_1_2_DESC"	"Saavutus 2:en kuvaus"
+		}
+	}
+	"spanish"
+	{
+		"Tokens"
+		{
+			"NEW_ACHIEVEMENT_1_3_NAME"	"Logro 1"
+			"NEW_ACHIEVEMENT_1_3_DESC"	"Descripción del logro 1"
+		}
+	}
+	"german"
+	{
+		"Tokens"
+		{
+			"NEW_ACHIEVEMENT_1_3_NAME"	"Auszeichnung 1"
+			"NEW_ACHIEVEMENT_1_3_DESC"	"Beschreibung der Auszeichnung 1"
+		}
+	}
+	"french"
+	{
+		"Tokens"
+		{
+			"NEW_ACHIEVEMENT_1_3_NAME"	"Récompense 1"
+			"NEW_ACHIEVEMENT_1_3_DESC"	"Description de la récompense 1"
+		}
+	}
+}
