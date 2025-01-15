@@ -160,8 +160,10 @@ class Read:
                     "lockedTitle": row.get("lockedTitle"),
                     "lockedDesc": row.get("lockedDescription"),
                     "unlocked": row.get("unlockedTitle"),
-                    "unlockeddesc": row.get("unlockedDescription"),
+                    "unlockedDesc": row.get("unlockedDescription"),
                     "flavor": row.get("flavorText"),
+                    "lockedIcon": row.get("lockedIcon"),
+                    "unlockedIcon": row.get("unlockedIcon")
                 }
                 lol.append(locals_dict)
         pprint.pp(lol)
