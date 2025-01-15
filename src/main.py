@@ -86,7 +86,40 @@ class AchievementConverter:
         else:
             self.gui.refresh_table(self.new_table) # if table already exists, clear it
             self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table  
+        
+    def filter_values(self, format_var, table):
+        format = format_var.get() # get format variable from widget
 
+        column_config = { #all the possible keys in a filter
+            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
+            'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
+            'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
+            'All': '#all'
+        }
+        
+        key_list = column_config[format]
+    
+        new_headers = self.process.get_achievement_keys_from_dict(key_list, 0)
+        print(new_headers)
+        current_list = self.process.get_filtered_list(key_list)
+        column_list = list(new_headers.keys()) #create a tuple of column names from dict keys
+        print(column_list)
+
+        
+        self.gui.refresh_table(self.new_table, column_list)
+        self.gui.populate_table(self.new_table, current_list, new_headers)
+        
+
+
+
+        # #for getting acmt_view filtering
+        # filter_list = column_config[format] 
+        # id = self.current_acmt_id
+        # print(id)
+        # new_dict = self.controller.fetch_filtered_dict(filter_list, id)
+        # self.refresh_table(self.acmt_table)
+        # self.populate_acmt_table(new_dict)
+        
     # get a single achievement and it's values
     def fetch_acmt_dict(self, index = 0):
         acmt_dict = self.process.get_achievement_by_data(index) 
@@ -99,12 +132,6 @@ class AchievementConverter:
         self.current_dict = acmt_dict
         return acmt_dict
     
-    #in progress..returns the dictionary that's currently in use for the table headers
-    def get_current_dict(self):
-        return self.current_dict
-    
-    def get_current_list(self, key_list):
-        return self.process.get_filtered_list(key_list)
     
     # send new values to be added to dict
     def data_handler(self, command, key, new_value, id = None): 

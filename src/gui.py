@@ -47,7 +47,8 @@ class AchievementConverterGUI:
 
         for col in self.table["columns"]: #iterate trough the columns
             self.table.heading(col, text = col) #set column names as headers
-
+        
+        self.table.lift()
         return self.table
     
     def bind_events(self, table):
@@ -67,8 +68,13 @@ class AchievementConverterGUI:
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
-    def refresh_table(self, table): #empty given table
+    def refresh_table(self, table, columns): #empty given table
         table.delete(*table.get_children())
+        table["columns"] = columns
+
+        for col in table["columns"]: #iterate trough the columns
+            table.heading(col, text = col) #set column names as headers
+
         return True
     
     def identify_id(self, event):
@@ -226,7 +232,7 @@ class AchievementConverterGUI:
 
         for format in formats:
             # create a radio button
-            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.filter_values(format_var, table), variable=format_var)
+            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var, table), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
             radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
     def filter_values(self, format_var, table):
