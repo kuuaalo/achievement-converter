@@ -185,8 +185,7 @@ class Read:
             pprint.pp("printing localization items")
             pprint.pp(a)
 
-# name,locale,lockedTitle,lockedDescription,unlockedTitle,unlockedDescription,flavorText,lockedIcon,unlockedIcon
-
+        return True
 
     def run_xml(self):
     # handles xml files
