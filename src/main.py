@@ -95,23 +95,36 @@ class AchievementConverter:
         self.selected_acmt_id = acmt_id
      
     def filter_values(self, format_var, table):
-        format = format_var.get() # get format variable from widget
+        # get format variable from widget
+        format = format_var.get()
 
-        column_config = { #all the possible keys in a filter
-            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
-            'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
-            'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
-            'All': '#all'
+        #all the possible keys in a filter
+        column_config = {
+            'Steam': ('version', 'game_name', 'acmt_num', 
+                      'name_id', 'name_en', 'name_fi', 
+                      'name_token', 'desc_en', 'desc_fi', 
+                      'desc_token', 'hidden', 'icon', 
+                      'icon_locked', 'acmt_xp'),
+            'MS Store': ('name_id', 'desc_id', 'hidden',
+                        'icon', 'acmt_xp', 'desc_locked',
+                        'base_acmt', 'display_order'),
+            'Epic': ('name_id', 'hidden', 'acmt_xp',
+                     'acmt_stat_tres', 'acmt_xp'),
+            'All': ('version', 'game_name', 'acmt_num',
+                    'name_id', 'name_en', 'name_fi',
+                    'name_token', 'desc_en', 'desc_fi',
+                    'desc_token', 'hidden', 'icon',
+                    'icon_locked', 'acmt_xp','desc_id',
+                    'desc_locked', 'base_acmt', 'display_order',
+                    'acmt_stat_tres')
         }
         
         key_list = column_config[format]
     
         new_headers = self.process.get_achievement_keys_from_dict(key_list, 0)
-        print(new_headers)
-        current_list = self.process.get_filtered_list(key_list)
-        column_list = list(new_headers.keys()) #create a tuple of column names from dict keys
-        print(column_list)
 
+        current_list = self.process.get_filtered_list(key_list)
+        column_list = list(new_headers.keys())
         
         self.gui.refresh_table(self.main_table)
         self.gui.name_table_columns(self.main_table, column_list)
@@ -129,12 +142,6 @@ class AchievementConverter:
     # get a single achievement and it's values
     def fetch_acmt_dict(self, index = 0):
         acmt_dict = self.process.get_achievement_by_data(index) 
-        self.current_dict = acmt_dict
-        return acmt_dict
-    
-    # get a single achievement's specified keys and values
-    def fetch_filtered_dict(self, key_list, index = 0): 
-        acmt_dict = self.process.get_achievement_keys_from_dict(key_list, index)
         self.current_dict = acmt_dict
         return acmt_dict
     
