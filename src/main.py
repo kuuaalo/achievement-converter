@@ -138,6 +138,9 @@ class AchievementConverter:
         self.current_dict = acmt_dict
         return acmt_dict
     
+    def get_current_dict(self):
+        return self.current_dict
+    
     
     # send new values to be added to dict
     def data_handler(self, command, key, new_value, id = None): 

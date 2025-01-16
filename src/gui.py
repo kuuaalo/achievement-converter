@@ -48,7 +48,6 @@ class AchievementConverterGUI:
         for col in self.table["columns"]: #iterate trough the columns
             self.table.heading(col, text = col) #set column names as headers
         
-        self.table.lift()
         return self.table
     
     def bind_events(self, table):
@@ -59,7 +58,7 @@ class AchievementConverterGUI:
         table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
 
     def populate_table(self, table, acmt_list, acmt_dict):
-        print(f"Populating table")                                           #debug stuff ################
+        print(f"Populating table")
         self.current_dict = acmt_dict #save current keys and values
         
         for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
@@ -68,6 +67,12 @@ class AchievementConverterGUI:
                 table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
+    
+    def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
+        print(acmt_dict)
+        for index, key in enumerate(acmt_dict):
+            print(key)
+            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
     
     def refresh_table(self, table): #empty given table
         table.delete(*table.get_children())
@@ -108,7 +113,7 @@ class AchievementConverterGUI:
 
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
 
-        
+    # create edit window
     def edit_value(self, acmt_id, event=None):
         
         if event != None: #if event was given
@@ -126,8 +131,6 @@ class AchievementConverterGUI:
        
         self.display_edit_value() # function to create labels etc widgets
 
-    def update_current_dict(self): #come back to later
-        new_dict = self.controller.get_current_dict()
     
     def display_edit_value(self):
         new_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
@@ -166,7 +169,7 @@ class AchievementConverterGUI:
 
         acmt_dict = self.controller.fetch_acmt_dict(current_row)
 
-        self.populate_acmt_table(acmt_dict)
+        self.populate_acmt_table(self.acmt_table, acmt_dict)
         self.edit_value(current_row)
     
     def move_to_next_value(self):
@@ -177,13 +180,6 @@ class AchievementConverterGUI:
         self.acmt_table.selection_set(new_key_index) # move the selection to next value too
         
         self.display_edit_value() # display widgets to show change to new key
-        
-    
-    def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
-        print(acmt_dict)
-        for index, key in enumerate(acmt_dict):
-            print(key)
-            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
     
 
     def create_edit_menu_buttons(self, tree):
