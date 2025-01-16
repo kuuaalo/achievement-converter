@@ -151,8 +151,8 @@ class AchievementConverter:
         
         acmt_dict = self.fetch_acmt_dict()
 
-        self.gui.refresh_table(self.new_table) 
-        self.gui.populate_table(self.new_table,acmt_list, acmt_dict)
+        self.gui.refresh_table(self.main_table) 
+        self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
     
 
     def get_file_extension(self, selected_path): 

@@ -20,8 +20,7 @@ class AchievementConverterGUI:
 
         self.acmt_table = None #single achievement display table
         self.edit_frame = None 
-        self.current_dict = None #current dict in use for table headings
-        self.current_acmt_id = None #init the id so when filtering is called, it has something 
+        
 
     def create_table(self, acmt_dict): #general function for creating table objects
         
@@ -59,7 +58,6 @@ class AchievementConverterGUI:
 
     def populate_table(self, table, acmt_list, acmt_dict):
         print(f"Populating table")
-        self.current_dict = acmt_dict #save current keys and values
         
         for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
             row_values = list(item.values()) 
@@ -125,7 +123,9 @@ class AchievementConverterGUI:
         
         self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
         
-        self.keys_list = list(self.current_dict.keys()) # create a list of all keys from the dictionary
+        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
+        
+        self.keys_list = list(current_dict.keys()) # create a list of all keys from the dictionary
         
         self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
        
@@ -133,9 +133,9 @@ class AchievementConverterGUI:
 
     
     def display_edit_value(self):
-        new_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
-        self.current_dict = new_dict
-        current_value = self.current_dict[self.current_key] # Get the value for the current key
+        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
+        
+        current_value = current_dict[self.current_key] # Get the value for the current key
         self.edit_frame.geometry("300x300")
         
         for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
@@ -287,6 +287,6 @@ class AchievementConverterGUI:
             self.controller.data_handler(command, key, new_value, index)
         self.refresh_table(self.acmt_table)
         acmt_dict = self.controller.fetch_acmt_dict(index)
-        self.populate_acmt_table(acmt_dict)
+        self.populate_acmt_table(self.acmt_table, acmt_dict)
   
 
