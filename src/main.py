@@ -15,8 +15,9 @@ class AchievementConverter:
         self.root = tk.Tk() # set tkinter as root
         self.process = Process(False, False) # init and give parameters
         self.gui = AchievementConverterGUI(self.root, self) # init gui with root and self
-        self.new_table = None
+        self.main_table = None
         self.current_dict = None
+        self.selected_acmt_id = None #init the id so when filtering is called, it has something 
     
     # import achievement file
     def import_file(self):
@@ -37,16 +38,16 @@ class AchievementConverter:
         self.table_keys = self.fetch_acmt_dict() # get dict for table headers
         self.current_dict = self.table_keys
                     
-        if self.new_table is None: 
-            self.new_table = self.gui.create_table(self.table_keys) # create a new table if there's none
-            self.gui.bind_events(self.new_table) # bind key press events to table
-            self.gui.configure_table(self.new_table) # et some styling
+        if self.main_table is None: 
+            self.main_table = self.gui.create_table(self.table_keys) # create a new table if there's none
+            self.gui.bind_events(self.main_table) # bind key press events to table
+            self.gui.configure_table(self.main_table) # et some styling
             formats = ('Steam', 'Epic', 'MS Store', 'All') # values for filter creation
-            self.gui.create_filter(self.new_table, formats, 'formats') # create filter
-            self.gui.populate_table(self.new_table, acmt_list, self.table_keys) #first round didn't render any data, added this to populate first import
+            self.gui.create_filter(self.main_table, formats, 'formats') # create filter
+            self.gui.populate_table(self.main_table, acmt_list, self.table_keys) #first round didn't render any data, added this to populate first import
         else:
-            self.gui.refresh_table(self.new_table) # if table already exists, clear it
-            self.gui.populate_table(self.new_table, acmt_list, self.table_keys) # add values to table  
+            self.gui.refresh_table(self.main_table) # if table already exists, clear it
+            self.gui.populate_table(self.main_table, acmt_list, self.table_keys) # add values to table  
     
     # export achievement file
     def export_file(self):
@@ -76,17 +77,23 @@ class AchievementConverter:
         self.acmt_dict = self.fetch_acmt_dict() # get dict for table headers
         self.current_dict = self.acmt_dict
                     
-        if self.new_table is None: 
-            self.new_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
-            self.gui.bind_events(self.new_table) # bind key press events to table
-            self.gui.configure_table(self.new_table) # et some styling
+        if self.main_table is None: 
+            self.main_table = self.gui.create_table(self.acmt_dict) # create a new table if there's none
+            self.gui.bind_events(self.main_table) # bind key press events to table
+            self.gui.configure_table(self.main_table) # et some styling
             formats = ('Steam', 'Epic', 'MS Store', 'All') # values for filter creation
-            self.gui.create_filter(self.new_table, formats, 'formats') # create filter
-            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) #first round didn't render any data, added this to populate first import
+            self.gui.create_filter(self.main_table, formats, 'formats') # create filter
+            self.gui.populate_table(self.main_table, acmt_list, self.acmt_dict) #first round didn't render any data, added this to populate first import
         else:
-            self.gui.refresh_table(self.new_table) # if table already exists, clear it
-            self.gui.populate_table(self.new_table, acmt_list, self.acmt_dict) # add values to table  
-        
+            self.gui.refresh_table(self.main_table) # if table already exists, clear it
+            self.gui.populate_table(self.main_table, acmt_list, self.acmt_dict) # add values to table  
+    
+    def register_id(self, event):
+        self.tree = event.widget #get widget based on event
+        acmt_id = self.tree.identify_row(event.y)  # get row
+        print(acmt_id)
+        self.selected_acmt_id = acmt_id
+     
     def filter_values(self, format_var, table):
         format = format_var.get() # get format variable from widget
 
@@ -106,19 +113,18 @@ class AchievementConverter:
         print(column_list)
 
         
-        self.gui.refresh_table(self.new_table, column_list)
-        self.gui.populate_table(self.new_table, current_list, new_headers)
+        self.gui.refresh_table(self.main_table)
+        self.gui.name_table_columns(self.main_table, column_list)
+        self.gui.populate_table(self.main_table, current_list, new_headers)
         
 
-
-
-        # #for getting acmt_view filtering
-        # filter_list = column_config[format] 
-        # id = self.current_acmt_id
-        # print(id)
-        # new_dict = self.controller.fetch_filtered_dict(filter_list, id)
-        # self.refresh_table(self.acmt_table)
-        # self.populate_acmt_table(new_dict)
+        # for getting acmt_view filtering
+        
+        id = self.selected_acmt_id
+        print(id)
+        new_dict = self.process.get_achievement_keys_from_dict(key_list, id)
+        self.gui.refresh_table(table)
+        self.gui.populate_acmt_table(table, new_dict)
         
     # get a single achievement and it's values
     def fetch_acmt_dict(self, index = 0):

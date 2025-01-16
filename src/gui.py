@@ -53,6 +53,7 @@ class AchievementConverterGUI:
     
     def bind_events(self, table):
         table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
+        table.bind("<Double-1>", lambda event: self.controller.register_id(event), add='+')
     
     def configure_table(self, table):
         table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
@@ -68,8 +69,11 @@ class AchievementConverterGUI:
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
-    def refresh_table(self, table, columns): #empty given table
+    def refresh_table(self, table): #empty given table
         table.delete(*table.get_children())
+        return True
+    
+    def name_table_columns(self, table, columns): #empty given table
         table["columns"] = columns
 
         for col in table["columns"]: #iterate trough the columns
@@ -77,7 +81,7 @@ class AchievementConverterGUI:
 
         return True
     
-    def identify_id(self, event):
+    def identify_id(self, event): #POSSIBLY OBSOLETE. REMOVE
         self.tree = event.widget #get widget based on event
         acmt_id = self.tree.identify_row(event.y)  # get row
 
@@ -88,7 +92,6 @@ class AchievementConverterGUI:
         
         if acmt_id is None:
             acmt_id = self.identify_id(event) # identify id if it was not given 
-        self.current_acmt_id = acmt_id 
         
         acmt_dict = self.controller.fetch_acmt_dict(acmt_id) # get a dictionary of specified achievement's keys and values
 
@@ -176,11 +179,11 @@ class AchievementConverterGUI:
         self.display_edit_value() # display widgets to show change to new key
         
     
-    def populate_acmt_table(self, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
+    def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
         print(acmt_dict)
         for index, key in enumerate(acmt_dict):
             print(key)
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
     
 
     def create_edit_menu_buttons(self, tree):
@@ -232,56 +235,9 @@ class AchievementConverterGUI:
 
         for format in formats:
             # create a radio button
-            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var, table), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
+            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var, self.acmt_table), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
             radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
-    def filter_values(self, format_var, table):
-        format = format_var.get() # get format variable from widget
-
-        column_config = { #all the possible keys in a filter
-            'Steam': ('version', 'game_name', 'acmt_num', 'name_id', 'name_en', 'name_fi', 'name_token', 'desc_en', 'desc_fi', 'desc_token', 'hidden', 'icon', 'icon_locked', 'acmt_xp'),
-            'MS Store': ('name_id', 'desc_id', 'hidden', 'icon', 'acmt_xp', 'desc_locked', 'base_acmt', 'display_order'),
-            'Epic': ('name_id', 'hidden', 'acmt_xp', 'acmt_stat_tres', 'acmt_xp'),
-            'All': '#all'
-        }
-
-        # all_columns = table['columns'] # Get all available columns
-
-        # if format in column_config:
-        #     if column_config[format] == '#all':
-        #         # Show all columns
-        #         table["displaycolumns"] = '#all'
-        #         self.valid_columns = table["displaycolumns"]
-        #     else:
-        #         # Filter columns that exist in all_columns
-        #         self.valid_columns = [col for col in column_config[format] if col in all_columns]
-        #         table["displaycolumns"] = self.valid_columns
-        # else:
-        #     print("Unknown format")
-        
-        
-        
-        key_list = column_config[format] #CONTINUE HERE- how to filter...
-    
-        new_headers = self.controller.fetch_filtered_dict(key_list, 0)
-        current_list = self.controller.get_current_list(key_list)
-
-        table.destroy()
-        table = self.create_table(new_headers)
-        self.populate_table(table, current_list, new_headers)
-
-        #def populate_table(self, table, acmt_list, acmt_dict):
-        print(f"Populating table")                                           #debug stuff ################
-        #self.current_dict = acmt_dict #save current keys and values
-
-
-        #for getting acmt_view filtering
-        filter_list = column_config[format] 
-        id = self.current_acmt_id
-        print(id)
-        new_dict = self.controller.fetch_filtered_dict(filter_list, id)
-        self.refresh_table(self.acmt_table)
-        self.populate_acmt_table(new_dict)
         
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
