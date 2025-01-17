@@ -13,12 +13,12 @@ import pprint
 class Read:
 
     def __init__(self, file_name, format, process):
-
+# old version
         if file_name:
             self.file_name = file_name
             print(self.file_name)
-            self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
-            self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
+            # self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+            # self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
         else:
             print("Using test2.txt")
             return None
@@ -29,6 +29,7 @@ class Read:
             print("väärin")
             return None
 
+#proper place for these is propably blueprint. at the moment they can be changed here.
         self.vdf_params_outer = ["undefined", "stats", "1"]
         self.vdf_params_inner = ['bits']
 
@@ -39,6 +40,44 @@ class Read:
         else:
             print("Error: no process")
             return None
+
+
+#     def __init__(self, file_name, file_name2, format, process):
+# #version work in progress
+#         if file_name:
+#             self.file_name = file_name
+#             print(self.file_name)
+#             #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+#         else:
+#             print("no achievement file given.")
+#             return None
+
+#         if file_name2:
+#             self.localization_filename = file_name2
+#             print(self.localization_filename)
+#             #self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
+#         else:
+#             print("no localization file given.")
+#             return None
+
+#         if format:
+#             self.format = format
+#         else:
+#             print("väärin")
+#             return None
+
+#         self.vdf_params_outer = ["undefined", "stats", "1"]
+#         self.vdf_params_inner = ['bits']
+
+#         if process:
+#             self.process = process
+#             print("self_process")
+#             print(self.process)
+#         else:
+#             print("Error: no process")
+#             return None
+
+
 
 
     def run (self):
@@ -145,7 +184,7 @@ class Read:
                     "acmt_stat_tres": row.get("statTresholds"),
                 }
                 ol.append(acmt_dict)
-        pprint.pp(ol)
+        # pprint.pp(ol)
         # self.process.add_achievements(ol)
 
         #reading localization file
@@ -166,24 +205,16 @@ class Read:
                     "unlockedIcon": row.get("unlockedIcon")
                 }
                 lol.append(locals_dict)
-        pprint.pp(lol)
         for a in lol:
-            ID = a["name_id"]
-            LOCALE = a["locale"]
-            xl = []
-            for x in a:
-                if x == "name_id":
-                    continue
-                if x == "locale":
-                    continue
-                xl.append((x, a[x]))
-            print("printing xl")
-            pprint.pp(xl)
+            ID = a.pop("name_id")
+            LOCALE = a.pop("locale")
+            list_value_pairs = a
+            # print("printing xl")
+            # pprint.pp(xl)
 
 
-            # self.process.add_localizations(a[ID], a[LOCALE], "list_of_valuepairs")
-            pprint.pp("printing localization items")
-            pprint.pp(a)
+            # self.process.add_localizations(ID, LOCALE, list_value_pairs)
+            # list_value_pairs is a dict not a list of value pairs
 
         return True
 
@@ -244,6 +275,6 @@ class Read:
         self.df = df
 
 # functions to test read by itself:
-test_filename= "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
-R = Read(test_filename, "dummy", None)
-R.run_csv()
+# test_filename= "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+# R = Read(test_filename, "dummy", None)
+# R.run_csv()
