@@ -18,10 +18,6 @@ class Process:
 
 
 
-
-
-
-
     # Takes a dict and adds achievement to achievement_list, then passes list where needed
     def add_achievement(self,achievement):
         if isinstance(achievement,dict):
@@ -93,36 +89,45 @@ class Process:
 ###################### MERGER STARTS
 
 
-    def merge_achievements_and_localizations(self, achievements, localizations):
+    def merge_data(self, achievement_list, localizations_list):
         merged_achievements = []
 
-    # combine matching ids for achievements and locales
-        for achievement in achievements:
-            merged = achievement.copy()  #copy the achievement info so original list stays
-        #finds the mathces
+    # Combine matching ids for achievements and localizations
+        for achievement in achievement_list:  # Iterate over the achievement list
+            merged = achievement.copy()  # Copy the achievement info so the original list stays intact
+        
+        # Find the matching localizations based on 'name_id'
             matching_localizations = [
-                loc for loc in localizations if loc.get('achievement_id') == achievement.get('name_id')
+                loc for loc in localizations_list if loc.get('achievement_id') == achievement.get('name_id')
             ]
-        #if matches found, combine
+        
+        # If matching localizations are found, combine them with the achievement data
             if matching_localizations:
                 localization = matching_localizations[0]
                 for key, value in localization.items():
-                #adds key:values 
-                    merged[key] = value
-        
-        # adds stuff into the list
-            merged_achievements.append(merged)
+                    merged[key] = value  # Add localization data to the achievement
+
+            merged_achievements.append(merged)  # Add the merged achievement to the list
+
+        return merged_achievements  # This should be inside the function
+
+
     
-        return merged_achievements
+    def get_all_data(self):
+    # You can access the merged data from the instance variables directly
+        merged_data = self.merge_data(self.achievement_list, self.localizations_list)
+        print("prosessin testiletkautus")
+        print(merged_data)
+        return merged_data
 
 
-    def update_with_localizations(self, localizations):
-        # Call merge_achievements_and_localizations to merge data
-        self.achievement_list = self.merge_achievements_and_localizations(self.achievement_list, localizations)
-        return self.achievement_list
+#    def update_with_localizations(self, localizations):
+#        # Call merge_achievements_and_localizations to merge data
+#        self.achievement_list = self.merge_achievements_and_localizations(self.achievement_list, localizations)
+#        return self.achievement_list
 
         #This should be called
-
+#not needed atm
 ####################### MERGER STOPS
 
 

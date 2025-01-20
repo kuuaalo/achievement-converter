@@ -28,11 +28,11 @@ class Write:
 
     def run(self):
         # Execute the writing process based on the specified file format.
-        achievements = self.process.get_achievements()
+        achievements = self.process.get_all_data() # modified this to call merged data, so this should get achievement data AND localization data in one dictionary
         oikea_lista = self.process.fill_missing_values()
 
-        localizations = self.process.get_localizations()
-        localized_data = self.merge_achievements_and_localizations(achievements,localizations)
+#        localizations = self.process.get_localizations()
+#        localized_data = self.merge_achievements_and_localizations(achievements,localizations)
 
         # Write to XML if format is XML
         if self.file_format == ".xml":

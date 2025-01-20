@@ -212,7 +212,8 @@ class Read:
             # pprint.pp(xl)
 
 
-            # self.process.add_localizations(ID, LOCALE, list_value_pairs)
+            #self.process.add_localizations(ID, LOCALE, list_value_pairs)
+            self.process.add_localizations(locals_dict)  # ADDED THIS TO RUN SOME TESTS
             # list_value_pairs is a dict not a list of value pairs
 
         return True
@@ -297,7 +298,7 @@ class Read:
         self.df = df
 
 # functions to test read by itself:
-test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
-test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
-R = Read(test_filename, test_filename2, "dummy", None)
-R.run_xml()
+#test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
+#test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
+#R = Read(test_filename, test_filename2, "dummy", None)
+#R.run_xml()
