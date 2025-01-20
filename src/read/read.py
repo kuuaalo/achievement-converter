@@ -12,52 +12,15 @@ import pprint
 
 class Read:
 
-    def __init__(self, file_name, format, process):
-# old version
-        if file_name:
-            self.file_name = file_name
-            print(self.file_name)
-            # self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
-            # self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
-        else:
-            print("Using test2.txt")
-            return None
-
-        if format:
-            self.format = format
-        else:
-            print("väärin")
-            return None
-
-#proper place for these is propably blueprint. at the moment they can be changed here.
-        self.vdf_params_outer = ["undefined", "stats", "1"]
-        self.vdf_params_inner = ['bits']
-
-        if process:
-            self.process = process
-            print("self_process")
-            print(self.process)
-        else:
-            print("Error: no process")
-            return None
-
-
-#     def __init__(self, file_name, file_name2, format, process):
-# #version work in progress
+#     def __init__(self, file_name, format, process):
+# # old version
 #         if file_name:
 #             self.file_name = file_name
 #             print(self.file_name)
-#             #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+#             # self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+#             # self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
 #         else:
-#             print("no achievement file given.")
-#             return None
-
-#         if file_name2:
-#             self.localization_filename = file_name2
-#             print(self.localization_filename)
-#             #self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
-#         else:
-#             print("no localization file given.")
+#             print("Using test2.txt")
 #             return None
 
 #         if format:
@@ -66,6 +29,7 @@ class Read:
 #             print("väärin")
 #             return None
 
+# #proper place for these is propably blueprint. at the moment they can be changed here.
 #         self.vdf_params_outer = ["undefined", "stats", "1"]
 #         self.vdf_params_inner = ['bits']
 
@@ -76,6 +40,42 @@ class Read:
 #         else:
 #             print("Error: no process")
 #             return None
+
+
+    def __init__(self, file_name, file_name2, format, process):
+#version work in progress
+        if file_name:
+            self.file_name = file_name
+            print(self.file_name)
+            #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+        else:
+            print("no achievement file given.")
+            return None
+
+        if file_name2:
+            self.localization_filename = file_name2
+            print(self.localization_filename)
+            #self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
+        else:
+            print("no localization file given.")
+            return None
+
+        if format:
+            self.format = format
+        else:
+            print("väärin")
+            return None
+
+        self.vdf_params_outer = ["undefined", "stats", "1"]
+        self.vdf_params_inner = ['bits']
+
+        if process:
+            self.process = process
+            print("self_process")
+            print(self.process)
+        else:
+            print("Error: no process")
+            return None
 
 
 
@@ -185,7 +185,7 @@ class Read:
                 }
                 ol.append(acmt_dict)
         # pprint.pp(ol)
-        # self.process.add_achievements(ol)
+        self.process.add_achievements(ol)
 
         #reading localization file
         locals = self.localization_filename
