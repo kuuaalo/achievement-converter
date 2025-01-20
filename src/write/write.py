@@ -47,18 +47,6 @@ class Write:
         else:
             print(f"Unsupported format: {self.file_format}")  
 
-  #  def merge_achievements_and_localizations(self, achievements, localizations):
-    # combine achievements and localizations
- #       for achievement in achievements:
-        # find localizations that match achievements
- #           achievement_localizations = [
- #               loc for loc in localizations if loc['achievement_id'] == achievement['name_id']
- #           ]
-        #add localizations to achievements
- #           achievement["localizations"] = achievement_localizations
- #       return achievements
-    
-
 
 
     # Writes achievements in XML format
@@ -110,6 +98,20 @@ class Write:
         print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Writes achievements in CSV format
     def write_to_csv(self, achievement):
         # Retrieve the list of achievements from the process
@@ -141,6 +143,7 @@ class Write:
                     # Retrieve the value from the achievement dictionary. If the key doesn't exist, use None
                     row[csv_key] = achievement.get(data_key, None)
                 writer.writerow(row)
+                 
 
         print(f"Data written to {self.file_name} in CSV format.")
 
