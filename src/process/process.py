@@ -11,9 +11,15 @@ class Process:
     def __init__(self, resume=False, achievement_list=None):
         if achievement_list is False or achievement_list is None:
             self.achievement_list = []
+            self.localizations_list = []
             print(self.achievement_list)
         else:
             self.achievement_list = achievement_list
+
+
+
+
+
 
 
     # Takes a dict and adds achievement to achievement_list, then passes list where needed
@@ -29,6 +35,14 @@ class Process:
             self.achievement_list = achievements
             return self.achievement_list
         else: return False
+
+    def add_localizations(self,localizations):
+        if isinstance(localizations,list):
+            self.localizations_list = localizations
+            return self.localizations_list
+        else: return False
+
+
 
     # Define blueprint for all values, so that write will have something to print
     def fill_missing_values(self):
@@ -70,6 +84,48 @@ class Process:
     # write calls this, and this returns list of dicts
     def get_achievements(self):
         return self.achievement_list
+    
+    def get_localizations(self):
+        return self.localizations_list
+
+#Add get_localizations function for Aalo 
+#add merge function here, and change call function name in write
+###################### MERGER STARTS
+
+
+    def merge_achievements_and_localizations(self, achievements, localizations):
+        merged_achievements = []
+
+    # combine matching ids for achievements and locales
+        for achievement in achievements:
+            merged = achievement.copy()  #copy the achievement info so original list stays
+        #finds the mathces
+            matching_localizations = [
+                loc for loc in localizations if loc.get('achievement_id') == achievement.get('name_id')
+            ]
+        #if matches found, combine
+            if matching_localizations:
+                localization = matching_localizations[0]
+                for key, value in localization.items():
+                #adds key:values 
+                    merged[key] = value
+        
+        # adds stuff into the list
+            merged_achievements.append(merged)
+    
+        return merged_achievements
+
+
+    def update_with_localizations(self, localizations):
+        # Call merge_achievements_and_localizations to merge data
+        self.achievement_list = self.merge_achievements_and_localizations(self.achievement_list, localizations)
+        return self.achievement_list
+
+        #This should be called
+
+####################### MERGER STOPS
+
+
 
 
    # Fetch achievement by certain data
