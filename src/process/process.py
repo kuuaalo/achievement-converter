@@ -175,7 +175,6 @@ class Process:
                 achievement[key] = new_value
             else:
                 achievement[key] = new_value
-
             return self.achievement_list
 
 
