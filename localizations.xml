@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Localization>
+  <DevDisplayLocale locale="en-US"/>
+  <LocalizedString id="AchievementID1">
+    <Value locale="en-US">Achievement 1</Value>
+    <Value locale="fi">Saavutus 1</Value>
+    <Value locale="default">Achievement 1</Value>
+  </LocalizedString>
+  <LocalizedString id="LockedDescriptionId1">
+    <Value locale="en-US">Locked Description of Achievement 1</Value>
+    <Value locale="fi">Lukittu Saavutus 1:en kuvaus</Value>
+    <Value locale="default">Locked Description of Achievement 1</Value>
+  </LocalizedString>
+  <LocalizedString id="UnlockedDescriptionId1">
+    <Value locale="en-US">Description of Achievement 1</Value>
+    <Value locale="fi">Saavutus 1:en kuvaus</Value>
+    <Value locale="default">Description of Achievement 1</Value>
+  </LocalizedString>
+</Localization>

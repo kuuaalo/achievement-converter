@@ -6,8 +6,6 @@
 		{
 			"NEW_ACHIEVEMENT_1_1_NAME"	"Achievement 1"
 			"NEW_ACHIEVEMENT_1_1_DESC"	"Description of Achievement 1"
-			"NEW_ACHIEVEMENT_1_2_NAME"	"Achievement 2"
-			"NEW_ACHIEVEMENT_1_2_DESC"	"Description of Achievement 2"
 		}
 	}
 	"finnish"
