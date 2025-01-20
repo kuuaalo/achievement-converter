@@ -47,7 +47,7 @@ class Read:
         if file_name:
             self.file_name = file_name
             print(self.file_name)
-            #self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+            # self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
         else:
             print("no achievement file given.")
             return None
@@ -131,15 +131,14 @@ class Read:
 
         j = self.vdf_dict_peeling(d, pl)
 
+        # vdf files contain info about the file 'type'. using this to make a "sanity-check"
         if (j['type'] == 'ACHIEVEMENTS'):
-            print("type in j is correct")
+            print("reading vdf file: typecheck passed")
             pass
         else:
-            print("type in j is not correct")
-            # self.df("type in j is not correct")
+            print("reading vdf file: typecheck not passed")
             return False
 
-        # m = j['bits']
         m = self.vdf_dict_peeling(j, self.vdf_params_inner)
 
         ml = list(m)
@@ -222,8 +221,6 @@ class Read:
     # handles xml files
 
         acmt = self.file_name
-        print("printing acmt")
-        print(acmt)
         ol = []
         with open(acmt, "r", encoding="utf-8") as f:
             aet = ET.parse(f)
@@ -253,7 +250,32 @@ class Read:
         print("Parsed achievement:")
         pprint.pp(ol)
 
-        self.process.add_achievements(ol)
+        # self.process.add_achievements(ol)
+
+        localz = self.localization_filename
+        ol = []
+        with open(localz, "r", encoding="utf-8") as f:
+            lat = ET.parse(f)
+        namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
+        for a in lat.findall("ns:LocalizedString", namespace):
+            localz_dict = {
+            "name_id": None,
+            "locale_en": None,
+            "locale_fi": None
+            }
+            localz_dict["name_id"] = a.get("id")
+            for b in a.findall("ns:Value", namespace):
+                t = b.text
+                u = b.get("locale")
+
+                known_localez = ["fi", "en"]
+                for l in known_localez:
+                    if l in u:
+                        localz_dict["locale_" + l] = t
+
+            print("localin printtaus")
+            pprint.pp(localz_dict)
+            ol.append(localz_dict)
 
         return True
 
@@ -275,6 +297,7 @@ class Read:
         self.df = df
 
 # functions to test read by itself:
-# test_filename= "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
-# R = Read(test_filename, "dummy", None)
-# R.run_csv()
+test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
+test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
+R = Read(test_filename, test_filename2, "dummy", None)
+R.run_xml()
