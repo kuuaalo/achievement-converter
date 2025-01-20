@@ -3,10 +3,10 @@ import tkinter as tk
 import os
 
 # internal modules
-from gui import AchievementConverterGUI #import gui
-from process.process import Process # import all functions from process
-from write.write import Write # import all functions from write
-from read.read import Read # import all functions from read
+from gui import AchievementConverterGUI
+from process.process import Process
+from write.write import Write
+from read.read import Read
 from tkinter import filedialog as fd
 import config
 
