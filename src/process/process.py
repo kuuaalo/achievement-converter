@@ -1,9 +1,3 @@
-"""
-Process module provides functionality to modify your data, it organizes achievements to maintain easy usability
-with different formats, and provides information and data to other modules. If you need to add more functionality
-to the program, this is the best place to do it, as all information passes through this module, and this module communicates with main
-a lot. Here data is organized according to blueprints, and then used wherever it is needed.
-"""
 import json
 
 class Process:
@@ -12,35 +6,33 @@ class Process:
         if achievement_list is False or achievement_list is None:
             self.achievement_list = []
             self.localizations_list = []
-            print(self.achievement_list)
+            self.localizations_data = {}
         else:
             self.achievement_list = achievement_list
 
-
-
     # Takes a dict and adds achievement to achievement_list, then passes list where needed
-    def add_achievement(self,achievement):
-        if isinstance(achievement,dict):
+    def add_achievement(self, achievement):
+        if isinstance(achievement, dict):
             self.achievement_list.append(achievement)
             return self.achievement_list
-        else: return False
+        else:
+            return False
 
     # Takes a list of achievements and then it can be passed around
-    def add_achievements(self,achievements):
-        if isinstance(achievements,list):
+    def add_achievements(self, achievements):
+        if isinstance(achievements, list):
             self.achievement_list = achievements
             return self.achievement_list
-        else: return False
+        else:
+            return False
 
-    def add_localizations(self,localizations):
-        if isinstance(localizations,list):
-            self.localizations_list = localizations
-            return self.localizations_list
-        else: return False
+    def add_localizations(self, ID, LOCALE, list_value_pairs):
+        if ID not in self.localizations_data:
+            self.localizations_data[ID] = {}
+        self.localizations_data[ID][LOCALE] = list_value_pairs
+        return self.localizations_data
 
-
-
-    # Define blueprint for all values, so that write will have something to print
+    # Define blueprint for all values
     def fill_missing_values(self):
         blueprint = {
             "version": None,
@@ -52,7 +44,7 @@ class Process:
             "name_fi": None,
             "name_locked": None,
             "name_token": None,
-            "desc_id":None,
+            "desc_id": None,
             "desc_en": None,
             "desc_fi": None,
             "desc_token": None,
@@ -64,10 +56,8 @@ class Process:
             "acmt_stat_tres": None,
             "ag_type": None,
             "flavor_txt": None,
-            "base_acmt":None,
+            "base_acmt": None,
         }
-        # Iterate over the achievement list to fill missing values based on blueprint.
-        # This sets None values to 0 to ensure printing of all nests and value pairs
         for achievement in self.achievement_list:
             for key, default_value in blueprint.items():
                 if key not in achievement:
@@ -76,68 +66,80 @@ class Process:
                     achievement[key] = 0
         return self.achievement_list
 
-
-    # write calls this, and this returns list of dicts
-    def get_achievements(self):
-        return self.achievement_list
-    
-    def get_localizations(self):
-        return self.localizations_list
-
-#Add get_localizations function for Aalo 
-#add merge function here, and change call function name in write
-###################### MERGER STARTS
-
-
-    def merge_data(self, achievement_list, localizations_list):
+    # Merge achievements and localizations
+    def merge(self,achievement_list, localizations_data):
+    # Blueprint for all fields we expect
+        blueprint = {
+            "version": None,
+            "game_name": None,
+            "game_id": None,
+            "acmt_num": None,
+            "name_id": None,
+            "name_en": None,
+            "name_fi": None,
+            "name_locked": None,
+            "name_token": None,
+            "desc_id": None,
+            "desc_en": None,
+            "desc_fi": None,
+            "desc_token": None,
+            "hidden": None,
+            "icon": None,
+            "icon_locked": None,
+            "desc_locked": None,
+            "acmt_xp": None,
+            "acmt_stat_tres": None,
+            "ag_type": None,
+            "flavor_txt": None,
+            "base_acmt": None,
+        }
+        
         merged_achievements = []
 
-    # Combine matching ids for achievements and localizations
-        for achievement in achievement_list:  # Iterate over the achievement list
-            merged = achievement.copy()  # Copy the achievement info so the original list stays intact
-        
-        # Find the matching localizations based on 'name_id'
-            matching_localizations = [
-                loc for loc in localizations_list if loc.get('achievement_id') == achievement.get('name_id')
-            ]
-        
-        # If matching localizations are found, combine them with the achievement data
-            if matching_localizations:
-                localization = matching_localizations[0]
-                for key, value in localization.items():
-                    merged[key] = value  # Add localization data to the achievement
+        for achievement in self.achievement_list:
+            name_id = achievement.get("name_id")
+            
+            # Create a new dictionary with default values based on the blueprint
+            merged_achievement = blueprint.copy()  # Using blueprint to copy default values
 
-            merged_achievements.append(merged)  # Add the merged achievement to the list
+            # Merge achievement-specific data (e.g., 'name_id', 'acmt_num', 'icon', etc.)
+            for key in achievement:
+                if key in merged_achievement:
+                    merged_achievement[key] = achievement[key]
 
-        return merged_achievements  # This should be inside the function
+            # If localization data exists for this achievement, merge it
+            if name_id in self.localizations_data:
+                localization_data = self.localizations_data[name_id]
+                for locale, local_data in localization_data.items():
+                    if locale not in merged_achievement:
+                        merged_achievement[locale] = {}
 
+                    # Merge localized values (e.g., name_en, name_fi, etc.)
+                    merged_achievement[locale]["name"] = local_data.get("name", "")
+                    merged_achievement[locale]["lockedTitle"] = local_data.get("lockedTitle", "")
+                    merged_achievement[locale]["lockedDescription"] = local_data.get("lockedDesc", "")
+                    merged_achievement[locale]["unlockedTitle"] = local_data.get("unlocked", "")
+                    merged_achievement[locale]["unlockedDescription"] = local_data.get("unlockedDesc", "")
 
-    
+            # Add the merged achievement to the final list
+            merged_achievements.append(merged_achievement)
+
+        return merged_achievements
+
+    def get_achievements(self,achievement_list,localizations_data):
+        # Merges the achievements and localizations if not done already
+        return self.merge()
+    # Function to fetch all data
     def get_all_data(self):
-    # You can access the merged data from the instance variables directly
-        merged_data = self.merge_data(self.achievement_list, self.localizations_list)
-        print("prosessin testiletkautus")
+        merged_data = self.merge(self.achievement_list, self.localizations_data)
+        print("Merged data output:")
         print(merged_data)
         return merged_data
 
-
-#    def update_with_localizations(self, localizations):
-#        # Call merge_achievements_and_localizations to merge data
-#        self.achievement_list = self.merge_achievements_and_localizations(self.achievement_list, localizations)
-#        return self.achievement_list
-
-        #This should be called
-#not needed atm
-####################### MERGER STOPS
-
-
-
-
-   # Fetch achievement by certain data
+    # Fetch achievement by certain data
     def get_achievement_by_data(self, index):
         acmt_dict = self.achievement_list[int(index)]
         return acmt_dict
-
 
     # Returns a dictionary of the given keys in achievement
     def get_achievement_keys_from_dict(self, key_list, index):
@@ -147,49 +149,46 @@ class Process:
             if key in key_list:
                 new_dict[key] = acmt_dict[key]
         return new_dict
-    
-    
+
+    # Returns a filtered list of achievements
     def get_filtered_list(self, key_list):
-        new_list= []
+        new_list = []
         for index, achievement in enumerate(self.achievement_list):
             filtered_dict = self.get_achievement_keys_from_dict(key_list, index)
             new_list.append(filtered_dict)
 
         return new_list
 
-
     # Replace value in all achievements. Checks if it exists, adds if not
-    def add_data_to_all_achievements(self,key,new_value):
+    def add_data_to_all_achievements(self, key, new_value):
         for achievement in self.achievement_list:
             if key in achievement:
                 achievement[key] = new_value
             else:
-                achievement[key]= new_value
+                achievement[key] = new_value
         return self.achievement_list
 
     # Replace one value in achievement
     def update_achievement_data(self, achievement_id, key, new_value):
-            achievement = self.achievement_list[int(achievement_id)]
-            if key in achievement:
-                old_value = achievement[key]
-                achievement[key] = new_value
-            else:
-                achievement[key] = new_value
-            return self.achievement_list
-
+        achievement = self.achievement_list[int(achievement_id)]
+        if key in achievement:
+            old_value = achievement[key]
+            achievement[key] = new_value
+        else:
+            achievement[key] = new_value
+        return self.achievement_list
 
     # Saves data to selected file path as JSON
-    def save_data(self,file_path):
+    def save_data(self, file_path):
         with open(file_path, 'w') as f:
             json.dump(self.achievement_list, f)
         print(f"Data saved to {file_path}")
         return True
 
-
     # To continue existing project, load JSON data from selected path
-    def load_data(self,file_path):
+    def load_data(self, file_path):
         with open(file_path, 'r') as f:
             loaded_data = json.load(f)
-        print(f"Data saved to {file_path}")
-        self.achievement_list = loaded_data ##Added this for now, maybe use resume in the future
+        print(f"Data loaded from {file_path}")
+        self.achievement_list = loaded_data
         return loaded_data

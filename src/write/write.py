@@ -3,7 +3,7 @@ This module provides functionality to write achievement data into different file
 Depending on the specified file format, it writes the data to the appropriate 
 file format in a structured and formatted way.
 """
-
+from collections import defaultdict
 import xml.dom.minidom as minidom
 import csv
 import vdf
@@ -25,6 +25,30 @@ class Write:
             print("Wrong format from write")  
             return
         self.process=process
+        self.languages = {
+            "arabic": "ar",
+            "danish": "da",
+            "dutch": "nl",
+            "finnish": "fi",
+            "french": "fr",
+            "german": "de",
+            "italian": "it",
+            "japanese": "ja",
+            "korean": "ko",
+            "koreana": "ko",
+            "norwegian": "no",
+            "polish": "pl",
+            "brazilian": "pt-BR",
+            "russian": "ru",
+            "schinese": "zh-Hans",
+            "latam": "es-MX",
+            "spanish": "es-ES",
+            "swedish": "sv",
+            "thai": "th",
+            "tchinese": "zh-Hant",
+            "turkish": "tr",
+            "english": "en-US"
+        }
 
     def run(self):
         # Execute the writing process based on the specified file format.
@@ -43,59 +67,83 @@ class Write:
         # Write to VDF if format is VDF
         elif self.file_format == ".vdf":
             self.write_to_vdf(achievements)
+            self.write_locales_to_vdf(achievements)
         # Print error for unsupported formats
         else:
             print(f"Unsupported format: {self.file_format}")  
 
 
 
-    # Writes achievements in XML format
+
+
+
+
+
+
+
+
+
+
+
+
+
     def write_to_xml(self, achievements):
-        doc = minidom.Document()  
-        root = doc.createElement('Achievements') 
+        # Create the XML document
+        doc = minidom.Document()
+        root = doc.createElement('Achievements2017')
+        root.setAttribute("xmlns", "http://config.mgt.xboxlive.com/schema/achievements2017/1")
         doc.appendChild(root)
 
-        for achievement in achievements:
-            print("processing achievement")  # debug message
+        for i, achievement in enumerate(achievements, start=1):
+            print("Processing achievement")  # Debug message
+
             achievement_element = doc.createElement('Achievement')
 
+            # Map XML tags to achievement data keys
             xml_tags_map = {
                 "AchievementNameId": "name_id",
-                "BaseAchievement": "hidden",  # This is the only one without a meaningful value atm
+                "BaseAchievement": "base_acmt",
                 "DisplayOrder": "acmt_num",
-                "LockedDescriptionId": "desc_locked",
-                "UnlockedDescriptionId": "desc_en",
+                "LockedDescriptionId": f"LockedDescriptionId{i}",
+                "UnlockedDescriptionId": f"UnlockedDescriptionId{i}",
                 "IsHidden": "hidden",
-                "AchievementId": "name_id",
-                "IconImageId": "icon"
+                "AchievementId": str(i),
+                "IconImageId": "77fdcb0c-0ccc-440c-adad-92b57a2f4498"
             }
 
-        # Iterate over the xml_tags_map to create XML elements
-            for xml_tag, achievement_key in xml_tags_map.items():
-                if achievement_key in achievement and achievement[achievement_key] is not None:
-                # Check if we are processing the "UnlockedDescriptionId" key
-                    if xml_tag == "UnlockedDescriptionId":
-                    # Create the Rewards element and inside it the gamerscore nest
-                        rewards_element = doc.createElement("Rewards")
-                        gamerscore = doc.createElement("Gamerscore")
-                        gamerscore.appendChild(doc.createTextNode(str(achievement.get("gamerscore")))) 
-                        rewards_element.appendChild(gamerscore)
-                        achievement_element.appendChild(rewards_element)  # Append Rewards before UnlockedDescriptionId
+            # Iterate over the xml_tags_map to create XML elements
+            for xml_tag, value in xml_tags_map.items():
+                element = doc.createElement(xml_tag)
 
-                # Add the current XML tag
-                    element = doc.createElement(xml_tag)
-                    element.appendChild(doc.createTextNode(str(achievement[achievement_key])))
-                    achievement_element.appendChild(element)
+                # Add Rewards structure for Gamerscore
+                if xml_tag == "UnlockedDescriptionId":
+                    # Rewards block before UnlockedDescriptionId
+                    rewards_element = doc.createElement("Rewards")
+                    gamerscore = doc.createElement("Gamerscore")
+                    gamerscore.appendChild(doc.createTextNode(str(achievement.get("acmt_xp", "0"))))
+                    rewards_element.appendChild(gamerscore)
+                    achievement_element.appendChild(rewards_element)
 
-        # Append the achievement element to the root
+                # Handle boolean transformations and missing keys
+                if xml_tag == "BaseAchievement":
+                    element.appendChild(doc.createTextNode("true"))  # Assume base achievement is true
+                elif xml_tag == "IsHidden":
+                    element.appendChild(doc.createTextNode(achievement.get("hidden", "false").lower()))
+                else:
+                    element.appendChild(doc.createTextNode(str(value)))
+
+                # Append element to Achievement
+                achievement_element.appendChild(element)
+
+            # Append the achievement to the root
             root.appendChild(achievement_element)
 
-    # Convert the document to a pretty-printed XML string
+        # Write the XML document to a file
         xml_str = doc.toprettyxml(indent="  ")
-        with open(self.file_name, "w", encoding="utf-8") as f:
-            f.write(xml_str)  # Write the XML string to the file
+        with open(file_name, "w", encoding="utf-8") as f:
+            f.write(xml_str)
 
-        print(f"Data written to {self.file_name} in XML format.")  # Confirm the write operation
+        print(f"XML successfully written to {file_name}.")
 
 
 
@@ -113,12 +161,12 @@ class Write:
 
 
     # Writes achievements in CSV format
-    def write_to_csv(self, achievement):
+    def write_to_csv(self, achievements):
         # Retrieve the list of achievements from the process
-        acmt_list = self.process.get_achievements()
-        if not acmt_list:
-            print("No achievements to write.")
-            return
+        #acmt_list = self.process.get_achievements()
+        #if not acmt_list:
+        #    print("No achievements to write.")
+        #    return
 
         # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
@@ -137,7 +185,7 @@ class Write:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
 
-            for achievement in acmt_list:
+            for achievement in achievements:
                 row = {}
                 for csv_key, data_key in csv_field_map.items():
                     # Retrieve the value from the achievement dictionary. If the key doesn't exist, use None
@@ -147,43 +195,137 @@ class Write:
 
         print(f"Data written to {self.file_name} in CSV format.")
 
-    # Create a dictionary for all achievements
-    def write_to_vdf(self, achievements):   
-        nested_data = {
-            "123456": {                    # This is some kind of game identifier, adjust when informed what and how
-                "stats": {}
-            }
-        }
 
-        for i, achievement in enumerate(achievements, start=1):  
-            achievement_data = {
-                "bits": {
-                    str(i): {
-                        "name": achievement.get("name_id", ""),
-                        "display": {
-                            "name": {
-                                "english": achievement.get("name_en", ""),
-                                "finnish": achievement.get("name_fi", ""),
-                                "token": achievement.get("name_token", ""),
-                            },
-                            "desc": {
-                                "english": achievement.get("desc_en", ""),
-                                "finnish": achievement.get("desc_fi", ""),
-                                "token": achievement.get("desc_token", ""),
-                            },
-                            "hidden": str(achievement.get("hidden", "false")),
-                            "icon": achievement.get("icon", ""),
-                            "icon_gray": achievement.get("icon_locked", ""),
-                        }
-                    }
-                },
-                "type": "ACHIEVEMENTS"
-            }
 
-            nested_data["123456"]["stats"][str(i)] = achievement_data  # Add the achievement to the stats section
-        vdf_text = vdf.dumps(nested_data, pretty=True)     # Convert the dictionary to VDF format
-        
-        with open(self.file_name, "w", encoding="utf-8") as f:  # Write to the VDF file
-            f.write(vdf_text)
 
-        print(f"Data written to {self.file_name} in nested VDF format.")
+
+
+
+
+
+
+
+    def write_to_vdf(self, achievements):
+        # Aloitetaan VDF-tiedoston rakenne
+        result = '"123456"\n{\n'
+        result += '\t"stats"\n\t{\n'
+        result += '\t\t"1"\n\t\t{\n'
+        result += '\t\t\t"bits"\n\t\t\t{\n'
+
+        for i, achievement in enumerate(achievements, start=1):
+            result += f'\t\t\t\t"{i}"\n\t\t\t\t{{\n'
+            result += f'\t\t\t\t\t"name"\t"{achievement["name_id"]}"\n'
+            result += '\t\t\t\t\t"display"\n\t\t\t\t\t{\n'
+
+            # "name" -käännökset
+            result += '\t\t\t\t\t\t"name"\n\t\t\t\t\t\t{\n'
+            for locale, lang_data in achievement.items():
+                if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
+                    language = self.get_language_from_locale(locale)
+                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedTitle"]}"\n'
+            result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("name_token", "")}"\n'
+            result += '\t\t\t\t\t\t}\n'
+
+            # "desc" -käännökset
+            result += '\t\t\t\t\t\t"desc"\n\t\t\t\t\t\t{\n'
+            for locale, lang_data in achievement.items():
+                if isinstance(lang_data, dict) and "unlockedDescription" in lang_data:
+                    language = self.get_language_from_locale(locale)
+                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
+            result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("desc_token", "")}"\n'
+            result += '\t\t\t\t\t\t}\n'
+
+            # Muut saavutuksen tiedot
+            result += f'\t\t\t\t\t\t"hidden"\t"{achievement.get("hidden", "0")}"\n'
+            result += f'\t\t\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
+            result += f'\t\t\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
+
+            result += '\t\t\t\t\t}\n'  # display-pääte
+            result += '\t\t\t\t}\n'  # Saavutusnoden pääte
+
+        result += '\t\t\t}\n'  # bits-osuuden pääte
+        result += '\t\t\t"type"\t"ACHIEVEMENTS"\n'
+        result += '\t\t}\n'  # stats-osuuden pääte
+        result += '\t}\n'  # stats-puu pääte
+        result += '\t"version"\t"2"\n'
+        result += '\t"gamename"\t"Super Ultimate Awesome Game"\n'
+        result += '}\n'  # Koko rakenteen pääte
+
+        # Kirjoitetaan VDF-tiedosto
+        with open(self.file_name, "w", encoding="utf-8") as f:
+            f.write(result)
+
+        print(f"VDF successfully written to {self.file_name}.")
+
+############### Lokalisaatio
+            # Fetch the language name from locale code
+    def get_language_from_locale(self, locale):
+        for lang, code in self.languages.items():
+            if code == locale:
+                return lang
+        return locale  # Return code if no match
+
+    # Generate language format data
+    def generate_lang_format(self, merged_data):
+        output = {}
+        for entry in merged_data:
+            for locale, content in entry.items():
+                if locale not in self.languages.values():
+                    continue  # Skip if not a recognized locale
+
+                # Get language name and initialize structure
+                language = self.get_language_from_locale(locale)
+                if language not in output:
+                    output[language] = {"Tokens": {}}
+
+                # Add tokens to the language
+                tokens = output[language]["Tokens"]
+                achievement_id = entry["name_id"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
+                tokens[f"{achievement_id}_NAME"] = content.get("unlockedTitle", "")
+                tokens[f"{achievement_id}_DESC"] = content.get("unlockedDescription", "")
+
+        return output
+
+    def write_locales_to_vdf(self, merged_data):
+        """
+        Write localized achievement data to a VDF file.
+        """
+        # Initialize an empty dictionary to hold the language-specific data
+        output = defaultdict(lambda: {"Tokens": {}})
+
+        # Iterate through the merged data
+        for entry in merged_data:
+            for locale, content in entry.items():
+                # Skip if the locale is not a recognized language code
+                if locale not in self.languages.values():
+                    continue
+
+                # Get the language from the locale
+                language = self.get_language_from_locale(locale)
+
+                # Add tokens for each achievement
+                tokens = output[language]["Tokens"]
+                achievement_id = entry["name_id"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
+                tokens[f"{achievement_id}_NAME"] = content.get("unlockedTitle", "")
+                tokens[f"{achievement_id}_DESC"] = content.get("unlockedDescription", "")
+
+        # Start formatting the data into VDF style
+        result = '"lang"\n{\n'
+
+        for language, content in output.items():
+            result += f'\t"{language}"\n\t{{\n'
+            result += '\t\t"Tokens"\n\t\t{\n'
+
+            for key, value in content["Tokens"].items():
+                result += f'\t\t\t"{key}"\t"{value}"\n'
+
+            result += '\t\t}\n\t}\n'
+
+        result += '}'
+
+        # Write the localized VDF file
+        new_file_name = self.file_name.replace(".vdf", "_localed.vdf")
+        with open(new_file_name, "w", encoding="utf-8") as f:
+            f.write(result)
+
+        print(f"Localized VDF successfully written to {new_file_name}.")

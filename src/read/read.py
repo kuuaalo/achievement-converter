@@ -211,9 +211,9 @@ class Read:
             # print("printing xl")
             # pprint.pp(xl)
 
-
-            #self.process.add_localizations(ID, LOCALE, list_value_pairs)
-            self.process.add_localizations(locals_dict)  # ADDED THIS TO RUN SOME TESTS
+           
+            self.process.add_localizations(ID, LOCALE, list_value_pairs)
+            #self.process.add_localizations(lol)  # ADDED THIS TO RUN SOME TESTS
             # list_value_pairs is a dict not a list of value pairs
 
         return True
