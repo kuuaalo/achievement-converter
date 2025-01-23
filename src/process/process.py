@@ -32,6 +32,12 @@ class Process:
         self.localizations_data[ID][LOCALE] = list_value_pairs
         return self.localizations_data
 
+    def get_localizations(self):
+        return self.localizations_data
+
+
+
+
     # Define blueprint for all values
     def fill_missing_values(self):
         blueprint = {
