@@ -135,6 +135,7 @@ class Process:
     def get_achievements(self,achievement_list,localizations_data):
         # Merges the achievements and localizations if not done already
         return self.merge()
+    
     # Function to fetch all data
     def get_all_data(self):
         merged_data = self.merge(self.achievement_list, self.localizations_data)
@@ -161,9 +162,18 @@ class Process:
         filter_list = []
         for index, achievement in enumerate(self.achievement_list):
             filtered_dict = self.get_achievement_keys_from_dict(key_list, index)
-            filter_list.append(filtered_dict)
+            new_list.append(filtered_dict)
 
-        return filter_list
+        return new_list
+
+    # Function to return locale codes for main
+    def get_locales(self):
+        locales = set()
+        for name_id, localization in self.localizations_data.items():
+            locales.update(localization.keys())
+        print(locales)
+        return "{" + ", ".join(locales) + "}"
+
 
     # Replace value in all achievements. Checks if it exists, adds if not
     def add_data_to_all_achievements(self, key, new_value):
@@ -183,6 +193,16 @@ class Process:
         else:
             achievement[key] = new_value
         return self.achievement_list
+
+
+
+
+
+
+
+
+
+
 
     # Saves data to selected file path as JSON
     def save_data(self, file_path):
