@@ -142,28 +142,28 @@ class Process:
         print(merged_data)
         return merged_data
 
-    # Fetch achievement by certain data
+    # Returns a dictionary of achievement data by index
     def get_achievement_by_data(self, index):
         acmt_dict = self.achievement_list[int(index)]
         return acmt_dict
 
-    # Returns a dictionary of the given keys in achievement
+    # Returns a filtered dictionary of values in achievement
     def get_achievement_keys_from_dict(self, key_list, index):
         acmt_dict = self.achievement_list[int(index)]
-        new_dict = {}
+        filter_dict = {}
         for key in acmt_dict:
             if key in key_list:
-                new_dict[key] = acmt_dict[key]
-        return new_dict
+                filter_dict[key] = acmt_dict[key]
+        return filter_dict
 
-    # Returns a filtered list of achievements
+    # Returns a filtered list of all achievements
     def get_filtered_list(self, key_list):
-        new_list = []
+        filter_list = []
         for index, achievement in enumerate(self.achievement_list):
             filtered_dict = self.get_achievement_keys_from_dict(key_list, index)
-            new_list.append(filtered_dict)
+            filter_list.append(filtered_dict)
 
-        return new_list
+        return filter_list
 
     # Replace value in all achievements. Checks if it exists, adds if not
     def add_data_to_all_achievements(self, key, new_value):
