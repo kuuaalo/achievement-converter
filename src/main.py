@@ -60,6 +60,7 @@ class AchievementConverter:
     def create_table(self):
         # get list of all achievements and keys
         acmt_list = self.process.fill_missing_values()
+        
         # get dict for table headers
         self.table_keys = self.fetch_acmt_dict()
         # save current headers in use for filtering purposes
@@ -67,7 +68,6 @@ class AchievementConverter:
 
         if self.main_table is None:
             self.main_table = self.gui.create_table(self.table_keys)
-            #self.locale_table = self.gui.create_table(self.table_keys)
             # bind key press events to table
             self.gui.bind_events(self.main_table)
             self.gui.configure_table(self.main_table)
@@ -89,6 +89,41 @@ class AchievementConverter:
         #save id
         self.selected_acmt_id = acmt_id
 
+
+    # get a single achievement and it's values
+    def fetch_acmt_dict(self, index = 0):
+        acmt_dict = self.process.get_achievement_by_data(index)
+        self.current_dict = acmt_dict
+        return acmt_dict
+    
+    # used by gui to display correct values
+    def get_current_dict(self):
+        return self.current_dict
+
+    # gui button calls this to update value
+    def change_value(self, key, id, table, new_value):
+
+        acmt_list = self.process.update_achievement_data(id, key, new_value)
+        acmt_dict = self.get_current_dict()
+
+        self.gui.refresh_table(self.main_table)
+        self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
+
+        self.gui.refresh_table(table)
+        acmt_dict = self.fetch_acmt_dict(id)
+        self.gui.populate_acmt_table(table, acmt_dict)
+    
+    # gui button calls this update value in all achievements
+    def change_all_values(self, key, table, new_value):
+        acmt_list = self.process.add_data_to_all_achievements(key, new_value)
+        acmt_dict = self.get_current_dict()
+        self.gui.refresh_table(self.main_table)
+        self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
+
+        self.gui.refresh_table(table)
+        acmt_dict = self.fetch_acmt_dict()
+        self.gui.populate_acmt_table(table, acmt_dict)
+    
     #filtering logic for achievement data
     def filter_values(self, format_var, table):
         # get format variable from widget
@@ -130,33 +165,13 @@ class AchievementConverter:
         self.gui.refresh_table(table)
         self.gui.populate_acmt_table(table, new_dict)
 
-    # get a single achievement and it's values
-    def fetch_acmt_dict(self, index = 0):
-        acmt_dict = self.process.get_achievement_by_data(index)
-        self.current_dict = acmt_dict
-        return acmt_dict
-    
-    # used bu gui to display correct values
-    def get_current_dict(self):
-        return self.current_dict
-
-    # send new values to be added to dict
-    def data_handler(self, command, key, new_value, id = None):
-        if(command==1):
-            acmt_list = self.process.add_data_to_all_achievements(key, new_value)
-        elif(command==2):
-            acmt_list = self.process.update_achievement_data(id, key, new_value)
-
-        #acmt_dict = self.fetch_acmt_dict()
-        acmt_dict = self.get_current_dict()
-
-        self.gui.refresh_table(self.main_table)
-        self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
-
     # return given path's file extension
     def get_file_extension(self, selected_path):
         return os.path.splitext(selected_path)[1].lower()
-
+    
+    def get_locale_dict(self):
+        return self.process.get_locale_list()
+   
     def run(self):
         # infinite loop for displaying gui
         self.root.mainloop()

@@ -49,6 +49,7 @@ class AchievementConverterGUI:
         
         return self.table
     
+    
     def bind_events(self, table):
         table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
         table.bind("<Double-1>", lambda event: self.controller.register_id(event), add='+')
@@ -67,7 +68,7 @@ class AchievementConverterGUI:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
     def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
-        print(acmt_dict)
+        self.acmt_table = table
         for index, key in enumerate(acmt_dict):
             print(key)
             table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
@@ -101,14 +102,16 @@ class AchievementConverterGUI:
         col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
         
         if self.acmt_table is not None: 
-            print("Window is already open!")
             self.refresh_table(self.acmt_table) # clear old table
         else:
             self.acmt_table = self.create_table(col_dict) # create new acmt table
             
         for index, key in enumerate(acmt_dict): # fill values
             self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
-
+        
+        acmt_list = self.controller.get_locale_dict()
+        print(acmt_list)
+        self.acmt_table.insert('', index='end', values=('locales', acmt_list)) # hardcoded for first acmt
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
 
     # create edit window
@@ -195,12 +198,14 @@ class AchievementConverterGUI:
         replacethis_button = ttk.Button( #button to import file
             replace_frame,
             text="Replace value",
-            command=lambda:self.handle_submit(2, self.current_key, self.acmt_id)
+            #command=lambda:self.handle_submit(2, self.current_key, self.acmt_id)
+            command=lambda:self.controller.change_value(self.current_key, self.acmt_id, self.acmt_table, self.field.get())
         )
         replaceall_button = ttk.Button( #button to import file
             replace_frame,
             text="Replace in ALL",
-            command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
+            #command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
+            command=lambda:self.controller.change_all_values(self.current_key, self.acmt_table, self.field.get())
         )
         next_acmt_button = ttk.Button(
             next_frame,
@@ -219,7 +224,7 @@ class AchievementConverterGUI:
 
         next_acmt_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
         next_value_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
-
+    
 
     
     def create_filter(self, table, filter_names, filter_label): #create a filter
@@ -279,14 +284,6 @@ class AchievementConverterGUI:
     def show_error(self, error_title, error_msg): #shows error pop-up
         showwarning(title=error_title, message=error_msg)
 
-    def handle_submit(self, command, key, index): # sends submitted value to main
-        new_value = self.field.get() #get new value from widget
-        if (command == 1): 
-            self.controller.data_handler(command, key, new_value)
-        elif(command == 2):
-            self.controller.data_handler(command, key, new_value, index)
-        self.refresh_table(self.acmt_table)
-        acmt_dict = self.controller.fetch_acmt_dict(index)
-        self.populate_acmt_table(self.acmt_table, acmt_dict)
+
   
 

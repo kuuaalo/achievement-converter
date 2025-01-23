@@ -162,9 +162,9 @@ class Process:
         filter_list = []
         for index, achievement in enumerate(self.achievement_list):
             filtered_dict = self.get_achievement_keys_from_dict(key_list, index)
-            new_list.append(filtered_dict)
+            filter_list.append(filtered_dict)
 
-        return new_list
+        return filter_list
 
     # Function to return locale codes for main
     def get_locales(self):
@@ -180,7 +180,7 @@ class Process:
         localizations = self.localizations_data['AchievementID1']
         for item in localizations:
             print(item)
-            #for key in localization.keys():
+
             locales.append(item)
         return locales
 
