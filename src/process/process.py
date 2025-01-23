@@ -173,6 +173,16 @@ class Process:
             locales.update(localization.keys())
         print(locales)
         return "{" + ", ".join(locales) + "}"
+    
+    # Function to return list of locales
+    def get_locale_list(self):
+        locales = []
+        localizations = self.localizations_data['AchievementID1']
+        for item in localizations:
+            print(item)
+            #for key in localization.keys():
+            locales.append(item)
+        return locales
 
 
     # Replace value in all achievements. Checks if it exists, adds if not
