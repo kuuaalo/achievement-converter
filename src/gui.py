@@ -18,7 +18,6 @@ class AchievementConverterGUI:
 
         self.create_buttons()
 
-        self.acmt_table = None #single achievement display table
         self.edit_frame = None 
         
 
@@ -51,7 +50,8 @@ class AchievementConverterGUI:
     
     
     def bind_events(self, table):
-        table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
+        #table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
+        table.bind("<Double-1>", lambda event: self.controller.open_acmt(None, event))
         table.bind("<Double-1>", lambda event: self.controller.register_id(event), add='+')
     
     def configure_table(self, table):
@@ -92,50 +92,6 @@ class AchievementConverterGUI:
         return acmt_id
 
     
-    def open_acmt(self, acmt_id = None, event = None): # called when user selects acmt from table
-        
-        if acmt_id is None:
-            acmt_id = self.identify_id(event) # identify id if it was not given 
-        
-        acmt_dict = self.controller.fetch_acmt_dict(acmt_id) # get a dictionary of specified achievement's keys and values
-
-        col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
-        
-        if self.acmt_table is not None: 
-            self.refresh_table(self.acmt_table) # clear old table
-        else:
-            self.acmt_table = self.create_table(col_dict) # create new acmt table
-            
-        for index, key in enumerate(acmt_dict): # fill values
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
-        
-        acmt_list = self.controller.get_locale_dict()
-        print(acmt_list)
-        self.acmt_table.insert('', index='end', values=('locales', acmt_list)) # hardcoded for first acmt
-        #self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
-        self.acmt_table.bind("<Double-1>", lambda event: self.controller.edit_value(acmt_id, self.acmt_table, event)) # send clicked achievement's id and event
-
-    # create edit window
-    def edit_value(self, acmt_id, event=None):
-        
-        if event != None: #if event was given
-            self.row_id = self.identify_id(event) #identify row to find out which key:value pair was clicked
-        
-        self.acmt_id = acmt_id #set given achievement's id
-
-        self.edit_frame = tk.Toplevel(self.root) # create frame for editing
-        
-        self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
-        
-        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
-        
-        self.keys_list = list(current_dict.keys()) # create a list of all keys from the dictionary
-        
-        self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
-       
-        self.display_edit_value() # function to create labels etc widgets
-
-    
     def display_edit_value(self, current_key):
         self.edit_frame = tk.Toplevel(self.root) # create frame for editing
         
@@ -164,16 +120,6 @@ class AchievementConverterGUI:
         edit_label.pack(expand=True)
         self.field.pack(expand=True)
         self.create_edit_menu_buttons(self.edit_frame)
-        
-    
-    def move_to_next_value(self):
-        
-        new_key_index = (self.current_key_index + 1) % len(self.keys_list) #move to next index in acmt_dict
-        self.current_key_index = new_key_index # set current index as new key index
-        self.current_key = self.keys_list[new_key_index]  # update current key from list
-        self.acmt_table.selection_set(new_key_index) # move the selection to next value too
-        
-        self.display_edit_value() # display widgets to show change to new key
     
 
     def create_edit_menu_buttons(self, tree):
@@ -190,24 +136,25 @@ class AchievementConverterGUI:
             replace_frame,
             text="Replace value",
             #command=lambda:self.handle_submit(2, self.current_key, self.acmt_id)
-            command=lambda:self.controller.change_value(self.current_key, self.acmt_id, self.acmt_table, self.field.get())
+            command=lambda:self.controller.change_value(self.field.get())
         )
         replaceall_button = ttk.Button( #button to import file
             replace_frame,
             text="Replace in ALL",
             #command=lambda:self.handle_submit(1, self.current_key, self.acmt_id)
-            command=lambda:self.controller.change_all_values(self.current_key, self.acmt_table, self.field.get())
+            command=lambda:self.controller.change_all_values(self.field.get())
         )
         next_acmt_button = ttk.Button(
             next_frame,
             text="Edit next achievement",
             #command=lambda:self.move_to_next_acmt(self.acmt_id)
-            command=lambda:self.controller.move_to_next_acmt(self.acmt_table)
+            command=lambda:self.controller.move_to_next_acmt()
         )
         next_value_button = ttk.Button(
             next_frame,
             text="Edit next value",
-            command=lambda:self.move_to_next_value()
+            #command=lambda:self.move_to_next_value()
+            command=lambda:self.controller.move_to_next_value()
         )
     
 
