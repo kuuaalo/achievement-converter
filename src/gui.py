@@ -112,7 +112,8 @@ class AchievementConverterGUI:
         acmt_list = self.controller.get_locale_dict()
         print(acmt_list)
         self.acmt_table.insert('', index='end', values=('locales', acmt_list)) # hardcoded for first acmt
-        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
+        #self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
+        self.acmt_table.bind("<Double-1>", lambda event: self.controller.edit_value(acmt_id, self.acmt_table, event)) # send clicked achievement's id and event
 
     # create edit window
     def edit_value(self, acmt_id, event=None):
@@ -135,17 +136,21 @@ class AchievementConverterGUI:
         self.display_edit_value() # function to create labels etc widgets
 
     
-    def display_edit_value(self):
-        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
+    def display_edit_value(self, current_key):
+        self.edit_frame = tk.Toplevel(self.root) # create frame for editing
         
-        current_value = current_dict[self.current_key] # Get the value for the current key
+        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
+        print("got to display value")
+        current_value = current_dict[current_key] # Get the value for the current key
+        print(current_key)
+        print(current_value)
         self.edit_frame.geometry("300x300")
         
         for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
             widget.destroy()
 
         # Create widgets for displaying and editing
-        field_label = ttk.Label(self.edit_frame, text="Key: " + self.current_key)  # Show the key
+        field_label = ttk.Label(self.edit_frame, text="Key: " + current_key)  # Show the key
         separator = ttk.Separator(self.edit_frame, orient='horizontal') 
         edit_label = ttk.Label(self.edit_frame, text="Edit value for this key:")
         
@@ -160,20 +165,6 @@ class AchievementConverterGUI:
         self.field.pack(expand=True)
         self.create_edit_menu_buttons(self.edit_frame)
         
-
-    def move_to_next_acmt(self, index): 
-
-        print("move to next")
-        current_row = self.table.next(index)
-
-        self.table.selection_set(current_row)
-
-        self.refresh_table(self.acmt_table)
-
-        acmt_dict = self.controller.fetch_acmt_dict(current_row)
-
-        self.populate_acmt_table(self.acmt_table, acmt_dict)
-        self.edit_value(current_row)
     
     def move_to_next_value(self):
         
@@ -210,7 +201,8 @@ class AchievementConverterGUI:
         next_acmt_button = ttk.Button(
             next_frame,
             text="Edit next achievement",
-            command=lambda:self.move_to_next_acmt(self.acmt_id)
+            #command=lambda:self.move_to_next_acmt(self.acmt_id)
+            command=lambda:self.controller.move_to_next_acmt(self.acmt_table)
         )
         next_value_button = ttk.Button(
             next_frame,

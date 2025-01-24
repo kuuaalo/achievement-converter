@@ -24,6 +24,12 @@ class AchievementConverter:
         # selected achievement's id
         self.selected_acmt_id = None
 
+        self.current_key_index = None
+
+        self.current_key = None
+
+        self.acmt_table = None
+
     # import achievement file
     def import_file(self):
         # open filedialog and save paths
@@ -164,6 +170,49 @@ class AchievementConverter:
         new_dict = self.process.get_achievement_keys_from_dict(key_list, id)
         self.gui.refresh_table(table)
         self.gui.populate_acmt_table(table, new_dict)
+        # create edit window
+    
+    def edit_value(self, acmt_id, acmt_table, event=None):
+        
+        if event != None: #if event was given
+            self.row_id = self.gui.identify_id(event) #identify row to find out which key:value pair was clicked
+        
+        self.acmt_table = acmt_table
+        self.acmt_id = acmt_id #set given achievement's id
+
+        
+        self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
+        
+        self.keys_list = list(self.current_dict.keys()) # create a list of all keys from the dictionary
+        
+        self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
+       
+        self.gui.display_edit_value(self.current_key) # function to create labels etc widgets
+    
+    
+    def move_to_next_acmt(self, acmt_table): 
+
+        print("move to next")
+        index = self.selected_acmt_id
+        current_row = self.main_table.next(index)
+
+        self.main_table.selection_set(current_row)
+
+        self.gui.refresh_table(acmt_table)
+        acmt_dict = self.fetch_acmt_dict(current_row)
+
+        self.gui.populate_acmt_table(acmt_table, acmt_dict)
+        self.edit_value(current_row, acmt_table)
+    
+    def move_to_next_value(self):
+        
+        new_key_index = (self.current_key_index + 1) % len(self.keys_list) #move to next index in acmt_dict
+        self.current_key_index = new_key_index # set current index as new key index
+        self.current_key = self.keys_list[new_key_index]  # update current key from list
+        self.acmt_table.selection_set(new_key_index) # move the selection to next value too
+        
+        self.gui.display_edit_value() # display widgets to show change to new key
+    
 
     # return given path's file extension
     def get_file_extension(self, selected_path):
