@@ -1,4 +1,5 @@
 import json
+import config
 
 class Process:
 
@@ -40,26 +41,7 @@ class Process:
 
     # Define blueprint for all values
     def fill_missing_values(self):
-        blueprint = {
-            "version": None,
-            "game_name": None,
-            "game_id": None,
-            "acmt_num": None,
-            "name_id": None,
-            "name_locked": None,
-            "name_token": None,
-            "desc_id": None,
-            "desc_token": None,
-            "hidden": None,
-            "icon": None,
-            "icon_locked": None,
-            "desc_locked": None,
-            "acmt_xp": None,
-            "acmt_stat_tres": None,
-            "ag_type": None,
-            "flavor_txt": None,
-            "base_acmt": None,
-        }
+        blueprint = config.ACMT_DICT #get blueprint from config-file
         for achievement in self.achievement_list:
             for key, default_value in blueprint.items():
                 if key not in achievement:
@@ -71,26 +53,7 @@ class Process:
     # Merge achievements and localizations
     def merge(self,achievement_list, localizations_data):
     # Blueprint for all fields we expect
-        blueprint = {
-            "version": None,
-            "game_name": None,
-            "game_id": None,
-            "acmt_num": None,
-            "name_id": None,
-            "name_locked": None,
-            "name_token": None,
-            "desc_id": None,
-            "desc_token": None,
-            "hidden": None,
-            "icon": None,
-            "icon_locked": None,
-            "desc_locked": None,
-            "acmt_xp": None,
-            "acmt_stat_tres": None,
-            "ag_type": None,
-            "flavor_txt": None,
-            "base_acmt": None,
-        }
+        blueprint = config.ACMT_DICT 
         
         merged_achievements = []
 
