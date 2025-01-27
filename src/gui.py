@@ -1,9 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, Menu
-from tkinter import Tk, Text
-from tkinter import filedialog as fd
+from tkinter import ttk
 from tkinter.messagebox import showerror, showwarning, showinfo
-import config
 
 class AchievementConverterGUI:
 
@@ -51,13 +48,13 @@ class AchievementConverterGUI:
     
     def bind_events(self, table):
         #table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
-        table.bind("<Double-1>", lambda event: self.controller.open_acmt(None, event))
-        table.bind("<Double-1>", lambda event: self.controller.register_id(event), add='+')
+        table.bind("<Double-1>", lambda event: self.controller.register_id(event))
+        table.bind("<Double-1>", lambda event: self.controller.open_acmt(event), add='+')
     
     def configure_table(self, table):
         table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
 
-    def populate_table(self, table, acmt_list, acmt_dict):
+    def populate_table(self, table, acmt_list):
         print(f"Populating table")
         
         for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
@@ -92,14 +89,12 @@ class AchievementConverterGUI:
         return acmt_id
 
     
-    def display_edit_value(self, current_key):
+    def display_edit_value(self, current_key, current_dict):
         self.edit_frame = tk.Toplevel(self.root) # create frame for editing
         
-        current_dict = self.controller.get_current_dict() #stupid fix. improve later with callback / observer
         print("got to display value")
         current_value = current_dict[current_key] # Get the value for the current key
-        print(current_key)
-        print(current_value)
+
         self.edit_frame.geometry("300x300")
         
         for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
@@ -166,7 +161,7 @@ class AchievementConverterGUI:
     
 
     
-    def create_filter(self, table, filter_names, filter_label): #create a filter
+    def create_filter(self, filter_names, filter_label): #create a filter
         lf = ttk.LabelFrame(self.root, text=filter_label)
         lf.pack(side=tk.TOP, expand=True)
 
@@ -175,7 +170,7 @@ class AchievementConverterGUI:
 
         for format in formats:
             # create a radio button
-            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var, self.acmt_table), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
+            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
             radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
         

@@ -20,7 +20,7 @@ class AchievementConverter:
         # main achievement display table
         self.main_table = None
         # dictionary in use for headers
-        self.current_dict = None
+        self.current_filter= None
         # selected achievement's id
         self.selected_acmt_id = None
 
@@ -65,26 +65,28 @@ class AchievementConverter:
 
     def create_table(self):
         # get list of all achievements and keys
+        
         acmt_list = self.process.fill_missing_values()
         
         # get dict for table headers
-        self.table_keys = self.fetch_acmt_dict()
+        table_keys = self.process.get_achievement_by_data()
         # save current headers in use for filtering purposes
-        self.current_dict = self.table_keys
+        self.current_filter= table_keys
+
 
         if self.main_table is None:
-            self.main_table = self.gui.create_table(self.table_keys)
+            self.main_table = self.gui.create_table(table_keys)
             # bind key press events to table
             self.gui.bind_events(self.main_table)
             self.gui.configure_table(self.main_table)
             # values for filter creation
-            formats = ('Steam', 'Epic', 'MS Store', 'All')
-            self.gui.create_filter(self.main_table, formats, 'formats')
-            self.gui.populate_table(self.main_table, acmt_list, self.table_keys)
+            formats = config.FILTER_FORMATS
+            self.gui.create_filter(formats, 'formats')
+            self.gui.populate_table(self.main_table, acmt_list)
         else:
             # if table already exists, clear it
             self.gui.refresh_table(self.main_table)
-            self.gui.populate_table(self.main_table, acmt_list, self.table_keys)
+            self.gui.populate_table(self.main_table, acmt_list)
 
     # register currently open achievement's id
     def register_id(self, event):
@@ -94,41 +96,66 @@ class AchievementConverter:
         acmt_id = self.tree.identify_row(event.y)
         #save id
         self.selected_acmt_id = acmt_id
-
-
-    # get a single achievement and it's values
-    def fetch_acmt_dict(self, index = 0):
-        acmt_dict = self.process.get_achievement_by_data(index)
-        self.current_dict = acmt_dict
-        return acmt_dict
     
-    # used by gui to display correct values
-    def get_current_dict(self):
-        return self.current_dict
+    # called when user selects cell from main table
+    def open_acmt(self, event):
+        print("got to open acmt")
+        acmt_id = self.selected_acmt_id
+        
+        self.current_filter = self.process.get_achievement_by_data(acmt_id)
+        col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
+        
+        if self.acmt_table is not None: 
+            self.gui.refresh_table(self.acmt_table) # clear old table
+        else:
+            self.acmt_table = self.gui.create_table(col_dict) # create new acmt table RENAME SAME NAME FUNCTION
+            
+        for index, key in enumerate(self.current_filter): # fill values
+            self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key])) #make a separate function for this!
+        
+        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(event)) # send clicked achievement's id and event
+        self.acmt_table.bind("<Double-1>", lambda event: self.register_id(event), add='+')
+    
+    def edit_value(self, event=None, row_id=None):
+        
+        if event: #if event was given
+            self.row_id = self.gui.identify_id(event) #identify row to find out which key:value pair was clicked
+        else:
+            self.row_id = row_id
+        
+        self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
+        
+        self.keys_list = list(self.current_filter.keys()) # create a list of all keys from the dictionary
+        
+        self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
+       
+        self.gui.display_edit_value(self.current_key, self.current_filter) # function to create labels etc widgets
+
 
     # gui button calls this to update value
     def change_value(self, new_value):
         id = self.selected_acmt_id
         acmt_list = self.process.update_achievement_data(id, self.current_key, new_value)
-        acmt_dict = self.get_current_dict()
+        acmt_dict = self.current_filter
 
         self.gui.refresh_table(self.main_table)
         self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
 
         self.gui.refresh_table(self.acmt_table)
-        acmt_dict = self.fetch_acmt_dict(id)
-        self.gui.populate_acmt_table(self.acmt_table, acmt_dict)
+        
+        self.current_filter = self.process.get_achievement_by_data(id)
+        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
     
     # gui button calls this update value in all achievements
     def change_all_values(self, new_value):
         acmt_list = self.process.add_data_to_all_achievements(self.current_key, new_value)
-        acmt_dict = self.get_current_dict()
+        acmt_dict = self.current_filter
         self.gui.refresh_table(self.main_table)
         self.gui.populate_table(self.main_table,acmt_list, acmt_dict)
 
         self.gui.refresh_table(self.acmt_table)
-        acmt_dict = self.fetch_acmt_dict()
-        self.gui.populate_acmt_table(self.acmt_table, acmt_dict)
+        self.current_filter = self.process.get_achievement_by_data()
+        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
     
     #filtering logic for achievement data
     def filter_values(self, format_var):
@@ -136,7 +163,7 @@ class AchievementConverter:
         format = format_var.get()
 
         #all the possible keys in a filter
-        column_config = {
+        filter_config = {
             'Steam': ('version','game_name','acmt_num',
                       'name_id','name_token',
                         'desc_token','hidden','icon',
@@ -154,7 +181,7 @@ class AchievementConverter:
                     
         }
         # get list of allowed values from filter
-        key_list = column_config[format]
+        key_list = filter_config[format]
         new_headers = self.process.get_achievement_keys_from_dict(key_list, 0)
         current_list = self.process.get_filtered_list(key_list)
         column_list = list(new_headers.keys())
@@ -169,37 +196,24 @@ class AchievementConverter:
         self.gui.refresh_table(self.acmt_table)
         self.gui.populate_acmt_table(self.acmt_table, new_dict)
         # create edit window
-    
-    def edit_value(self, acmt_id, event=None):
         
-        if event != None: #if event was given
-            self.row_id = self.gui.identify_id(event) #identify row to find out which key:value pair was clicked
-        
-        self.acmt_id = acmt_id #set given achievement's id
-
-        
-        self.current_key = self.acmt_table.set(self.row_id, 'key')  # use row id and column name to find key
-        
-        self.keys_list = list(self.current_dict.keys()) # create a list of all keys from the dictionary
-        
-        self.current_key_index = self.keys_list.index(self.current_key)  # find the key we are currently editing from the list and use it's index
-       
-        self.gui.display_edit_value(self.current_key) # function to create labels etc widgets
-    
     
     def move_to_next_acmt(self): 
 
         print("move to next")
         index = self.selected_acmt_id
+        print(self.selected_acmt_id)
         current_row = self.main_table.next(index)
 
         self.main_table.selection_set(current_row)
+        print(current_row)
 
         self.gui.refresh_table(self.acmt_table)
-        acmt_dict = self.fetch_acmt_dict(current_row)
 
-        self.gui.populate_acmt_table(self.acmt_table, acmt_dict)
-        self.edit_value(current_row)
+        self.current_filter = self.process.get_achievement_by_data(current_row)
+
+        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+        self.edit_value(None, current_row)
     
     def move_to_next_value(self):
         
@@ -208,27 +222,7 @@ class AchievementConverter:
         self.current_key = self.keys_list[new_key_index]  # update current key from list
         self.acmt_table.selection_set(new_key_index) # move the selection to next value too
         
-        self.gui.display_edit_value(self.current_key ) # display widgets to show change to new key
-    
-    def open_acmt(self, acmt_id = None, event = None): # called when user selects acmt from table
-        print("got to open acmt")
-        print(event)
-        if acmt_id is None:
-            acmt_id = self.gui.identify_id(event) # identify id if it was not given 
-        
-        acmt_dict = self.fetch_acmt_dict(acmt_id) # get a dictionary of specified achievement's keys and values
-
-        col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
-        
-        if self.acmt_table is not None: 
-            self.gui.refresh_table(self.acmt_table) # clear old table
-        else:
-            self.acmt_table = self.gui.create_table(col_dict) # create new acmt table RENAME SAME NAME FUNCTION
-            
-        for index, key in enumerate(acmt_dict): # fill values
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key])) #make a separate function for this!
-        
-        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(acmt_id, event)) # send clicked achievement's id and event
+        self.gui.display_edit_value(self.current_key, self.current_filter) # display widgets to show change to new key
     
 
     # return given path's file extension

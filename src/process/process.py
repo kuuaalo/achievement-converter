@@ -99,7 +99,7 @@ class Process:
         return merged_data
 
     # Returns a dictionary of achievement data by index
-    def get_achievement_by_data(self, index):
+    def get_achievement_by_data(self, index = 0):
         acmt_dict = self.achievement_list[int(index)]
         return acmt_dict
 
