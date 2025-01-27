@@ -4,13 +4,9 @@ acmt_dict = {
     "game_id": None, #Steam game id in html
     "acmt_num": None, #Steam/MS display order/ identifier in file for multiple achievements
     "name_id": None, #Achievement ID, identifier
-    "name_en": None, #Name/title in english
-    "name_fi": None, #title in finnish. !! More localizations? Add loop that creates new dictionary key name_var !!
     "name_locked": None, #locked acmt title. ! for all localizations? !
     "name_token": None, #ref to steam description
     "desc_id":None, #MS store specific
-    "desc_en": None, #description in english ! for all localizations? !
-    "desc_fi": None, #description in english ! for all localizations? !
     "desc_token": None, #ref to steam description
     "hidden": None, #hidden achievement true/false
     "icon": None, #icon for achievements

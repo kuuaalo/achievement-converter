@@ -46,13 +46,9 @@ class Process:
             "game_id": None,
             "acmt_num": None,
             "name_id": None,
-            "name_en": None,
-            "name_fi": None,
             "name_locked": None,
             "name_token": None,
             "desc_id": None,
-            "desc_en": None,
-            "desc_fi": None,
             "desc_token": None,
             "hidden": None,
             "icon": None,
@@ -67,9 +63,9 @@ class Process:
         for achievement in self.achievement_list:
             for key, default_value in blueprint.items():
                 if key not in achievement:
-                    achievement[key] = default_value if default_value is not None else 0
-                elif achievement[key] is None:
-                    achievement[key] = 0
+                    achievement[key] = default_value # if default_value is not None else 0
+                #elif achievement[key] is None:
+                    #achievement[key] = 0
         return self.achievement_list
 
     # Merge achievements and localizations
@@ -81,13 +77,9 @@ class Process:
             "game_id": None,
             "acmt_num": None,
             "name_id": None,
-            "name_en": None,
-            "name_fi": None,
             "name_locked": None,
             "name_token": None,
             "desc_id": None,
-            "desc_en": None,
-            "desc_fi": None,
             "desc_token": None,
             "hidden": None,
             "icon": None,
