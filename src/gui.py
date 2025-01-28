@@ -47,9 +47,8 @@ class AchievementConverterGUI:
     
     
     def bind_events(self, table):
-        #table.bind("<Double-1>", lambda event: self.open_acmt(None, event))
-        table.bind("<Double-1>", lambda event: self.controller.register_id(event))
-        table.bind("<Double-1>", lambda event: self.controller.open_acmt(event), add='+')
+        #table.bind("<Double-1>", lambda event: self.controller.register_id(event))
+        table.bind("<Double-1>", lambda event: self.controller.open_acmt(event))
     
     def configure_table(self, table):
         table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
@@ -65,7 +64,6 @@ class AchievementConverterGUI:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
     def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
-        self.acmt_table = table
         for index, key in enumerate(acmt_dict):
             print(key)
             table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
@@ -82,13 +80,6 @@ class AchievementConverterGUI:
 
         return True
     
-    def identify_id(self, event): #POSSIBLY OBSOLETE. REMOVE
-        self.tree = event.widget #get widget based on event
-        acmt_id = self.tree.identify_row(event.y)  # get row
-
-        return acmt_id
-    
-        
     
     def display_edit_value(self, current_key, current_dict):
         
