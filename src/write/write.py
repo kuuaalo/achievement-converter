@@ -63,7 +63,8 @@ class Write:
             self.write_to_xml(achievements) 
         # Write to CSV if format is CSV
         elif self.file_format == ".csv":
-            self.write_to_csv(achievements) 
+            self.write_to_csv(achievements)
+            self.write_locales_to_csv(achievements)
         # Write to VDF if format is VDF
         elif self.file_format == ".vdf":
             self.write_to_vdf(achievements)
@@ -195,6 +196,47 @@ class Write:
 
         print(f"Data written to {self.file_name} in CSV format.")
 
+    def write_locales_to_csv(self, achievements):
+        """
+        Writes localization data to a CSV file.
+
+        This function extracts localization information from the given achievement data
+        and saves it into a separate CSV file with appropriate field names.
+        """    
+        # Generate the file name for the localization CSV
+        locales_file_name = self.file_name.replace(".csv", "_locales.csv")
+
+        # Define column names for the CSV file
+        fieldnames = [
+            "achievement_id",  # Unique identifier for the achievement
+            "locale",          # Language code (e.g., en-US, fi, de)
+            "lockedTitle",     # Title when achievement is locked
+            "lockedDescription",  # Description when locked
+            "unlockedTitle",   # Title when achievement is unlocked
+            "unlockedDescription",  # Description when unlocked
+            "flavorText"       # Additional flavor text, if any
+        ]
+
+        # Open the localization CSV file for writing
+        with open(locales_file_name, "w", newline='', encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)  # Initialize CSV writer
+            writer.writeheader()  # Write the column headers
+
+            # Loop through each achievement and extract localization details
+            for achievement in achievements:
+                row = {
+                    "achievement_id": achievement.get("name_id", ""),  # Get achievement ID
+                    "locale": achievement.get("locale", "default"),  # Get locale, default to "default"
+                    "lockedTitle": achievement.get("lockedTitle", ""),  # Get locked title
+                    "lockedDescription": achievement.get("lockedDescription", ""),  # Get locked description
+                    "unlockedTitle": achievement.get("unlockedTitle", ""),  # Get unlocked title
+                    "unlockedDescription": achievement.get("unlockedDescription", ""),  # Get unlocked description
+                    "flavorText": achievement.get("flavorText", "")  # Get flavor text
+                }
+                writer.writerow(row)  # Write extracted data as a row in the CSV file
+
+        # Print confirmation message
+        print(f"Localization data successfully written to {locales_file_name} in CSV format.")
 
 
 
