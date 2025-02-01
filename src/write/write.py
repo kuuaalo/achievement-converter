@@ -96,7 +96,7 @@ class Write:
         doc.appendChild(root)
 
         for i, achievement in enumerate(achievements, start=1):
-            print("Processing achievement")  # Debug message
+            print(f"Processing achievement {i}")  # Debug message
 
             achievement_element = doc.createElement('Achievement')
 
@@ -105,18 +105,18 @@ class Write:
                 "AchievementNameId": "name_id",
                 "BaseAchievement": "base_acmt",
                 "DisplayOrder": "acmt_num",
-                "LockedDescriptionId": f"LockedDescriptionId{i}",
-                "UnlockedDescriptionId": f"UnlockedDescriptionId{i}",
+                "LockedDescriptionId": "desc_locked",
+                "UnlockedDescriptionId": "desc_token",
                 "IsHidden": "hidden",
-                "AchievementId": str(i),
-                "IconImageId": "77fdcb0c-0ccc-440c-adad-92b57a2f4498"
+                "AchievementId": str(i),  # Achievement ID perustuu indeksiin
+                "IconImageId": "icon"
             }
 
             # Iterate over the xml_tags_map to create XML elements
-            for xml_tag, value in xml_tags_map.items():
+            for xml_tag, key in xml_tags_map.items():
                 element = doc.createElement(xml_tag)
 
-                # Add Rewards structure for Gamerscore
+                # Special handling for certain tags
                 if xml_tag == "UnlockedDescriptionId":
                     # Rewards block before UnlockedDescriptionId
                     rewards_element = doc.createElement("Rewards")
@@ -125,13 +125,15 @@ class Write:
                     rewards_element.appendChild(gamerscore)
                     achievement_element.appendChild(rewards_element)
 
-                # Handle boolean transformations and missing keys
+                # Handle BaseAchievement and IsHidden as booleans
                 if xml_tag == "BaseAchievement":
-                    element.appendChild(doc.createTextNode("true"))  # Assume base achievement is true
+                    element.appendChild(doc.createTextNode(str(achievement.get(key, "true")).lower()))
                 elif xml_tag == "IsHidden":
-                    element.appendChild(doc.createTextNode(achievement.get("hidden", "false").lower()))
+                    element.appendChild(doc.createTextNode("true" if achievement.get(key, False) else "false"))
+                elif xml_tag == "AchievementId":
+                    element.appendChild(doc.createTextNode(key))  # Kovakoodattu ID
                 else:
-                    element.appendChild(doc.createTextNode(str(value)))
+                    element.appendChild(doc.createTextNode(str(achievement.get(key, ""))))  # Haetaan oikeasta avaimesta
 
                 # Append element to Achievement
                 achievement_element.appendChild(element)
@@ -141,10 +143,10 @@ class Write:
 
         # Write the XML document to a file
         xml_str = doc.toprettyxml(indent="  ")
-        with open(file_name, "w", encoding="utf-8") as f:
+        with open(self.file_name, "w", encoding="utf-8") as f:
             f.write(xml_str)
 
-        print(f"XML successfully written to {file_name}.")
+        print(f"XML successfully written to {self.file_name}.")
 
 
 

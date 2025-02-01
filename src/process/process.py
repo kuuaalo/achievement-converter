@@ -27,6 +27,13 @@ class Process:
         else:
             return False
 
+#    def add_achievements(self, achievements):
+#        print(f"Adding achievements: {achievements}")
+#        if achievements:
+#            self.achievement_list.extend(achievements)
+#        else:
+#            print("No achievements to add.")
+
     def add_localizations(self, ID, LOCALE, list_value_pairs):
         if ID not in self.localizations_data:
             self.localizations_data[ID] = {}
@@ -102,6 +109,20 @@ class Process:
     def get_achievement_by_data(self, index = 0):
         acmt_dict = self.achievement_list[int(index)]
         return acmt_dict
+ 
+#    def get_achievement_by_data(self, index=0):
+#        if not self.achievement_list:
+#            print("Achievement list is empty.")
+#            return None  # tai joku oletusarvo
+        
+#        if index >= len(self.achievement_list):
+#            print(f"Index {index} is out of range for achievement list.")
+#            return None  # tai joku oletusarvo
+
+#        acmt_dict = self.achievement_list[int(index)]
+#        print(acmt_dict)
+#        return acmt_dict
+
 
     # Returns a filtered dictionary of values in achievement
     def get_achievement_keys_from_dict(self, key_list, index):
