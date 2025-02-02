@@ -227,13 +227,13 @@ class Write:
             # Loop through each achievement and extract localization details
             for achievement in achievements:
                 row = {
-                    "achievement_id": achievement.get("name_id", ""),  # Get achievement ID
-                    "locale": achievement.get("locale", "default"),  # Get locale, default to "default"
-                    "lockedTitle": achievement.get("lockedTitle", ""),  # Get locked title
-                    "lockedDescription": achievement.get("lockedDescription", ""),  # Get locked description
-                    "unlockedTitle": achievement.get("unlockedTitle", ""),  # Get unlocked title
-                    "unlockedDescription": achievement.get("unlockedDescription", ""),  # Get unlocked description
-                    "flavorText": achievement.get("flavorText", "")  # Get flavor text
+                    "achievement_id": achievement.get("name", ""),
+                    "locale": achievement.get("locale", "default"), 
+                    "lockedTitle": achievement.get("lockedTitle", ""), 
+                    "lockedDescription": achievement.get("lockedDescription", ""), 
+                    "unlockedTitle": achievement.get("unlockedTitle", ""), 
+                    "unlockedDescription": achievement.get("unlockedDescription", ""),
+                    "flavorText": achievement.get("flavorText", "")
                 }
                 writer.writerow(row)  # Write extracted data as a row in the CSV file
 
