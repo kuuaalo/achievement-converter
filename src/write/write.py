@@ -173,10 +173,10 @@ class Write:
 
         # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
-            "name": "name_id",
+            "name_id": "name",
             "hidden": "hidden",
-            "statThresholds": "acmt_stat_tres",
-            "user_epic_achievements_xp": "acmt_xp",
+            "acmt_stat_tres": "statThresholds",
+            "acmt_xp": "user_epic_achievements_xp",
         }
 
         # Extract the CSV column names from the keys of csv_field_map
@@ -210,13 +210,15 @@ class Write:
 
         # Define column names for the CSV file
         fieldnames = [
-            "achievement_id",  # Unique identifier for the achievement
-            "locale",          # Language code (e.g., en-US, fi, de)
-            "lockedTitle",     # Title when achievement is locked
-            "lockedDescription",  # Description when locked
-            "unlockedTitle",   # Title when achievement is unlocked
-            "unlockedDescription",  # Description when unlocked
-            "flavorText"       # Additional flavor text, if any
+            "name",
+            "locale",
+            "lockedTitle",
+            "lockedDescription",
+            "unlockedTitle",
+            "unlockedDescription",
+            "flavorText",
+            "lockedIcon",
+            "unlockedIcon"
         ]
 
         # Open the localization CSV file for writing
@@ -227,13 +229,15 @@ class Write:
             # Loop through each achievement and extract localization details
             for achievement in achievements:
                 row = {
-                    "achievement_id": achievement.get("name", ""),
-                    "locale": achievement.get("locale", "default"), 
-                    "lockedTitle": achievement.get("lockedTitle", ""), 
-                    "lockedDescription": achievement.get("lockedDescription", ""), 
-                    "unlockedTitle": achievement.get("unlockedTitle", ""), 
+                    "name": achievement.get("name", ""),
+                    "locale": achievement.get("locale", "default"),
+                    "lockedTitle": achievement.get("lockedTitle", ""),
+                    "lockedDescription": achievement.get("lockedDescription", ""),
+                    "unlockedTitle": achievement.get("unlockedTitle", ""),
                     "unlockedDescription": achievement.get("unlockedDescription", ""),
-                    "flavorText": achievement.get("flavorText", "")
+                    "flavorText": achievement.get("flavorText", ""),
+                    "lockedIcon": achievement.get("lockedIcon", ""),
+                    "unlockedIcon": achievement.get("unlockedIcon", "")
                 }
                 writer.writerow(row)  # Write extracted data as a row in the CSV file
 
