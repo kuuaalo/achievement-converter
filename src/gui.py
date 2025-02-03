@@ -1,7 +1,3 @@
-# MIT License
-# Copyright (c) [2025] [kuuaalo]
-# See LICENSE file for more details.
-
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror, showwarning, showinfo

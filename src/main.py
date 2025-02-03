@@ -1,7 +1,3 @@
-# MIT License
-# Copyright (c) [2025] [kuuaalo]
-# See LICENSE file for more details.
-
 import tkinter as tk
 from tkinter import filedialog as fd
 import os
@@ -15,24 +11,26 @@ from read.read import Read
 
 class AchievementConverter:
     def __init__(self):
+        
         # set tkinter as root
         self.root = tk.Tk()
         # init model and give parameters
         self.process = Process(False, False)
         # init gui with root and self
         self.gui = AchievementConverterGUI(self.root, self)
+        
         # main achievement display table
         self.main_table = None
         # dictionary in use for headers
         self.current_filter= None
+        # current key user is editing
+        self.current_key = None
+        # current key's index in achievement
+        self.current_key_index = None
+        # single achievement display table
+        self.acmt_table = None
         # selected achievement's id
         self.selected_acmt_id = None
-
-        self.current_key_index = None
-
-        self.current_key = None
-
-        self.acmt_table = None
 
 
     # import achievement file
@@ -115,16 +113,18 @@ class AchievementConverter:
         col_dict = config.COLUMN_HEADERS
         
         if self.acmt_table is not None: 
-            self.gui.refresh_table(self.acmt_table) # clear old table
+            # clear old table
+            self.gui.refresh_table(self.acmt_table)
         else:
-            self.acmt_table = self.gui.create_table(col_dict) # create new acmt table RENAME SAME NAME FUNCTION
+            # make new table
+            self.acmt_table = self.gui.create_table(col_dict)
             
         for index, key in enumerate(self.current_filter): # fill values
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key])) #make a separate function for this!
+            self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key]))
         
-        
-        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event))) # send clicked achievement's id and event
-        self.acmt_table.bind("<Double-1>", lambda event: self.register_id(event), add='+')
+        # get achievement's id for editing
+        self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event)))
+        #self.acmt_table.bind("<Double-1>", lambda event: self.register_id(event), add='+')
 
     # called when user selects cell from achievement table
     def edit_value(self, row_id):
@@ -182,7 +182,8 @@ class AchievementConverter:
     def move_to_next_acmt(self): 
 
         print("move to next")
-        index = (int(self.selected_acmt_id) + 1) % len(self.acmt_list) #move to next index in acmt_dict
+        # move to next index in acmt_dict
+        index = (int(self.selected_acmt_id) + 1) % len(self.acmt_list)
         self.selected_acmt_id = index
         print(index)
 
@@ -196,12 +197,12 @@ class AchievementConverter:
     
     def move_to_next_value(self):
         print("move to next value")
-        new_key_index = (self.current_key_index + 1) % len(self.current_filter) #move to next index in acmt_dict
+        new_key_index = (self.current_key_index + 1) % len(self.current_filter)
         self.edit_value(new_key_index)
     
     def move_to_prev_value(self):
         print("move to next value")
-        new_key_index = (self.current_key_index - 1) % len(self.keys_list) #move to next index in acmt_dict
+        new_key_index = (self.current_key_index - 1) % len(self.keys_list)
         self.edit_value(new_key_index)
    
     #filtering logic for achievement data
