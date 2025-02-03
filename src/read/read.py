@@ -9,6 +9,7 @@ import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
+from gui import showerror as debug
 
 class Read:
 
@@ -42,7 +43,7 @@ class Read:
 #             return None
 
 
-    def __init__(self, file_name, file_name2, format, process):
+    def __init__(self, file_name, file_name2, format, process, gui):
 #version work in progress
         if file_name:
             self.file_name = file_name
@@ -67,7 +68,7 @@ class Read:
             return None
 
         self.vdf_params_outer = ["undefined", "stats", "1"]
-        self.vdf_params_inner = ['bits']
+        self.vdf_params_inner = ['bits'] #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         if process:
             self.process = process
@@ -77,6 +78,11 @@ class Read:
             print("Error: no process")
             return None
 
+        if gui:
+            self.debug = gui.debug
+        else:
+            print("no gui given")
+            return None
 
 
 
@@ -94,13 +100,14 @@ class Read:
             self.run_csv()
 
         else:
-            print("format not recognized: ")
-            print(self.format)
+            self.debug("fatal error", "import format not recognized")
+            self.debug("data: ", self.format)
             return False
 
         return True
 
     def vdf_dict_peeling (self, d = {}, l = []):
+    # function for peeling off unused layers from the vdf input file
         if d == {}:
             return False
 
@@ -109,8 +116,8 @@ class Read:
 
         curd = d
 
+        # this for does the actual "peeling" off the layers 1 by 1
         for x in l:
-            #tarvii assertin
             curd = curd[x]
 
         return curd
@@ -133,22 +140,20 @@ class Read:
 
         # vdf files contain info about the file 'type'. using this to make a "sanity-check"
         if (j['type'] == 'ACHIEVEMENTS'):
-            print("reading vdf file: typecheck passed")
+            self.debug("reading vdf file: ", "typecheck passed")
             pass
         else:
-            print("reading vdf file: typecheck not passed")
+            self.debug("reading vdf file: ", "typecheck not passed")
             return False
 
-        m = self.vdf_dict_peeling(j, self.vdf_params_inner)
+        actual_acmt = self.vdf_dict_peeling(j, self.vdf_params_inner)
 
-        ml = list(m)
+        outl = []
 
-        ol = []
-
-        #this is hardcoded, might need to refactor it to more generic
-        for x in ml:
+        #this is hardcoded, might need to refactor it to more genericxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        for x in list(actual_acmt):
             z = {}
-            y = m[x]
+            y = actual_acmt[x]
             z["name_id"] = y["name"]
             z["name_en"] = y["display"]["name"]["english"]
             z["name_fi"] = y["display"]["name"]["finnish"]
@@ -159,12 +164,12 @@ class Read:
             z["hidden"] = y["display"]["hidden"]
             z["icon"] = y["display"]["icon"]
             z["icon_locked"] = y["display"]["icon_gray"]
-            ol.append(z)
+            outl.append(z)
 
-        print("printing ol")
-        pprint.pp(ol)
+        print("printing outl")
+        pprint.pp(outl)
 
-        self.process.add_achievements(ol)
+        self.process.add_achievements(outl)
 
         return True
 
@@ -176,6 +181,7 @@ class Read:
         with open(acmt, mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
+                #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 acmt_dict = {
                     "name_id": row.get("name"),
                     "hidden": row.get("hidden"),
@@ -192,6 +198,7 @@ class Read:
         with open(locals, mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
+                #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 locals_dict = {
                     "name_id": row.get("name"),
                     "locale": row.get("locale"),
@@ -211,7 +218,7 @@ class Read:
             # print("printing xl")
             # pprint.pp(xl)
 
-           
+
             self.process.add_localizations(ID, LOCALE, list_value_pairs)
             #self.process.add_localizations(lol)  # ADDED THIS TO RUN SOME TESTS
             # list_value_pairs is a dict not a list of value pairs
@@ -227,6 +234,7 @@ class Read:
             aet = ET.parse(f)
         namespace = {'ns': "http://config.mgt.xboxlive.com/schema/achievements2017/1"}
         for a in aet.findall("ns:Achievement", namespace):
+            #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             acmt_dict = {
             "name_id": None,
             "desc_id":None,
@@ -247,11 +255,8 @@ class Read:
             acmt_dict["base_acmt"] = a.find("ns:BaseAchievement", namespace).text if a.find("ns:BaseAchievement", namespace) is not None else None
             acmt_dict["acmt_num"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
             ol.append(acmt_dict)
-        # Print or process each achievement dictionary
-        print("Parsed achievement:")
-        pprint.pp(ol)
 
-        # self.process.add_achievements(ol)
+        self.process.add_achievements(ol)
 
         localz = self.localization_filename
         ol = []
@@ -259,6 +264,7 @@ class Read:
             lat = ET.parse(f)
         namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
         for a in lat.findall("ns:LocalizedString", namespace):
+            #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             localz_dict = {
             "name_id": None,
             "locale_en": None,
@@ -277,6 +283,7 @@ class Read:
             print("localin printtaus")
             pprint.pp(localz_dict)
             ol.append(localz_dict)
+            self.process.add_localizations(ID, LOCALE, list_value_pairs)#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         return True
 
@@ -298,7 +305,7 @@ class Read:
         self.df = df
 
 # functions to test read by itself:
-#test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
-#test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
-#R = Read(test_filename, test_filename2, "dummy", None)
-#R.run_xml()
+# test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
+# test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
+# R = Read(test_filename, test_filename2, "dummy", None)
+# R.run_xml()
