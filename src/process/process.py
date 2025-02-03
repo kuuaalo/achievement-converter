@@ -107,9 +107,18 @@ class Process:
 
     # Returns a dictionary of achievement data by index
     def get_achievement_by_data(self, index = 0):
-        acmt_dict = self.achievement_list[int(index)]
-        return acmt_dict
- 
+        while True:
+            try:
+                print("get achievement by data")
+                print(self.achievement_list)
+                acmt_dict = self.achievement_list[int(index)]
+                return acmt_dict
+
+            except IndexError:
+                print("No file data")
+                return False
+
+
 #    def get_achievement_by_data(self, index=0):
 #        if not self.achievement_list:
 #            print("Achievement list is empty.")
