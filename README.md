@@ -33,11 +33,11 @@ pip install vdf
 ## Usage
 Run the program from terminal with 
 ```
-achievement-converter\src\python main.py
+python achievement-converter\src\main.py
 ```
 or, depending on your settings.
 ```
-achievement-converter\src\python3 main.py
+python3 achievement-converter\src\main.py
 ```
 This will open the graphical user interface. 
 
@@ -82,14 +82,14 @@ flavor_txt: Epic. Localized flavor text that can be used by the game in an arbit
 ```
 
 ## Authors
-@kuuaalo
-@Raulimakinen
-@sotuo
-@jhannunen
-@nibizax
+[@kuuaalo](https://github.com/kuuaalo)
+[@Raulimakinen](https://github.com/Raulimakinen)
+[@sotuo](https://github.com/sotuo)
+[@jhannunen](https://github.com/jhannunen)
+[@nibizax](https://github.com/nibizax)
 
 ## License
-This project is licensed under the [NAME HERE] License - see the link for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 Feel free to send pull requests and raise issues.
