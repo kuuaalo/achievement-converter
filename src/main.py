@@ -1,3 +1,7 @@
+# MIT License
+# Copyright (c) [2025] [kuuaalo]
+# See LICENSE file for more details.
+
 import tkinter as tk
 from tkinter import filedialog as fd
 import os
@@ -71,23 +75,25 @@ class AchievementConverter:
         
         # get dict for table headers
         table_keys = self.process.get_achievement_by_data()
-        # save current headers in use for filtering purposes
-        self.current_filter= table_keys
-
-
-        if self.main_table is None:
-            self.main_table = self.gui.create_table(table_keys)
-            # bind key press events to table
-            self.gui.bind_events(self.main_table)
-            self.gui.configure_table(self.main_table)
-            # values for filter creation
-            formats = config.FILTER_FORMATS
-            self.gui.create_filter(formats, 'formats')
-            self.gui.populate_table(self.main_table, self.acmt_list)
+        if table_keys == False:
+            self.gui.show_error("No data provided", "The file provided is empty, corrupt or Achievement Converter can't read it.")
         else:
-            # if table already exists, clear it
-            self.gui.refresh_table(self.main_table)
-            self.gui.populate_table(self.main_table, self.acmt_list)
+            # save current headers in use for filtering purposes
+            self.current_filter= table_keys
+
+            if self.main_table is None:
+                self.main_table = self.gui.create_table(table_keys)
+                # bind key press events to table
+                self.gui.bind_events(self.main_table)
+                self.gui.configure_table(self.main_table)
+                # values for filter creation
+                formats = config.FILTER_FORMATS
+                self.gui.create_filter(formats, 'formats')
+                self.gui.populate_table(self.main_table, self.acmt_list)
+            else:
+                # if table already exists, clear it
+                self.gui.refresh_table(self.main_table)
+                self.gui.populate_table(self.main_table, self.acmt_list)
 
     # register currently id based on event
     def register_id(self, event):
@@ -106,7 +112,7 @@ class AchievementConverter:
         acmt_id = self.selected_acmt_id
         
         self.current_filter = self.process.get_achievement_by_data(acmt_id)
-        col_dict = {'key': 'None', 'value': 'None'} # columns for the table 
+        col_dict = config.COLUMN_HEADERS
         
         if self.acmt_table is not None: 
             self.gui.refresh_table(self.acmt_table) # clear old table
@@ -120,7 +126,7 @@ class AchievementConverter:
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event))) # send clicked achievement's id and event
         self.acmt_table.bind("<Double-1>", lambda event: self.register_id(event), add='+')
 
-        
+    # called when user selects cell from achievement table
     def edit_value(self, row_id):
         
         self.row_id = row_id
@@ -203,24 +209,8 @@ class AchievementConverter:
         # get format variable from widget
         format = format_var.get()
 
-        #all the possible keys in a filter
-        filter_config = {
-            'Steam': ('version','game_name','acmt_num',
-                      'name_id','name_token',
-                        'desc_token','hidden','icon',
-                      'icon_locked','acmt_xp'),
-            'MS Store': ('name_id','desc_id','hidden',
-                        'icon','acmt_xp','desc_locked',
-                        'base_acmt','display_order'),
-            'Epic': ('name_id', 'hidden','acmt_xp',
-                     'acmt_stat_tres','acmt_xp'),
-            'All': ('version','game_name','acmt_num',
-                    'name_id','name_token','desc_token',
-                    'hidden','icon','icon_locked',
-                    'acmt_xp','desc_id','desc_locked',
-                    'base_acmt','display_order','acmt_stat_tres')
-                    
-        }
+        # get filter values from config
+        filter_config = config.FILTER_CONFIG
 
         # get list of allowed values from filter
         self.keys_list = filter_config[format]

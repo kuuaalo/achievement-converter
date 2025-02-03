@@ -21,4 +21,24 @@ ACMT_DICT = {
     "flavor_txt": None, # Epic flavorText  achievementLocalizations.csv
     "base_acmt": None, #MS store specific
 }
+# filter names
 FILTER_FORMATS = ('Steam', 'Epic', 'MS Store', 'All')
+# filter values
+FILTER_CONFIG = {
+            'Steam': ('version','game_name','acmt_num',
+                      'name_id','name_token',
+                        'desc_token','hidden','icon',
+                      'icon_locked','acmt_xp'),
+            'MS Store': ('name_id','desc_id','hidden',
+                        'icon','acmt_xp','desc_locked',
+                        'base_acmt','display_order'),
+            'Epic': ('name_id', 'hidden','acmt_xp',
+                     'acmt_stat_tres','acmt_xp'),
+            'All': ('version','game_name','acmt_num',
+                    'name_id','name_token','desc_token',
+                    'hidden','icon','icon_locked',
+                    'acmt_xp','desc_id','desc_locked',
+                    'base_acmt','display_order','acmt_stat_tres')
+            }
+# achievement table headers
+COLUMN_HEADERS = {'key': 'None', 'value': 'None'}

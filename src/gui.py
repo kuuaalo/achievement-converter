@@ -1,3 +1,7 @@
+# MIT License
+# Copyright (c) [2025] [kuuaalo]
+# See LICENSE file for more details.
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showerror, showwarning, showinfo
@@ -5,11 +9,11 @@ from tkinter.messagebox import showerror, showwarning, showinfo
 class AchievementConverterGUI:
 
     def __init__(self, root, controller):
-        
+
         self.root = root
-        self.root.title("Achievement Converter") #window name
-        self.controller = controller#give reference to function in main on init
-        
+        self.root.title("Achievement Converter")
+        self.controller = controller
+
         self.root.geometry("1200x600")
         self.root.title("Achievement Converter")
 
@@ -17,84 +21,98 @@ class AchievementConverterGUI:
 
         self.edit_frame = None 
         
+    
+    # general function for creating table objects
+    def create_table(self, acmt_dict):
 
-    def create_table(self, acmt_dict): #general function for creating table objects
-        
         frame = tk.Frame(self.root, width=400, height=300)
-        
+
         scrollbary = ttk.Scrollbar(frame, orient="vertical")
         scrollbarx = ttk.Scrollbar(frame, orient="horizontal")
         scrollbary.pack(side=tk.LEFT, expand=False, fill=tk.Y)
         scrollbarx.pack(side=tk.BOTTOM, expand=False, fill=tk.X)
-        
-        column_list = tuple(acmt_dict.keys()) #create a tuple of column names from dict keys
-        print("making table") ###################debug stuff #########################
-        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings') #create table from tuple
-        
-        #scrollbar setup
+
+        # create a tuple of column names from dict keys
+        column_list = tuple(acmt_dict.keys())
+
+        # create table from tuple
+        self.table = ttk.Treeview(frame, columns=column_list, show = 'headings')
+
+        # scrollbar setup
         scrollbary.configure(command=self.table.yview) 
         self.table.configure(yscrollcommand=scrollbary.set)
         scrollbarx.configure(command=self.table.xview)
         self.table.configure(xscrollcommand=scrollbarx.set)
-        
+
+        # pack gui items
         self.table.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         frame.pack(fill=tk.BOTH,expand=True, padx=30, pady=30)
 
-        for col in self.table["columns"]: #iterate trough the columns
-            self.table.heading(col, text = col) #set column names as headers
-        
+        #iterate trough column and set names as headers
+        for col in self.table["columns"]:
+            self.table.heading(col, text = col)
+
         return self.table
     
-    
+    # bind double click
     def bind_events(self, table):
-        #table.bind("<Double-1>", lambda event: self.controller.register_id(event))
         table.bind("<Double-1>", lambda event: self.controller.open_acmt(event))
     
+    # bind tag to display null value achievements
     def configure_table(self, table):
-        table.tag_configure('null_value', background='red') #tag to display red color for null values !!fix!!
+        table.tag_configure('null_value', background='orange')
 
+    # fill main table with items
     def populate_table(self, table, acmt_list):
         print(f"Populating table")
         
-        for index, item in enumerate(acmt_list): #insert items to table !!remove enumerate?!
+        for index, item in enumerate(acmt_list):
             row_values = list(item.values()) 
-            if (None in row_values): #add tag if acmt has null value
+            #add tag if acmt has null value
+            if (None in row_values):
                 table.insert('', index='end', iid=str(index), values=list(item.values()), tags=('null_value',))
             else:
                 table.insert('', index='end', iid=str(index), values=list(item.values()))
     
-    def populate_acmt_table(self, table, acmt_dict): #populate achievement table !!try to combine to other populate in the future!!
+    # populate achievement table
+    def populate_acmt_table(self, table, acmt_dict):
         for index, key in enumerate(acmt_dict):
             print(key)
             table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
     
-    def refresh_table(self, table): #empty given table
+    # empty given table
+    def refresh_table(self, table):
         table.delete(*table.get_children())
         return True
     
-    def name_table_columns(self, table, columns): #empty given table
-        table["columns"] = columns
 
-        for col in table["columns"]: #iterate trough the columns
-            table.heading(col, text = col) #set column names as headers
+    def name_table_columns(self, table, columns):
+        table["columns"] = columns
+        
+        #iterate trough columns and set headers
+        for col in table["columns"]:
+            table.heading(col, text = col)
 
         return True
     
-    
+    # create edit window gui elements
     def display_edit_value(self, current_key, current_dict):
         
+        # create frame for editing if it doesn't exist yet
         if not self.edit_frame or not self.edit_frame.winfo_exists():
-            self.edit_frame = tk.Toplevel(self.root) # create frame for editing
+            self.edit_frame = tk.Toplevel(self.root)
             self.edit_frame.geometry("300x300")
         
         print("got to display value")
-        current_value = current_dict[current_key] # Get the value for the current key
-
-        for widget in self.edit_frame.winfo_children(): #destroy old widgets just in case
+        # Get the value to display what user is editing
+        current_value = current_dict[current_key] 
+        
+        # destroy old widgets
+        for widget in self.edit_frame.winfo_children():
             widget.destroy()
 
         # Create widgets for displaying and editing
-        field_label = ttk.Label(self.edit_frame, text="Key: " + current_key)  # Show the key
+        field_label = ttk.Label(self.edit_frame, text="Key: " + current_key)
         separator = ttk.Separator(self.edit_frame, orient='horizontal') 
         edit_label = ttk.Label(self.edit_frame, text="Edit value for this key:")
         
@@ -155,8 +173,7 @@ class AchievementConverterGUI:
         next_acmt_button.pack(side=tk.LEFT, expand=True, padx=5, pady=10, ipadx=5, ipady=5)
     
 
-    
-    def create_filter(self, filter_names, filter_label): #create a filter
+    def create_filter(self, filter_names, filter_label):
         lf = ttk.LabelFrame(self.root, text=filter_label)
         lf.pack(side=tk.TOP, expand=True)
 
@@ -165,42 +182,43 @@ class AchievementConverterGUI:
 
         for format in formats:
             # create a radio button
-            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var), variable=format_var) #command=lambda: self.filter_values(format_var, table), variable=format_var)
+            radio = ttk.Radiobutton(lf, text=format, value=format, command=lambda: self.controller.filter_values(format_var), variable=format_var)
             radio.pack(side=tk.LEFT, expand=False, padx=5, pady=5)
 
-        
+    # create main buttons
     def create_buttons(self):
         button_frame = ttk.Frame(self.root)
         button_frame.pack(fill=tk.BOTH, expand=False)
         
-        open_button = ttk.Button( #button to import file
+        # button to import file
+        open_button = ttk.Button(
             button_frame,
             text="Import achievement file",
             command=lambda: self.controller.import_file()
         )
-        
-        export_button = ttk.Button( #button to export file
+        # button to export file
+        export_button = ttk.Button(
             button_frame,
             text="Export achievement file",
             command=lambda: self.controller.export_file()
         )
-
-        save_button = ttk.Button( #button to save project file
+        # button to save project file
+        save_button = ttk.Button(
             button_frame,
             text="Save achievement file",
             command=lambda: self.controller.save_file()
         )
-
-        load_button = ttk.Button( #button to save project file
+        # button to save project file
+        load_button = ttk.Button(
             button_frame,
             text="Load achievement file",
             command=lambda: self.controller.load_file()
         )
-
-        exit_button = ttk.Button( #button to exit program
+        # button to exit program
+        exit_button = ttk.Button(
             button_frame,
             text="Exit",
-            command=lambda: self.root.quit() #quit program exits the mainloop
+            command=lambda: self.root.quit()
         )
 
         #button placement on grid
@@ -210,9 +228,7 @@ class AchievementConverterGUI:
         load_button.pack(side=tk.LEFT, expand=False)
         exit_button.pack(side=tk.LEFT, expand=False)
     
-    def show_error(self, error_title, error_msg): #shows error pop-up
+    # display error pop-up
+    def show_error(self, error_title, error_msg):
         showwarning(title=error_title, message=error_msg)
-
-
-  
 
