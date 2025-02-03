@@ -55,9 +55,6 @@ class Write:
         achievements = self.process.get_all_data() # modified this to call merged data, so this should get achievement data AND localization data in one dictionary
         oikea_lista = self.process.fill_missing_values()
 
-#        localizations = self.process.get_localizations()
-#        localized_data = self.merge_achievements_and_localizations(achievements,localizations)
-
         # Write to XML if format is XML
         if self.file_format == ".xml":
             self.write_to_xml(achievements)
@@ -73,18 +70,6 @@ class Write:
         # Print error for unsupported formats
         else:
             print(f"Unsupported format: {self.file_format}")  
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -169,80 +154,84 @@ class Write:
 
         print(f"XML successfully written to {self.file_name}.")
 
+
+
+ 
+
+    
     def write_localizations_to_xml(self, achievements):
-        """
-        Writes localization data to an XML file, where each language has its corresponding
-        achievement strings (locked/unlocked titles and descriptions).
-        """
+        # Update the file name by replacing .xml with _localized.xml
+        output_filename = self.file_name.replace(".xml", "_localized.xml")
+
         # Create the XML document
         doc = minidom.Document()
         root = doc.createElement('Localization')
         root.setAttribute("xmlns", "http://config.mgt.xboxlive.com/schema/localization/1")
         doc.appendChild(root)
 
-        # Add the DevDisplayLocale element
+        # Add DevDisplayLocale element
         dev_locale = doc.createElement('DevDisplayLocale')
-        dev_locale.setAttribute('locale', 'en-US')
+        dev_locale.setAttribute('locale', 'en-US')  # This is hardcoded for "en-US" as per the example
         root.appendChild(dev_locale)
 
-        # Iterate over all achievements
+        # Lists to store the different types of LocalizedString elements
+        achievement_strings = []
+        locked_description_strings = []
+        unlocked_description_strings = []
+
+        # Iterate over the achievements to create LocalizedString elements
         for achievement in achievements:
             achievement_id = achievement.get("name_id", "")  # Unique identifier for the achievement
-            
-            # Loop through all languages and create the appropriate LocalizedString for each
+
+            # Create LocalizedString element for achievement name (UnlockedTitle)
+            localized_name = doc.createElement('LocalizedString')
+            localized_name.setAttribute('id', achievement_id)
+
+            # Add name translations for each locale (skip 'default')
             for locale, lang_data in achievement.items():
-                if isinstance(lang_data, dict):  # Only process language data
-                    # Add locked title
-                    if "lockedTitle" in lang_data:
-                        localized_string = doc.createElement('LocalizedString')
-                        localized_string.setAttribute('id', f"LockedDescriptionId{achievement_id[-1]}")  # e.g., "LockedDescriptionId1"
-                        locked_title = doc.createElement('Value')
-                        locked_title.setAttribute('locale', locale)
-                        locked_title.appendChild(doc.createTextNode(lang_data["lockedTitle"]))
-                        localized_string.appendChild(locked_title)
-                        root.appendChild(localized_string)
-                    
-                    # Add locked description
-                    if "lockedDescription" in lang_data:
-                        localized_string = doc.createElement('LocalizedString')
-                        localized_string.setAttribute('id', f"LockedDescriptionId{achievement_id[-1]}")  # e.g., "LockedDescriptionId1"
-                        locked_desc = doc.createElement('Value')
-                        locked_desc.setAttribute('locale', locale)
-                        locked_desc.appendChild(doc.createTextNode(lang_data["lockedDescription"]))
-                        localized_string.appendChild(locked_desc)
-                        root.appendChild(localized_string)
+                if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
+                    if locale != "default":  # Skip the 'default' locale
+                        value_elem = doc.createElement('Value')
+                        value_elem.setAttribute('locale', locale)
+                        value_elem.appendChild(doc.createTextNode(lang_data["unlockedTitle"]))
+                        localized_name.appendChild(value_elem)
 
-                    # Add unlocked title
-                    if "unlockedTitle" in lang_data:
-                        localized_string = doc.createElement('LocalizedString')
-                        localized_string.setAttribute('id', f"UnlockedDescriptionId{achievement_id[-1]}")  # e.g., "UnlockedDescriptionId1"
-                        unlocked_title = doc.createElement('Value')
-                        unlocked_title.setAttribute('locale', locale)
-                        unlocked_title.appendChild(doc.createTextNode(lang_data["unlockedTitle"]))
-                        localized_string.appendChild(unlocked_title)
-                        root.appendChild(localized_string)
+            achievement_strings.append(localized_name)  # Store the achievement name entry
 
-                    # Add unlocked description
-                    if "unlockedDescription" in lang_data:
-                        localized_string = doc.createElement('LocalizedString')
-                        localized_string.setAttribute('id', f"UnlockedDescriptionId{achievement_id[-1]}")  # e.g., "UnlockedDescriptionId1"
-                        unlocked_desc = doc.createElement('Value')
-                        unlocked_desc.setAttribute('locale', locale)
-                        unlocked_desc.appendChild(doc.createTextNode(lang_data["unlockedDescription"]))
-                        localized_string.appendChild(unlocked_desc)
-                        root.appendChild(localized_string)
+            # Handle LockedDescription and UnlockedDescription (these should be separate entries)
+            for desc_type in ["lockedDescription", "unlockedDescription"]:
+                # Generate unique ID for the description (LockedDescriptionId1, UnlockedDescriptionId1, etc.)
+                desc_id = f"{desc_type.capitalize()}{achievement_id[11:]}"  # Extracting the number part from the name_id
+                
+                localized_desc = doc.createElement('LocalizedString')
+                localized_desc.setAttribute('id', desc_id)
 
-        # Write to XML file (localizations will be saved with '_localed.xml' suffix)
-        localizations_file_name = self.file_name.replace(".xml", "_localed.xml")
-        localized_xml_str = doc.toprettyxml(indent="  ")
+                # Add description translations, skipping 'default'
+                for locale, lang_data in achievement.items():
+                    if isinstance(lang_data, dict) and desc_type in lang_data:
+                        if locale != "default":  # Skip the 'default' locale
+                            value_elem = doc.createElement('Value')
+                            value_elem.setAttribute('locale', locale)
+                            value_elem.appendChild(doc.createTextNode(lang_data[desc_type]))
+                            localized_desc.appendChild(value_elem)
 
-        with open(localizations_file_name, "w", encoding="utf-8") as f:
-            f.write(localized_xml_str)
+                # Only add descriptions if they contain at least one translation
+                if localized_desc.childNodes:
+                    if desc_type == "lockedDescription":
+                        locked_description_strings.append(localized_desc)  # Store locked description entry
+                    else:
+                        unlocked_description_strings.append(localized_desc)  # Store unlocked description entry
 
-        print(f"Localization XML written to {localizations_file_name}.")
+        # Now append the entries in the desired order: Achievements -> Locked Descriptions -> Unlocked Descriptions
+        for entry in achievement_strings + locked_description_strings + unlocked_description_strings:
+            root.appendChild(entry)
 
+        # Write the XML document to a file with the updated filename
+        xml_str = doc.toprettyxml(indent="  ")
+        with open(output_filename, "w", encoding="utf-8") as f:
+            f.write(xml_str)
 
-
+        print(f"Localization XML successfully written to {output_filename}.")
 
 
 
@@ -285,6 +274,9 @@ class Write:
                  
 
         print(f"Data written to {self.file_name} in CSV format.")
+
+
+    
 
     def write_locales_to_csv(self, achievements):
         """
@@ -338,14 +330,11 @@ class Write:
 
 
 
-
-
-
+       
     def write_to_vdf(self, achievements):
-
         
+        #VDF structure starts here
         version = achievements[0].get("version", None)
-        # Aloitetaan VDF-tiedoston rakenne
         result = f'"{version}"\n{{\n'
         result += '\t"stats"\n\t{\n'
         result += '\t\t"1"\n\t\t{\n'
@@ -356,7 +345,7 @@ class Write:
             result += f'\t\t\t\t\t"name"\t"{achievement["name_id"]}"\n'
             result += '\t\t\t\t\t"display"\n\t\t\t\t\t{\n'
 
-            # "name" -käännökset
+            # "name" - translations
             result += '\t\t\t\t\t\t"name"\n\t\t\t\t\t\t{\n'
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
@@ -365,7 +354,7 @@ class Write:
             result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("name_token", "")}"\n'
             result += '\t\t\t\t\t\t}\n'
 
-            # "desc" -käännökset
+            # "desc" -translations
             result += '\t\t\t\t\t\t"desc"\n\t\t\t\t\t\t{\n'
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "unlockedDescription" in lang_data:
@@ -374,7 +363,7 @@ class Write:
             result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("desc_token", "")}"\n'
             result += '\t\t\t\t\t\t}\n'
 
-            # Muut saavutuksen tiedot
+            # Other info translations
             result += f'\t\t\t\t\t\t"hidden"\t"{achievement.get("hidden", "0")}"\n'
             result += f'\t\t\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
             result += f'\t\t\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
@@ -390,7 +379,7 @@ class Write:
         result += '\t"gamename"\t"Super Ultimate Awesome Game"\n'
         result += '}\n'  # Koko rakenteen pääte
 
-        # Kirjoitetaan VDF-tiedosto
+        # Write VDF file
         with open(self.file_name, "w", encoding="utf-8") as f:
             f.write(result)
 
@@ -425,10 +414,10 @@ class Write:
 
         return output
 
+
+
     def write_locales_to_vdf(self, merged_data):
-        """
-        Write localized achievement data to a VDF file.
-        """
+     
         # Initialize an empty dictionary to hold the language-specific data
         output = defaultdict(lambda: {"Tokens": {}})
 
