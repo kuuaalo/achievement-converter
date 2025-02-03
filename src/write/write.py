@@ -342,8 +342,11 @@ class Write:
 
 
     def write_to_vdf(self, achievements):
+
+        
+        version = achievements[0].get("version", None)
         # Aloitetaan VDF-tiedoston rakenne
-        result = '"123456"\n{\n'
+        result = f'"{version}"\n{{\n'
         result += '\t"stats"\n\t{\n'
         result += '\t\t"1"\n\t\t{\n'
         result += '\t\t\t"bits"\n\t\t\t{\n'
