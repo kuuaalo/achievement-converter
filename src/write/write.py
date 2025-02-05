@@ -250,10 +250,10 @@ class Write:
 
         # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
-            "name_id": "name",
+            "name": "name_id",
             "hidden": "hidden",
-            "acmt_stat_tres": "statThresholds",
-            "acmt_xp": "user_epic_achievements_xp",
+            "statThresholds": "acmt_stat_tres",
+            "user_epic_achievements_xp": "acmt_xp",
         }
 
         # Extract the CSV column names from the keys of csv_field_map
@@ -285,20 +285,17 @@ class Write:
         This function extracts localization information from the given achievement data
         and saves it into a separate CSV file with appropriate field names.
         """    
-        # Generate the file name for the localization CSV
         locales_file_name = self.file_name.replace(".csv", "_locales.csv")
 
         # Define column names for the CSV file
         fieldnames = [
-            "name",
-            "locale",
-            "lockedTitle",
-            "lockedDescription",
-            "unlockedTitle",
-            "unlockedDescription",
-            "flavorText",
-            "lockedIcon",
-            "unlockedIcon"
+            "achievement_id", 
+            "locale",          
+            "lockedTitle",     
+            "lockedDescription",  
+            "unlockedTitle",   
+            "unlockedDescription", 
+            "flavorText"
         ]
 
         # Open the localization CSV file for writing
@@ -309,20 +306,46 @@ class Write:
             # Loop through each achievement and extract localization details
             for achievement in achievements:
                 row = {
-                    "name": achievement.get("name", ""),
-                    "locale": achievement.get("locale", "default"),
-                    "lockedTitle": achievement.get("lockedTitle", ""),
-                    "lockedDescription": achievement.get("lockedDescription", ""),
-                    "unlockedTitle": achievement.get("unlockedTitle", ""),
+                    "achievement_id": achievement.get("name", ""),
+                    "locale": achievement.get("locale", "default"), 
+                    "lockedTitle": achievement.get("lockedTitle", ""), 
+                    "lockedDescription": achievement.get("lockedDescription", ""), 
+                    "unlockedTitle": achievement.get("unlockedTitle", ""), 
                     "unlockedDescription": achievement.get("unlockedDescription", ""),
-                    "flavorText": achievement.get("flavorText", ""),
-                    "lockedIcon": achievement.get("lockedIcon", ""),
-                    "unlockedIcon": achievement.get("unlockedIcon", "")
+                    "flavorText": achievement.get("flavorText", "")
                 }
                 writer.writerow(row)  # Write extracted data as a row in the CSV file
 
         # Print confirmation message
         print(f"Localization data successfully written to {locales_file_name} in CSV format.")
+
+
+    def write_stats_to_csv(self, achievements):
+        """
+        Writes stats data to a CSV file.
+        """
+        stats_file_name = self.file_name.replace(".csv", "_stats.csv")
+
+        # Define column names for the CSV file
+        fieldnames = [
+            "name",
+            "aggregationType"
+        ]
+
+        # Open the stats CSV file for writing
+        with open(stats_file_name, "w", newline='', encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for achievement in achievements:
+                row = {
+                    "name": achievement.get("name", ""),
+                    "aggregationType": achievement.get("aggregationType", "")
+                }
+                writer.writerow(row)
+
+        print(f"Stats data written to {stats_file_name} in CSV format.")
+
 
 
 
