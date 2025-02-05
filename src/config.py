@@ -42,3 +42,29 @@ FILTER_CONFIG = {
             }
 # achievement table headers
 COLUMN_HEADERS = {'key': 'None', 'value': 'None'}
+
+#Languages and their matching codes for localization handling
+LANGUAGES = {
+            "arabic": "ar",
+            "danish": "da",
+            "dutch": "nl",
+            "finnish": "fi",
+            "french": "fr",
+            "german": "de",
+            "italian": "it",
+            "japanese": "ja",
+            "korean": "ko",
+            "koreana": "ko",
+            "norwegian": "no",
+            "polish": "pl",
+            "brazilian": "pt-BR",
+            "russian": "ru",
+            "schinese": "zh-Hans",
+            "latam": "es-MX",
+            "spanish": "es-ES",
+            "swedish": "sv",
+            "thai": "th",
+            "tchinese": "zh-Hant",
+            "turkish": "tr",
+            "english": "en-US"
+        }

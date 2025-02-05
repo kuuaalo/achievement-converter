@@ -8,6 +8,7 @@ import xml.dom.minidom as minidom
 import csv
 import vdf
 from gui import showerror
+from config import languages
 
 class Write:
     def __init__(self, file_name, file_format, process, gui):
@@ -27,34 +28,13 @@ class Write:
             return
         self.process=process
         self.gui = gui
-        self.languages = {
-            "arabic": "ar",
-            "danish": "da",
-            "dutch": "nl",
-            "finnish": "fi",
-            "french": "fr",
-            "german": "de",
-            "italian": "it",
-            "japanese": "ja",
-            "korean": "ko",
-            "koreana": "ko",
-            "norwegian": "no",
-            "polish": "pl",
-            "brazilian": "pt-BR",
-            "russian": "ru",
-            "schinese": "zh-Hans",
-            "latam": "es-MX",
-            "spanish": "es-ES",
-            "swedish": "sv",
-            "thai": "th",
-            "tchinese": "zh-Hant",
-            "turkish": "tr",
-            "english": "en-US"
-        }
+        self.languages = languages
 
     def run(self):
         # Execute the writing process based on the specified file format.
-        achievements = self.process.get_all_data() # modified this to call merged data, so this should get achievement data AND localization data in one dictionary
+
+        #achievements is merged data of all achievements and their mathces in locales
+        achievements = self.process.get_all_data() 
         oikea_lista = self.process.fill_missing_values()
 
         # Write to XML if format is XML
@@ -87,7 +67,7 @@ class Write:
             print(f"Processing achievement {i}")  # Debug message
 
             # Debug: Print the achievement data to check if descriptions exist
-            print(f"Achievement {i} data: {achievement}")
+            #print(f"Achievement {i} data: {achievement}")
 
             achievement_element = doc.createElement('Achievement')
 
@@ -99,7 +79,7 @@ class Write:
                 "LockedDescriptionId": "desc_locked",
                 "UnlockedDescriptionId": "desc_token",
                 "IsHidden": "hidden",
-                "AchievementId": str(i),  # Achievement ID perustuu indeksiin
+                "AchievementId": str(i),  # Achievement ID based on index
                 "IconImageId": "icon"
             }
 
@@ -122,9 +102,9 @@ class Write:
                 elif xml_tag == "IsHidden":
                     element.appendChild(doc.createTextNode("true" if achievement.get(key, False) else "false"))
                 elif xml_tag == "AchievementId":
-                    element.appendChild(doc.createTextNode(str(i)))  # Kovakoodattu ID
+                    element.appendChild(doc.createTextNode(str(i))) 
                 else:
-                    element.appendChild(doc.createTextNode(str(achievement.get(key, ""))))  # Haetaan oikeasta avaimesta
+                    element.appendChild(doc.createTextNode(str(achievement.get(key, ""))))  
 
                 # Append element to Achievement
                 achievement_element.appendChild(element)
@@ -357,7 +337,7 @@ class Write:
 
        
     def write_to_vdf(self, achievements):
-    # Tarkistetaan, että achievements ei ole tyhjä ja että siinä on indeksi 0
+    #check that list gets all the way here, and find the version code, error if not
         if not achievements or "version" not in achievements[0]:
             self.gui.show_error("Error", "No data provided for 'Version' for VDF file")
         return
@@ -396,16 +376,16 @@ class Write:
             result += f'\t\t\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
             result += f'\t\t\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
 
-            result += '\t\t\t\t\t}\n'  # display-pääte
-            result += '\t\t\t\t}\n'  # Saavutusnoden pääte
+            result += '\t\t\t\t\t}\n'  # display-ending
+            result += '\t\t\t\t}\n'  # achievement node ending
 
-        result += '\t\t\t}\n'  # bits-osuuden pääte
+        result += '\t\t\t}\n'  # bits-ending
         result += '\t\t\t"type"\t"ACHIEVEMENTS"\n'
-        result += '\t\t}\n'  # stats-osuuden pääte
-        result += '\t}\n'  # stats-puu pääte
+        result += '\t\t}\n'  # stats-ending
+        result += '\t}\n'  # stats-END
         result += '\t"version"\t"2"\n'
         result += '\t"gamename"\t"Super Ultimate Awesome Game"\n'
-        result += '}\n'  # Koko rakenteen pääte
+        result += '}\n'  # STRUCTURE END
 
         # Write VDF file
         with open(self.file_name, "w", encoding="utf-8") as f:
@@ -413,8 +393,8 @@ class Write:
 
         print(f"VDF successfully written to {self.file_name}.")
 
-############### Lokalisaatio
-            # Fetch the language name from locale code
+
+    # Fetch the language name from locale code
     def get_language_from_locale(self, locale):
         for lang, code in self.languages.items():
             if code == locale:
