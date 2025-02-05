@@ -7,9 +7,10 @@ from collections import defaultdict
 import xml.dom.minidom as minidom
 import csv
 import vdf
+from gui import showerror
 
 class Write:
-    def __init__(self, file_name, file_format, process):
+    def __init__(self, file_name, file_format, process, gui):
         
         if file_name:
             self.file_name = file_name
@@ -25,6 +26,7 @@ class Write:
             print("Wrong format from write")  
             return
         self.process=process
+        self.gui = gui
         self.languages = {
             "arabic": "ar",
             "danish": "da",
@@ -355,9 +357,12 @@ class Write:
 
        
     def write_to_vdf(self, achievements):
-        
-        #VDF structure starts here
-        version = achievements[0].get("version", None)
+    # Tarkistetaan, että achievements ei ole tyhjä ja että siinä on indeksi 0
+        if not achievements or "version" not in achievements[0]:
+            self.gui.show_error("Error", "No data provided for 'Version' for VDF file")
+        return
+
+
         result = f'"{version}"\n{{\n'
         result += '\t"stats"\n\t{\n'
         result += '\t\t"1"\n\t\t{\n'

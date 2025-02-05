@@ -41,7 +41,7 @@ class AchievementConverter:
         # get file extension
         acmt_platform = self.get_file_extension(file_path)
         # init read and give params
-        self.read = Read(file_path, locale_file_path, acmt_platform, self.process)
+        self.read = Read(file_path, locale_file_path, acmt_platform, self.process, self.gui)
         self.read.run()
         #create table to display data
         self.create_table()
@@ -58,7 +58,7 @@ class AchievementConverter:
         # send path to get extension
         acmt_platform = self.get_file_extension(file_path)
         # pass path, name and model to write
-        self.write = Write(file_path, acmt_platform, self.process)
+        self.write = Write(file_path, acmt_platform, self.process, self.gui)
         self.write.run()
 
     # save project file as json
