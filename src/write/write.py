@@ -8,10 +8,10 @@ import xml.dom.minidom as minidom
 import csv
 import vdf
 from gui import showerror
-from config import languages
+from config import LANGUAGES 
 
 class Write:
-    def __init__(self, file_name, file_format, process, gui):
+    def __init__(self, file_name, file_format, process, gui) :
         
         if file_name:
             self.file_name = file_name
@@ -28,11 +28,11 @@ class Write:
             return
         self.process=process
         self.gui = gui
-        self.languages = languages
+        self.languages = LANGUAGES
 
     def run(self):
         # Execute the writing process based on the specified file format.
-
+        
         #achievements is merged data of all achievements and their mathces in locales
         achievements = self.process.get_all_data() 
         oikea_lista = self.process.fill_missing_values()
@@ -51,7 +51,8 @@ class Write:
             self.write_locales_to_vdf(achievements)
         # Print error for unsupported formats
         else:
-            print(f"Unsupported format: {self.file_format}")  
+            self.gui.show_error("Error", f"Unsupported format: {self.file_format}")
+            
 
 
 
@@ -64,7 +65,10 @@ class Write:
         doc.appendChild(root)
 
         for i, achievement in enumerate(achievements, start=1):
-            print(f"Processing achievement {i}")  # Debug message
+            if not achievements:
+                self.gui.show_error("Error", "No data provided for XML file")
+                return
+
 
             # Debug: Print the achievement data to check if descriptions exist
             #print(f"Achievement {i} data: {achievement}")
@@ -224,11 +228,9 @@ class Write:
 
     # Writes achievements in CSV format
     def write_to_csv(self, achievements):
-        # Retrieve the list of achievements from the process
-        #acmt_list = self.process.get_achievements()
-        #if not acmt_list:
-        #    print("No achievements to write.")
-        #    return
+        if not achievements:
+            self.gui.show_error("Error", "No data provided for XML file")
+            return
 
         # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
@@ -263,11 +265,11 @@ class Write:
     def write_locales_to_csv(self, achievements):
         """
         Writes localization data to a CSV file.
-
         This function extracts localization information from the given achievement data
         and saves it into a separate CSV file with appropriate field names.
         """    
         locales_file_name = self.file_name.replace(".csv", "_locales.csv")
+        print("Data to be written to CSV:", achievements)
 
         # Define column names for the CSV file
         fieldnames = [
@@ -287,16 +289,23 @@ class Write:
 
             # Loop through each achievement and extract localization details
             for achievement in achievements:
-                row = {
-                    "achievement_id": achievement.get("name", ""),
-                    "locale": achievement.get("locale", "default"), 
-                    "lockedTitle": achievement.get("lockedTitle", ""), 
-                    "lockedDescription": achievement.get("lockedDescription", ""), 
-                    "unlockedTitle": achievement.get("unlockedTitle", ""), 
-                    "unlockedDescription": achievement.get("unlockedDescription", ""),
-                    "flavorText": achievement.get("flavorText", "")
-                }
-                writer.writerow(row)  # Write extracted data as a row in the CSV file
+            
+
+                # Loop through each lang code in the achievement 
+                for lang_code, locale_data in achievement.items():
+                    # Check if the key is a valid language code (e.g., 'en-US', 'fi', etc.)
+                    if isinstance(locale_data, dict):
+                        row = {
+                            "achievement_id": achievement.get("name_id", ""),  # Achievement ID
+                            "locale": lang_code,  # Locale (using the language code from the keys)
+                            "lockedTitle": locale_data.get("lockedTitle", ""), 
+                            "lockedDescription": locale_data.get("lockedDescription", ""), 
+                            "unlockedTitle": locale_data.get("unlockedTitle", ""), 
+                            "unlockedDescription": locale_data.get("unlockedDescription", ""),
+                            "flavorText": locale_data.get("flavor_txt", "")  # Using "flavor_txt" key
+                        }
+                        # Write the row to the CSV
+                        writer.writerow(row)
 
         # Print confirmation message
         print(f"Localization data successfully written to {locales_file_name} in CSV format.")
@@ -337,12 +346,12 @@ class Write:
 
        
     def write_to_vdf(self, achievements):
-    #check that list gets all the way here, and find the version code, error if not
-        if not achievements or "version" not in achievements[0]:
-            self.gui.show_error("Error", "No data provided for 'Version' for VDF file")
-        return
+    # Tarkista, että achievements on olemassa ja ei ole tyhjä
+        if not achievements:
+            self.gui.show_error("Error", "No data provided for VDF file")
+            return
 
-
+        version = achievements[0].get("version", "None")
         result = f'"{version}"\n{{\n'
         result += '\t"stats"\n\t{\n'
         result += '\t\t"1"\n\t\t{\n'
