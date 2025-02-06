@@ -11,6 +11,9 @@ import xml.etree.ElementTree as ET
 import pprint
 from gui import showerror as debug
 
+def temp_debug(title, message):
+    print(title, message)
+
 class Read:
 
 #     def __init__(self, file_name, format, process):
@@ -48,7 +51,7 @@ class Read:
         if file_name:
             self.file_name = file_name
             print(self.file_name)
-            # self.file_name = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiccsv_test.csv"
+
         else:
             print("no achievement file given.")
             return None
@@ -56,7 +59,7 @@ class Read:
         if file_name2:
             self.localization_filename = file_name2
             print(self.localization_filename)
-            #self.localization_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\epiclocalization_test.csv"
+
         else:
             print("no localization file given.")
             return None
@@ -68,15 +71,15 @@ class Read:
             return None
 
         self.vdf_params_outer = ["undefined", "stats", "1"]
-        self.vdf_params_inner = ['bits'] #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        self.vdf_params_inner = ['bits']
 
         if process:
             self.process = process
-            print("self_process")
-            print(self.process)
         else:
             print("Error: no process")
             return None
+
+        self.debug = temp_debug
 
         if gui:
             self.debug = gui.debug
@@ -150,7 +153,7 @@ class Read:
 
         outl = []
 
-        #this is hardcoded, might need to refactor it to more genericxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        #this is hardcoded, might need to refactor it to more generic
         for x in list(actual_acmt):
             z = {}
             y = actual_acmt[x]
@@ -181,7 +184,6 @@ class Read:
         with open(acmt, mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 acmt_dict = {
                     "name_id": row.get("name"),
                     "hidden": row.get("hidden"),
@@ -189,7 +191,7 @@ class Read:
                     "acmt_stat_tres": row.get("statTresholds"),
                 }
                 ol.append(acmt_dict)
-        # pprint.pp(ol)
+
         self.process.add_achievements(ol)
 
         #reading localization file
@@ -198,7 +200,6 @@ class Read:
         with open(locals, mode='r', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file)
             for row in csv_reader:
-                #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 locals_dict = {
                     "name_id": row.get("name"),
                     "locale": row.get("locale"),
@@ -211,22 +212,17 @@ class Read:
                     "unlockedIcon": row.get("unlockedIcon")
                 }
                 lol.append(locals_dict)
-        for a in lol:
-            ID = a.pop("name_id")
-            LOCALE = a.pop("locale")
-            list_value_pairs = a
-            # print("printing xl")
-            # pprint.pp(xl)
 
+            ID = lol.pop("name_id")
+            LOCALE = lol.pop("locale")
 
-            self.process.add_localizations(ID, LOCALE, list_value_pairs)
-            #self.process.add_localizations(lol)  # ADDED THIS TO RUN SOME TESTS
-            # list_value_pairs is a dict not a list of value pairs
+            self.process.add_localizations(ID, LOCALE, lol)
 
         return True
 
     def run_xml(self):
     # handles xml files
+    # in localizations.xml tag devdisplaylocale is ignored
 
         acmt = self.file_name
         ol = []
@@ -234,7 +230,6 @@ class Read:
             aet = ET.parse(f)
         namespace = {'ns': "http://config.mgt.xboxlive.com/schema/achievements2017/1"}
         for a in aet.findall("ns:Achievement", namespace):
-            #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             acmt_dict = {
             "name_id": None,
             "desc_id":None,
@@ -262,28 +257,41 @@ class Read:
         ol = []
         with open(localz, "r", encoding="utf-8") as f:
             lat = ET.parse(f)
-        namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
-        for a in lat.findall("ns:LocalizedString", namespace):
-            #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            localz_dict = {
-            "name_id": None,
-            "locale_en": None,
-            "locale_fi": None
-            }
-            localz_dict["name_id"] = a.get("id")
-            for b in a.findall("ns:Value", namespace):
-                t = b.text
-                u = b.get("locale")
+            namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
+            for a in lat.findall("ns:LocalizedString", namespace):
+                print("printing a")
+                pprint.pp(a)
+                localz_dict = {
+                "name_id": None,
+                "locale_en": None,
+                "locale_fi": None
+                }
+                valuetext = None
+                ID = None
+                LOCALE = None
+                localz_dict["name_id"] = a.get("id")
+                ID = a.get("id")
+                for b in a.findall("ns:Value", namespace):
+                    t = b.text
+                    u = b.get("locale")
+                    LOCALE = u
 
-                known_localez = ["fi", "en"]
-                for l in known_localez:
-                    if l in u:
-                        localz_dict["locale_" + l] = t
+                    known_localez = ["fi", "en"] #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    for L in known_localez:
+                        if L in u:
+                            localz_dict["locale_" + L] = t
+                            valuetext = t
 
-            print("localin printtaus")
-            pprint.pp(localz_dict)
-            ol.append(localz_dict)
-            self.process.add_localizations(ID, LOCALE, list_value_pairs)#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    # print("localin printtaus")
+                    # pprint.pp(localz_dict)
+                    # ol.append(localz_dict)
+                    # print("printing ig ja locale")
+                    # pprint.pp(LOCALE)
+                    # pprint.pp(ID)
+                    # # print("value")
+                    # pprint.pp(valuetext)
+
+                self.process.add_localizations(ID, LOCALE, valuetext)
 
         return True
 
@@ -307,5 +315,5 @@ class Read:
 # functions to test read by itself:
 # test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
 # test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
-# R = Read(test_filename, test_filename2, "dummy", None)
+# R = Read(test_filename, test_filename2, "dummy")
 # R.run_xml()
