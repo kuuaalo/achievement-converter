@@ -207,11 +207,13 @@ class Read:
                     "unlockedIcon": row.get("unlockedIcon")
                 }
                 lol.append(locals_dict)
+                ID = locals_dict.pop("name_id")
+                LOCALE = locals_dict.pop("locale")
+                self.process.add_localizations(ID, LOCALE, locals_dict)
 
-            ID = lol.pop("name_id")
-            LOCALE = lol.pop("locale")
-
-            self.process.add_localizations(ID, LOCALE, lol)
+            #ID = lol.pop("name_id")
+            #LOCALE = lol.pop("locale")
+            #self.process.add_localizations(ID, LOCALE, lol)
 
         return True
 
