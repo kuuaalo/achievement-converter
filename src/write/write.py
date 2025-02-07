@@ -45,6 +45,7 @@ class Write:
         elif self.file_format == ".csv":
             self.write_to_csv(achievements)
             self.write_locales_to_csv(achievements)
+            self.write_stats_to_csv(achievements)
         # Write to VDF if format is VDF
         elif self.file_format == ".vdf":
             self.write_to_vdf(achievements)
