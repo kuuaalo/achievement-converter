@@ -1,5 +1,6 @@
 import json
 import config
+from gui import showerror
 
 class Process:
 
@@ -96,8 +97,10 @@ class Process:
     # Function to fetch all data
     def get_all_data(self):
         merged_data = self.merge(self.achievement_list, self.localizations_data)
-        print("Merged data output:")
-        print(merged_data)
+    # Check if the merge has happened and list has values
+        if not merged_data: 
+            self.gui.show_error("Error", "No data in merger")
+            return []  
         return merged_data
 
     # Returns a dictionary of achievement data by index
