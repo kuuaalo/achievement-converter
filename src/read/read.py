@@ -78,7 +78,7 @@ class Read:
             return None
 
         if gui:
-            self.debug = gui.debug
+            self.debug = gui.show_error
         else:
             print("no gui given")
             return None
