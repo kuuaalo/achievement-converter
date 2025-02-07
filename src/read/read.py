@@ -9,10 +9,8 @@ import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
-#from gui import showerror as debug
+from gui import showerror as debug
 
-def temp_debug(title, message):
-    print(title, message)
 
 class Read:
 
@@ -78,18 +76,13 @@ class Read:
         else:
             print("Error: no process")
             return None
-#commented this out as well as the import
-#        if gui:
-#            self.debug = gui.debug
-#        else:
-#            print("no gui given")
-#            return None
 
         if gui:
             self.debug = gui.debug
         else:
             print("no gui given")
             return None
+
 
 
     def run (self):
@@ -104,10 +97,9 @@ class Read:
 
         elif self.format == ".csv":
             self.run_csv()
-#This also
- #       else:
- #           self.debug("fatal error", "import format not recognized")
- #           self.debug("data: ", self.format)
+        else:
+            self.debug("fatal error", "import format not recognized")
+            self.debug("data: ", self.format)
             return False
 
         return True
