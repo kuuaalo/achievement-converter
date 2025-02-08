@@ -77,17 +77,25 @@ class Process:
                 for locale, local_data in localization_data.items():
                     if locale not in merged_achievement:
                         merged_achievement[locale] = {}
+                        if isinstance(local_data, dict):
+                            print("ifinstance toimii")
+                            print(f"local_data is a dictionary: {local_data}")
+    
 
-                    # Merge localized values (e.g., name_en, name_fi, etc.)
-                    merged_achievement[locale]["name"] = local_data.get("name", "")
-                    merged_achievement[locale]["lockedTitle"] = local_data.get("lockedTitle", "")
-                    merged_achievement[locale]["lockedDescription"] = local_data.get("lockedDesc", "")
-                    merged_achievement[locale]["unlockedTitle"] = local_data.get("unlocked", "")
-                    merged_achievement[locale]["unlockedDescription"] = local_data.get("unlockedDesc", "")
+                            # Merge localized values (e.g., name_en, name_fi, etc.)
+                            merged_achievement[locale]["name"] = local_data.get("name", "")
+                            merged_achievement[locale]["lockedTitle"] = local_data.get("lockedTitle", "")
+                            merged_achievement[locale]["lockedDescription"] = local_data.get("lockedDesc", "")
+                            merged_achievement[locale]["unlockedTitle"] = local_data.get("unlocked", "")
+                            merged_achievement[locale]["unlockedDescription"] = local_data.get("unlockedDesc", "")
+                        else:
+                            # Hoida tilanne, jossa local_data ei ole sanakirja
+                            print(f"local_data is not a dictionary: {local_data}")
 
             # Add the merged achievement to the final list
+            
             merged_achievements.append(merged_achievement)
-
+   
         return merged_achievements
 
     def get_achievements(self,achievement_list,localizations_data):
