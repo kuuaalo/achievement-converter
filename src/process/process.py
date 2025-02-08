@@ -108,7 +108,9 @@ class Process:
     # Check if the merge has happened and list has values
         if not merged_data: 
             self.gui.show_error("Error", "No data in merger")
-            return []  
+            return []
+        print("testiMERGED")
+        print(merged_data)  
         return merged_data
 
     # Returns a dictionary of achievement data by index
