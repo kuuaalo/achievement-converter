@@ -279,7 +279,7 @@ class Read:
                             localz_dict["locale_" + L] = t
                             valuetext = t
 
-                valuetext_dict = {"locale_"+LOCALE: valuetext}
+                    valuetext_dict = {"locale_"+LOCALE: valuetext}
 
                     # print("localin printtaus")
                     # pprint.pp(localz_dict)
@@ -290,7 +290,7 @@ class Read:
                     # # print("value")
                     # pprint.pp(valuetext)
 
-                self.process.add_localizations(ID, LOCALE, valuetext_dict)
+                    self.process.add_localizations(ID, LOCALE, valuetext_dict)
 
         return True
 
