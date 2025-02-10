@@ -284,11 +284,11 @@ class Read:
                     # print("localin printtaus")
                     # pprint.pp(localz_dict)
                     # ol.append(localz_dict)
-                    # print("printing ig ja locale")
+                    # print("printing id ja locale")
                     # pprint.pp(LOCALE)
                     # pprint.pp(ID)
-                    # # print("value")
-                    # pprint.pp(valuetext)
+                    # print("value")
+                    # pprint.pp(valuetext_dict)
 
                     self.process.add_localizations(ID, LOCALE, valuetext_dict)
 
