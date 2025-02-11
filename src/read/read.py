@@ -89,7 +89,7 @@ class Read:
     # switcher for run
     # decides which format is being used
 
-        if self.format == ".txt":
+        if self.format == ".txt" or  self.format == ".vdf":
             self.run_vdf()
 
         elif self.format == ".xml":
@@ -153,11 +153,11 @@ class Read:
             z = {}
             y = actual_acmt[x]
             z["name_id"] = y["name"]
-            z["name_en"] = y["display"]["name"]["english"]
+            #z["name_en"] = y["display"]["name"]["english"]
             z["name_fi"] = y["display"]["name"]["finnish"]
             z["name_token"] = y["display"]["name"]["token"]
-            z["desc_en"] = y["display"]["desc"]["english"]
-            z["desc_fi"] = y["display"]["desc"]["finnish"]
+            #z["desc_en"] = y["display"]["desc"]["english"]
+            #z["desc_fi"] = y["display"]["desc"]["finnish"]
             z["desc_token"] = y["display"]["desc"]["token"]
             z["hidden"] = y["display"]["hidden"]
             z["icon"] = y["display"]["icon"]

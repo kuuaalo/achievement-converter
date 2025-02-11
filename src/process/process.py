@@ -95,7 +95,8 @@ class Process:
             # Add the merged achievement to the final list
             
             merged_achievements.append(merged_achievement)
-   
+            print("tässä")
+            print(merged_achievement)
         return merged_achievements
 
     def get_achievements(self,achievement_list,localizations_data):
@@ -109,7 +110,7 @@ class Process:
         if not merged_data: 
             self.gui.show_error("Error", "No data in merger")
             return []
-        print("testiMERGED")
+        print("testiMERGE123")
         print(merged_data)  
         return merged_data
 
