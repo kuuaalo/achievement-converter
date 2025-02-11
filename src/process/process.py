@@ -35,6 +35,10 @@ class Process:
         self.localizations_data[ID][LOCALE] = list_value_pairs
         return self.localizations_data
 
+    def add_vdf_localizations(self,localization_data):
+        localizations_data = localization_data
+        print(localizations_data)
+        return self.localizations_data
 
     def get_localizations(self):
         return self.localizations_data

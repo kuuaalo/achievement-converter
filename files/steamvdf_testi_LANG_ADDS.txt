@@ -1,0 +1,93 @@
+"1234"
+{
+    "stats"
+    {
+        "1"
+        {
+            "bits"
+            {
+                "1"
+                {
+                    "name" "AchievementID1"
+                    "display"
+                    {
+                        "name"
+                        {
+                            "english" "Achievement 1"
+                            "finnish" "Saavutus 1"
+                            "spanish" "Logro 1"
+                            "french" "Succès 1"
+                            "token" "NEW_ACHIEVEMENT_1_1_NAME"
+                        }
+                        "desc"
+                        {
+                            "english" "Description of Achievement 1"
+                            "finnish" "Saavutus 1:en kuvaus"
+                            "spanish" "Descripción del logro 1"
+                            "french" "Description du succès 1"
+                            "token" "NEW_ACHIEVEMENT_1_1_DESC"
+                        }
+                        "hidden" "0"
+                        "icon" "Achievement_1.jpg"
+                        "icon_gray" "Achievement_Locked_1.jpg"
+                    }
+                }
+                "2"
+                {
+                    "name" "AchievementID2"
+                    "display"
+                    {
+                        "name"
+                        {
+                            "english" "Achievement 2"
+                            "finnish" "Saavutus 2"
+                            "spanish" "Logro 2"
+                            "french" "Succès 2"
+                            "token" "NEW_ACHIEVEMENT_1_2_NAME"
+                        }
+                        "desc"
+                        {
+                            "english" "Description of Achievement 2"
+                            "finnish" "Saavutus 2:en kuvaus"
+                            "spanish" "Descripción del logro 2"
+                            "french" "Description du succès 2"
+                            "token" "NEW_ACHIEVEMENT_1_2_DESC"
+                        }
+                        "hidden" "1"
+                        "icon" "Achievement_2.jpg"
+                        "icon_gray" "Achievement_Locked_2.jpg"
+                    }
+                }
+                "3"
+                {
+                    "name" "AchievementID3"
+                    "display"
+                    {
+                        "name"
+                        {
+                            "english" "Achievement 3"
+                            "finnish" "Saavutus 3"
+                            "spanish" "Logro 3"
+                            "french" "Succès 3"
+                            "token" "NEW_ACHIEVEMENT_1_3_NAME"
+                        }
+                        "desc"
+                        {
+                            "english" "Description of Achievement 3"
+                            "finnish" "Saavutus 3:en kuvaus"
+                            "spanish" "Descripción del logro 3"
+                            "french" "Description du succès 3"
+                            "token" "NEW_ACHIEVEMENT_1_3_DESC"
+                        }
+                        "hidden" "1"
+                        "icon" "Achievement_3.jpg"
+                        "icon_gray" "Achievement_Locked_3.jpg"
+                    }
+                }
+            }
+            "type" "ACHIEVEMENTS"
+        }
+    }
+    "version" "2"
+    "gamename" "Super Ultimate Awesome Game"
+}

@@ -9,6 +9,7 @@ import vdf
 import csv
 import xml.etree.ElementTree as ET
 import pprint
+from config import LANGUAGES
 from gui import showerror as debug
 
 
@@ -145,28 +146,37 @@ class Read:
             return False
 
         actual_acmt = self.vdf_dict_peeling(j, self.vdf_params_inner)
-
         outl = []
+        localization_data = []
 
-        #this is hardcoded, might need to refactor it to more generic
         for x in list(actual_acmt):
             z = {}
             y = actual_acmt[x]
             z["name_id"] = y["name"]
-            #z["name_en"] = y["display"]["name"]["english"]
-            z["name_fi"] = y["display"]["name"]["finnish"]
             z["name_token"] = y["display"]["name"]["token"]
-            #z["desc_en"] = y["display"]["desc"]["english"]
-            #z["desc_fi"] = y["display"]["desc"]["finnish"]
             z["desc_token"] = y["display"]["desc"]["token"]
             z["hidden"] = y["display"]["hidden"]
             z["icon"] = y["display"]["icon"]
             z["icon_locked"] = y["display"]["icon_gray"]
             outl.append(z)
 
-        print("printing outl")
-        pprint.pp(outl)
+            # Ddd localization text (value) for each language (key)
+            for lang_key, lang_value in y["display"]["name"].items():
+                if lang_key != "token":  #exclude token part
+                    lang_code_map = LANGUAGES
+                    lang_code = lang_code_map.get(lang_key, lang_key)
 
+                    localization_details = {
+                        "lockedTitle": f"Locked {lang_value}",
+                        "lockedDesc": f"Locked Description of {lang_value}",
+                        "unlockedTitle": lang_value,
+                        "unlockedDesc": y["display"]["desc"].get(lang_key, "")
+                    }
+
+                    # Call add_localizations for each language entry
+                    self.process.add_localizations(z["name_id"], lang_code, localization_details)
+
+        print(localization_data)  # This prints out the localization data as test
         self.process.add_achievements(outl)
 
         return True

@@ -7,6 +7,7 @@ from collections import defaultdict
 import xml.dom.minidom as minidom
 import csv
 import vdf
+import config
 from gui import showerror
 from config import LANGUAGES 
 
