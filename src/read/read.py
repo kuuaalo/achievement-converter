@@ -281,14 +281,12 @@ class Read:
                     u = b.get("locale")
                     LOCALE = u
 
-                    known_localez = ["fi", "en"] #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                    known_localez = list(LANGUAGES.values())
                     for L in known_localez:
                         if L in u:
-                            localz_dict["locale_" + L] = t
                             valuetext = t
 
                     temp_dict = {ID:valuetext}
-
                     valuetext_dict = {LOCALE: temp_dict}
 
                     print("locale ja id")
