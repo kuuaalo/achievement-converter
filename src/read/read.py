@@ -266,8 +266,6 @@ class Read:
             lat = ET.parse(f)
             namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
             for a in lat.findall("ns:LocalizedString", namespace):
-                print("printing a")
-                pprint.pp(a)
                 localz_dict = {
                 "name_id": None,
                 "locale_en": None,
@@ -289,16 +287,15 @@ class Read:
                             localz_dict["locale_" + L] = t
                             valuetext = t
 
-                    valuetext_dict = {"locale_"+LOCALE: valuetext}
+                    temp_dict = {ID:valuetext}
 
-                    # print("localin printtaus")
-                    # pprint.pp(localz_dict)
-                    # ol.append(localz_dict)
-                    # print("printing id ja locale")
-                    # pprint.pp(LOCALE)
-                    # pprint.pp(ID)
-                    # print("value")
-                    # pprint.pp(valuetext_dict)
+                    valuetext_dict = {LOCALE: temp_dict}
+
+                    print("locale ja id")
+                    pprint.pp(LOCALE)
+                    pprint.pp(ID)
+                    print("value")
+                    pprint.pp(valuetext_dict)
 
                     self.process.add_localizations(ID, LOCALE, valuetext_dict)
 
