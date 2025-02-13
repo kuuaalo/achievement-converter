@@ -369,7 +369,7 @@ class Write:
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
                     language = self.get_language_from_locale(locale)
-                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedTitle"]}"\n'
+                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
             result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("name_token", "")}"\n'
             result += '\t\t\t\t\t\t}\n'
 
@@ -428,7 +428,7 @@ class Write:
                 # Add tokens to the language
                 tokens = output[language]["Tokens"]
                 achievement_id = entry["name_id"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
-                tokens[f"{achievement_id}_NAME"] = content.get("unlockedTitle", "")
+                tokens[f"{achievement_id}_NAME"] = content.get("name", "")
                 tokens[f"{achievement_id}_DESC"] = content.get("unlockedDescription", "")
 
         return output
@@ -453,7 +453,7 @@ class Write:
                 # Add tokens for each achievement
                 tokens = output[language]["Tokens"]
                 achievement_id = entry["name_id"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
-                tokens[f"{achievement_id}_NAME"] = content.get("unlockedTitle", "")
+                tokens[f"{achievement_id}_NAME"] = content.get("name", "")
                 tokens[f"{achievement_id}_DESC"] = content.get("unlockedDescription", "")
 
         # Start formatting the data into VDF style

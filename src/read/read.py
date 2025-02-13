@@ -160,13 +160,14 @@ class Read:
             z["icon_locked"] = y["display"]["icon_gray"]
             outl.append(z)
 
-            # Ddd localization text (value) for each language (key)
+            # Add localization text (value) for each language (key)
             for lang_key, lang_value in y["display"]["name"].items():
-                if lang_key != "token":  #exclude token part
+                if lang_key != "token":  #exclude name_token part
                     lang_code_map = LANGUAGES
                     lang_code = lang_code_map.get(lang_key, lang_key)
 
                     localization_details = {
+                        "name": lang_value,
                         "lockedTitle": f"Locked {lang_value}",
                         "lockedDesc": f"Locked Description of {lang_value}",
                         "unlockedTitle": lang_value,
