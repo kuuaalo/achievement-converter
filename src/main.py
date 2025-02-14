@@ -154,7 +154,8 @@ class AchievementConverter:
         # change values in data
         id = self.selected_acmt_id
         # returns updated list 
-        acmt_list = self.process.update_achievement_data(id, self.current_key, new_value)
+        self.process.update_achievement_data(id, self.current_key, new_value)
+        acmt_list = self.process.get_filtered_list(self.keys_list)
 
         # update main table
         self.gui.refresh_table(self.main_table)
@@ -168,8 +169,8 @@ class AchievementConverter:
     # gui calls to update value in all achievements
     def change_all_values(self, new_value):
         #change values in data
-        acmt_list = self.process.add_data_to_all_achievements(self.current_key, new_value)
-        
+        self.process.add_data_to_all_achievements(self.current_key, new_value)
+        acmt_list = self.process.get_filtered_list(self.keys_list)
         #update main table
         self.gui.refresh_table(self.main_table)
         self.gui.populate_table(self.main_table,acmt_list)
