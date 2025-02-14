@@ -73,14 +73,15 @@ class AchievementConverterGUI:
     # populate achievement table
     def populate_acmt_table(self, table, acmt_dict):
         for index, key in enumerate(acmt_dict):
-            print(key)
-            table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]))
+            if (acmt_dict[key] is None):
+                table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]), tags=('null_value',))
+            else:
+                table.insert('', index='end', iid=str(index), values=(key, acmt_dict[key]),)
     
     # empty given table
     def refresh_table(self, table):
         table.delete(*table.get_children())
         return True
-    
 
     def name_table_columns(self, table, columns):
         table["columns"] = columns
