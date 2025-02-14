@@ -24,7 +24,7 @@ class AchievementConverter:
         # single achievement display table
         self.acmt_table = None
         # selected achievement's id
-        self.selected_acmt_id = None
+        self.selected_acmt_id = 0
 
 
     # import achievement file
@@ -145,30 +145,18 @@ class AchievementConverter:
         # returns updated list 
         self.process.update_achievement_data(id, self.current_key, new_value)
         self.acmt_list = self.process.get_filtered_list(self.keys_list)
-
-        # update main table
-        #self.gui.refresh_table(self.main_table)
-        #self.gui.populate_table(self.main_table, acmt_list)
-
-        # update achievement table
-        #self.gui.refresh_table(self.acmt_table)
         self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, id)
-        #self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+
         self.refresh_all()
     
     # gui calls to update value in all achievements
     def change_all_values(self, new_value):
         #change values in data
         self.process.add_data_to_all_achievements(self.current_key, new_value)
-        acmt_list = self.process.get_filtered_list(self.keys_list)
-        #update main table
-        self.gui.refresh_table(self.main_table)
-        self.gui.populate_table(self.main_table,acmt_list)
-
-        # update achievement table
-        self.gui.refresh_table(self.acmt_table)
+        self.acmt_list = self.process.get_filtered_list(self.keys_list)
         self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, self.selected_acmt_id)
-        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+        
+        self.refresh_all()
     
     # display editable value in next achievement
     def move_to_next_acmt(self): 
@@ -179,11 +167,8 @@ class AchievementConverter:
         self.selected_acmt_id = index
         print(index)
 
-        # update achievement table
-        self.gui.refresh_table(self.acmt_table)
         self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, self.selected_acmt_id)
-        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
-        
+        self.refresh_all()
         self.edit_value(self.row_id)
     
     
@@ -204,16 +189,15 @@ class AchievementConverter:
 
         # get filter values from config
         filter_config = config.FILTER_CONFIG
-        id = self.selected_acmt_id
+        #id = self.selected_acmt_id
 
         # get list of allowed values from filter
         self.keys_list = filter_config[format]
-        new_headers = self.process.get_achievement_keys_from_dict(self.keys_list, id)
-        self.current_filter = new_headers
+        
+        self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, self.selected_acmt_id)
         self.acmt_list = self.process.get_filtered_list(self.keys_list)
         self.refresh_all()
 
-    
 
     # return given path's file extension
     def get_file_extension(self, selected_path):
@@ -221,6 +205,7 @@ class AchievementConverter:
     
     def refresh_all(self):
         self.keys_list = list(self.current_filter.keys())
+        self.acmt_list = self.process.get_filtered_list(self.keys_list)
 
         self.gui.refresh_table(self.main_table)
         self.gui.name_table_columns(self.main_table, self.keys_list)
