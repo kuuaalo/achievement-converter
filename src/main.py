@@ -54,7 +54,7 @@ class AchievementConverter:
     
     # export achievement file
     def export_file(self):
-        file_path = fd.asksaveasfilename(title="Export project file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("VDF files", "*.vdf"), ("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
+        file_path = fd.asksaveasfilename(title="Export achievement file as", defaultextension=config.DEFAULT_FILE_FORMAT, filetypes=[("Text files", "*.txt"),("Epic", "*.csv"),("VDF files", "*.vdf"), ("Steam rawdata", "*.txt"),("MS Store", "*.xml"), ("All Files", "*.*")])
         # send path to get extension
         acmt_platform = self.get_file_extension(file_path)
         # pass path, name and model to write
@@ -68,7 +68,6 @@ class AchievementConverter:
 
     def create_table(self):
         # get list of all achievements and keys
-        
         self.acmt_list = self.process.fill_missing_values()
         
         # get dict for table headers
@@ -91,7 +90,10 @@ class AchievementConverter:
             else:
                 # if table already exists, clear it
                 self.gui.refresh_table(self.main_table)
+                column_list = list(table_keys.keys())
+                self.gui.name_table_columns(self.main_table, column_list)
                 self.gui.populate_table(self.main_table, self.acmt_list)
+                self.gui.refresh_table(self.acmt_table)
 
     # register currently id based on event
     def register_id(self, event):
@@ -124,7 +126,6 @@ class AchievementConverter:
         
         # get achievement's id for editing
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event)))
-        #self.acmt_table.bind("<Double-1>", lambda event: self.register_id(event), add='+')
 
     # called when user selects cell from achievement table
     def edit_value(self, row_id):
