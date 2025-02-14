@@ -112,10 +112,7 @@ class AchievementConverter:
             self.gui.configure_table(self.acmt_table)
         
         self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
-            
-        #for index, key in enumerate(self.current_filter): # fill values
-            #self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key]))
-        
+  
         # get achievement's id for editing
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event)))
 
@@ -147,16 +144,17 @@ class AchievementConverter:
         id = self.selected_acmt_id
         # returns updated list 
         self.process.update_achievement_data(id, self.current_key, new_value)
-        acmt_list = self.process.get_filtered_list(self.keys_list)
+        self.acmt_list = self.process.get_filtered_list(self.keys_list)
 
         # update main table
-        self.gui.refresh_table(self.main_table)
-        self.gui.populate_table(self.main_table, acmt_list)
+        #self.gui.refresh_table(self.main_table)
+        #self.gui.populate_table(self.main_table, acmt_list)
 
         # update achievement table
-        self.gui.refresh_table(self.acmt_table)
+        #self.gui.refresh_table(self.acmt_table)
         self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, id)
-        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+        #self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+        self.refresh_all()
     
     # gui calls to update value in all achievements
     def change_all_values(self, new_value):
@@ -206,24 +204,15 @@ class AchievementConverter:
 
         # get filter values from config
         filter_config = config.FILTER_CONFIG
+        id = self.selected_acmt_id
 
         # get list of allowed values from filter
         self.keys_list = filter_config[format]
-        new_headers = self.process.get_achievement_keys_from_dict(self.keys_list, 0)
-        current_list = self.process.get_filtered_list(self.keys_list)
-        column_list = list(new_headers.keys())
-        #clear main table and fill it again
-        self.gui.refresh_table(self.main_table)
-        self.gui.name_table_columns(self.main_table, column_list)
-        self.gui.populate_table(self.main_table, current_list)
+        new_headers = self.process.get_achievement_keys_from_dict(self.keys_list, id)
+        self.current_filter = new_headers
+        self.acmt_list = self.process.get_filtered_list(self.keys_list)
+        self.refresh_all()
 
-        # single achievement table filtering
-        id = self.selected_acmt_id
-        new_dict = self.process.get_achievement_keys_from_dict(self.keys_list, id)
-        self.current_filter = new_dict
-        self.gui.refresh_table(self.acmt_table)
-        self.gui.populate_acmt_table(self.acmt_table, new_dict)
-        # create edit window
     
 
     # return given path's file extension
