@@ -21,12 +21,6 @@ class AchievementConverter:
         
         # main achievement display table
         self.main_table = None
-        # dictionary in use for headers
-        self.current_filter= None
-        # current key user is editing
-        self.current_key = None
-        # current key's index in achievement
-        self.current_key_index = None
         # single achievement display table
         self.acmt_table = None
         # selected achievement's id
@@ -88,12 +82,7 @@ class AchievementConverter:
                 self.gui.create_filter(formats, 'formats')
                 self.gui.populate_table(self.main_table, self.acmt_list)
             else:
-                # if table already exists, clear it
-                self.gui.refresh_table(self.main_table)
-                column_list = list(table_keys.keys())
-                self.gui.name_table_columns(self.main_table, column_list)
-                self.gui.populate_table(self.main_table, self.acmt_list)
-                self.gui.refresh_table(self.acmt_table)
+                self.refresh_all()
 
     # register currently id based on event
     def register_id(self, event):
@@ -120,9 +109,12 @@ class AchievementConverter:
         else:
             # make new table
             self.acmt_table = self.gui.create_table(col_dict)
+            self.gui.configure_table(self.acmt_table)
+        
+        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
             
-        for index, key in enumerate(self.current_filter): # fill values
-            self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key]))
+        #for index, key in enumerate(self.current_filter): # fill values
+            #self.acmt_table.insert('', index='end', iid=str(index), values=(key, self.current_filter[key]))
         
         # get achievement's id for editing
         self.acmt_table.bind("<Double-1>", lambda event: self.edit_value(self.register_id(event)))
@@ -191,7 +183,7 @@ class AchievementConverter:
 
         # update achievement table
         self.gui.refresh_table(self.acmt_table)
-        self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, index)
+        self.current_filter = self.process.get_achievement_keys_from_dict(self.keys_list, self.selected_acmt_id)
         self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
         
         self.edit_value(self.row_id)
@@ -237,6 +229,17 @@ class AchievementConverter:
     # return given path's file extension
     def get_file_extension(self, selected_path):
         return os.path.splitext(selected_path)[1].lower()
+    
+    def refresh_all(self):
+        self.keys_list = list(self.current_filter.keys())
+
+        self.gui.refresh_table(self.main_table)
+        self.gui.name_table_columns(self.main_table, self.keys_list)
+        self.gui.populate_table(self.main_table, self.acmt_list)
+        
+        self.gui.refresh_table(self.acmt_table)
+        self.gui.populate_acmt_table(self.acmt_table, self.current_filter)
+
    
     def run(self):
         # infinite loop for displaying gui
