@@ -171,19 +171,20 @@ class Write:
         for achievement in achievements:
             achievement_id = achievement.get("name_id", "")  # Unique identifier for the achievement
 
-            # Create LocalizedString element for achievement name 
+            # Create LocalizedString element for achievement name (UnlockedTitle)
             localized_name = doc.createElement('LocalizedString')
             localized_name.setAttribute('id', achievement_id)
-    
+
+            # Add name translations for each locale (skip 'default')
             for locale, lang_data in achievement.items():
-                if isinstance (lang_data, dict) and "name" in lang_data:
-                    value_elem = doc.createElement('value')
-                    value_elem.setAttribute('locale', locale)
-                    value_elem.appendChild(doc.createTextNode(lang_data["name"]))
-                    localized_name.appendChild(value_elem)
-            achievement_strings.append(localized_name)  
+                if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
+                    if locale != "default":  # Skip the 'default' locale
+                        value_elem = doc.createElement('Value')
+                        value_elem.setAttribute('locale', locale)
+                        value_elem.appendChild(doc.createTextNode(lang_data["unlockedTitle"]))
+                        localized_name.appendChild(value_elem)
 
-
+            achievement_strings.append(localized_name)  # Store the achievement name entry
 
             # Handle LockedDescription and UnlockedDescription (these should be separate entries)
             for desc_type in ["lockedDescription", "unlockedDescription"]:
@@ -230,38 +231,33 @@ class Write:
     # Writes achievements in CSV format
     def write_to_csv(self, achievements):
         if not achievements:
-            self.gui.show_error("Error", "No data provided for CSV file")
+            self.gui.show_error("Error", "No data provided for XML file")
             return
 
-        # This dictionary defines how internal data fields map to CSV columns
+        # This dictionary defines how internal data fields map to CSV column names
         csv_field_map = {
-            "name": "name",
+            "name": "name_id",
             "hidden": "hidden",
             "statThresholds": "acmt_stat_tres",
             "user_epic_achievements_xp": "acmt_xp",
         }
+
         # Extract the CSV column names from the keys of csv_field_map
         fieldnames = list(csv_field_map.keys())
 
-        # Open csv file for writing 
+        # Open the CSV file for writing. Using newline='' prevents extra blank lines
         with open(self.file_name, "w", newline='', encoding="utf-8") as f:
+            print(self.process) #debugmessage
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
 
             for achievement in achievements:
                 row = {}
-
-                # Fetch the name of achievement, hard coded to be en-US
-                achievement_name = achievement.get("en-US", {}).get("name", "Unknown Achievement")
-
                 for csv_key, data_key in csv_field_map.items():
-                    # Retreive values from the achievements dict name to name, all else to else block
-                    if csv_key == "name":
-                        row[csv_key] = achievement_name  
-                    else:
-                        row[csv_key] = achievement.get(data_key, "")  
-
+                    # Retrieve the value from the achievement dictionary. If the key doesn't exist, use None
+                    row[csv_key] = achievement.get(data_key, None)
                 writer.writerow(row)
+                 
 
         print(f"Data written to {self.file_name} in CSV format.")
 
