@@ -208,10 +208,11 @@ class Read:
             for row in csv_reader:
                 locals_dict = {
                     "name_id": row.get("name"),
+                    "name": row.get("name"),
                     "locale": row.get("locale"),
                     "lockedTitle": row.get("lockedTitle"),
                     "lockedDesc": row.get("lockedDescription"),
-                    "unlocked": row.get("unlockedTitle"),
+                    "unlockedTitle": row.get("unlockedTitle"),
                     "unlockedDesc": row.get("unlockedDescription"),
                     "flavor": row.get("flavorText"),
                     "lockedIcon": row.get("lockedIcon"),
