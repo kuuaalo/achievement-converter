@@ -33,13 +33,11 @@ class Process:
         if ID not in self.localizations_data:
             self.localizations_data[ID] = {}
         self.localizations_data[ID][LOCALE] = list_value_pairs
-        print("KULLIPERSE" ,self.localizations_data)
         return self.localizations_data
 
     def add_vdf_localizations(self,localization_data):
         localizations_data = localization_data
         print(localizations_data)
-        print("KULLIPERSE" ,self.localizations_data)
         return self.localizations_data
 
     def get_localizations(self):
