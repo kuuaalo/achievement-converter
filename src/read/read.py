@@ -258,48 +258,92 @@ class Read:
             acmt_dict["acmt_xp"] = a.find("ns:Gamerscore", namespace).text if a.find("ns:Gamerscore", namespace) is not None else None
             acmt_dict["base_acmt"] = a.find("ns:BaseAchievement", namespace).text if a.find("ns:BaseAchievement", namespace) is not None else None
             acmt_dict["acmt_num"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
+
+
+            localz = self.localization_filename #after going thru one achievement
+            ol = []
+            with open(localz, "r", encoding="utf-8") as f:
+                print("got here")
+                lat = ET.parse(f)
+                namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
+                for achievement in lat.findall("ns:LocalizedString", namespace): # loop thru all achievement localization strings in the file
+                    
+                    print(achievement)
+
+                    valuetext = None
+                    LOCALE = None
+                    
+                    ID = acmt_dict["name_id"] #set id for process to be the achievement's id from before
+                    local_id = achievement.get("id") #get the localizedstring's id
+                    
+                    known_localez = list(LANGUAGES.values())
+                    locals_dict = {}
+                    if local_id in acmt_dict.values(): #if the localized string is in achievement's values
+                        
+                        for item in known_localez:
+                            
+                            
+                            for locale_value in achievement.findall("ns:Value", namespace):
+                                locale = locale_value.get("locale")
+                                LOCALE = locale
+                                if locale == item:
+                                    text = locale_value.text
+                                    print(local_id)
+                                    locals_dict[local_id] = text
+                                    continue
+                        print(locals_dict)  
+                        self.process.add_localizations(ID, LOCALE, locals_dict)
             ol.append(acmt_dict)
 
-        self.process.add_achievements(ol)
+            self.process.add_achievements(ol)
+                            
+                            
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        # for locale_value in achievement.findall("ns:Value", namespace):
+                        #     print(locale_value)
+                        #     locale = locale_value.get("locale")
+                        #     LOCALE = locale
+                        #     text = locale_value.text
+                        #     print(text)
+                        #     print(locale)
+                            
+                        #     locals_dict = {}
+                        # self.process.add_localizations(ID, LOCALE, locals_dict)
 
-        localz = self.localization_filename
-        ol = []
-        with open(localz, "r", encoding="utf-8") as f:
-            lat = ET.parse(f)
-            namespace = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
-            for a in lat.findall("ns:LocalizedString", namespace):
-                localz_dict = {
-                "name_id": None,
-                "locale_en": None,
-                "locale_fi": None
-                }
-                valuetext = None
-                ID = None
-                LOCALE = None
-                localz_dict["name_id"] = a.get("id")
-                ID = a.get("id")
-                for b in a.findall("ns:Value", namespace):
-                    t = b.text
-                    u = b.get("locale")
-                    LOCALE = u
+                #     
+                        # for item in known_localez:
+                        #     if item in locale_key:
+                        #         valuetext = text
 
-                    known_localez = list(LANGUAGES.values())
-                    for L in known_localez:
-                        if L in u:
-                            valuetext = t
+                            #locale_key = locale_value.get("locale")
+                            #print("tää on locale key")
+                            #print(locale_key)
+                            #locale_dict = 
+                        #LOCALE = locale_key
 
-                    temp_dict = {ID:valuetext}
-                    valuetext_dict = {LOCALE: temp_dict}
+                       
 
-                    print("locale ja id")
-                    pprint.pp(LOCALE)
-                    pprint.pp(ID)
-                    print("value")
-                    pprint.pp(valuetext_dict)
+                        #temp_dict = {ID:valuetext}
+                        #valuetext_dict = {LOCALE: temp_dict}
 
-                    self.process.add_localizations(ID, LOCALE, valuetext_dict)
+                        # print("locale ja id")
+                        # pprint.pp(LOCALE)
+                        # pprint.pp(ID)
+                        # print("value")
+                        # pprint.pp(valuetext_dict)
 
-        return True
+                        #self.process.add_localizations(ID, LOCALE, valuetext_dict)
+
+            return True
 
 
     def read_file(self, file_name= False ):
