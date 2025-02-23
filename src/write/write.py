@@ -356,8 +356,8 @@ class Write:
             self.gui.show_error("Error", "No data provided for VDF file")
             return
 
-        version = achievements[0].get("version", "None")
-        result = f'"{version}"\n{{\n'
+        game_id= achievements[0].get("game_id", "None")
+        result = f'"{game_id}"\n{{\n'
         result += '\t"stats"\n\t{\n'
         result += '\t\t"1"\n\t\t{\n'
         result += '\t\t\t"bits"\n\t\t\t{\n'
