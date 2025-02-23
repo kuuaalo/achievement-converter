@@ -223,10 +223,6 @@ class Read:
                 LOCALE = locals_dict.pop("locale")
                 self.process.add_localizations(ID, LOCALE, locals_dict)
 
-            #ID = lol.pop("name_id")
-            #LOCALE = lol.pop("locale")
-            #self.process.add_localizations(ID, LOCALE, lol)
-
         return True
 
     def run_xml(self):
@@ -244,7 +240,7 @@ class Read:
             "desc_id":None,
             "hidden": None,
             "icon": None,
-            "desc_locked": None,
+            "desc_id": None,
             "acmt_xp": None,
             "base_acmt": None,
             "acmt_num":None,
@@ -254,7 +250,7 @@ class Read:
             acmt_dict["desc_id"] = a.find("ns:UnlockedDescriptionId", namespace).text if a.find("ns:UnlockedDescriptionId", namespace) is not None else None
             acmt_dict["hidden"] = a.find("ns:IsHidden", namespace).text if a.find("ns:IsHidden", namespace) is not None else None
             acmt_dict["icon"] = a.find("ns:IconImageId", namespace).text if a.find("ns:IconImageId", namespace) is not None else None
-            acmt_dict["desc_locked"] = a.find("ns:LockedDescriptionId", namespace).text if a.find("ns:LockedDescriptionId", namespace) is not None else None
+            acmt_dict["desc_locked_id"] = a.find("ns:LockedDescriptionId", namespace).text if a.find("ns:LockedDescriptionId", namespace) is not None else None
             acmt_dict["acmt_xp"] = a.find("ns:Rewards/ns:Gamerscore", namespace).text if a.find("ns:Rewards/ns:Gamerscore", namespace) is not None else None
             acmt_dict["base_acmt"] = a.find("ns:BaseAchievement", namespace).text if a.find("ns:BaseAchievement", namespace) is not None else None
             acmt_dict["acmt_num"] = a.find("ns:DisplayOrder", namespace).text if a.find("ns:DisplayOrder", namespace) is not None else None
@@ -264,30 +260,43 @@ class Read:
             ol.append(acmt_dict)   
             
 
-            with open(localz, "r", encoding="utf-8") as l:
+            with open(localz, "r", encoding="utf-8") as l: # handle localisation file
 
                 lat = ET.parse(l)
                 namespace_l = {'ns': "http://config.mgt.xboxlive.com/schema/localization/1"}
 
                 known_localez = list(LANGUAGES.values())
-                ID = acmt_dict["name_id"] 
+            
+            for locale in known_localez:
+                locals_dict = {
+                    "name": None,
+                    "lockedTitle": None,
+                    "lockedDesc": None,
+                    "unlocked": None,
+                    "unlockedDesc": None,
+                }  # Reset dictionary for each locale
+                
+                # loop through achievement localizations
+                for achievement in lat.findall("ns:LocalizedString", namespace_l): 
+                    local_id = achievement.get("id")
+                    
+                    # if local id is the same as in acmt_dict value
+                    if local_id == acmt_dict["name_id"]:  
+                        key = "name"
+                    elif local_id == acmt_dict["desc_locked_id"]:
+                        key = "lockedDesc"
+                    elif local_id == acmt_dict["desc_id"]:
+                        key = "unlockedDesc"
+                    else:
+                        continue
 
-                # iterate through locales
-                for locale in known_localez:
-                    locals_dict = {}  # reset the dictionary
-
-                    for achievement in lat.findall("ns:LocalizedString", namespace_l):  # loop through achievements
-                        local_id = achievement.get("id")  # get the ID of the localized achievement
-
-                        if local_id in acmt_dict.values():  # if it is in achievement dictionary
-                            for locale_value in achievement.findall("ns:Value", namespace_l):
-                                if locale_value.get("locale") == locale:  # add if it matches current locale
-                                    locals_dict[local_id] = locale_value.text
-
-                    # Send the dictionary for the current locale
-                    if locals_dict:
-                        print(ID)
-                        self.process.add_localizations(ID, locale, locals_dict)
+                    # Find the correct localization text for the current locale
+                    for locale_value in achievement.findall("ns:Value", namespace_l):
+                        if locale_value.get("locale") == locale:  
+                            locals_dict[key] = locale_value.text
+                
+                if any(locals_dict.values()):
+                    self.process.add_localizations(acmt_dict["name_id"], locale, locals_dict)
                  
         self.process.add_achievements(ol)
         return True                   
@@ -308,9 +317,3 @@ class Read:
 
     def register_debug(self, df):
         self.df = df
-
-# functions to test read by itself:
-# test_filename = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\msxml_test.xml"
-# test_filename2 = "C:\\Users\\niini\\Documents\\achievement-converter\\files\\mslocalization_test.xml"
-# R = Read(test_filename, test_filename2, "dummy")
-# R.run_xml()
