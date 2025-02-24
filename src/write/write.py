@@ -351,58 +351,57 @@ class Write:
 
        
     def write_to_vdf(self, achievements):
-    # Tarkista, että achievements on olemassa ja ei ole tyhjä
+        
         if not achievements:
             self.gui.show_error("Error", "No data provided for VDF file")
             return
 
-        game_id= achievements[0].get("game_id", "None")
+        game_id = achievements[0].get("game_id", "None")
         result = f'"{game_id}"\n{{\n'
         result += '\t"stats"\n\t{\n'
-        result += '\t\t"1"\n\t\t{\n'
-        result += '\t\t\t"bits"\n\t\t\t{\n'
 
         for i, achievement in enumerate(achievements, start=1):
-            result += f'\t\t\t\t"{i}"\n\t\t\t\t{{\n'
+            result += f'\t\t"{i}"\n\t\t{{\n'
+            result += f'\t\t\t"name"\t"{achievement["name_id"]}"\n'
+
+            # "display" translations
+            result += '\t\t\t"display"\n\t\t\t{\n'
+            result += f'\t\t\t\t"name"\n\t\t\t\t{{\n'
             
-            # Use eng name if available, if not use ID
-            name_value = achievement["en-US"]["name"] if "en-US" in achievement and "name" in achievement["en-US"] else achievement["name_id"]
-            achievement_id = f"NEW_ACHIEVEMENT_1_{i}"
-            result += f'\t\t\t\t\t"name"\t"{name_value}"\n'
-
-            # "name" - translations
-            result += '\t\t\t\t\t\t"name"\n\t\t\t\t\t\t{\n'
             for locale, lang_data in achievement.items():
-                if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
+                if isinstance(lang_data, dict) and "name" in lang_data:
                     language = self.get_language_from_locale(locale)
-                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
-            result += f'\t\t\t\t\t\t\t"token"\t"{achievement_id}_NAME"\n'  # Use token
-            result += '\t\t\t\t\t\t}\n'
+                    result += f'\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
+            
+            achievement_id = f"NEW_ACHIEVEMENT_1_{i}"
+            result += f'\t\t\t\t\t"token"\t"{achievement_id}_NAME"\n'  # Name token
+            result += f'\t\t\t\t}}\n'
 
-            # "desc" -translations
-            result += '\t\t\t\t\t\t"desc"\n\t\t\t\t\t\t{\n'
+            # "desc" translations
+            result += f'\t\t\t\t"desc"\n\t\t\t\t{{\n'
+            
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "unlockedDescription" in lang_data:
                     language = self.get_language_from_locale(locale)
-                    result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
-            result += f'\t\t\t\t\t\t\t"token"\t"{achievement_id}_DESC"\n'  # Use token
-            result += '\t\t\t\t\t\t}\n'
+                    result += f'\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
+            
+            result += f'\t\t\t\t\t"token"\t"{achievement_id}_DESC"\n'  # Description token
+            result += f'\t\t\t\t}}\n'
 
-            # Other info translations
-            result += f'\t\t\t\t\t\t"hidden"\t"{achievement.get("hidden", "0")}"\n'
-            result += f'\t\t\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
-            result += f'\t\t\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
+            # Additional fields
+            result += f'\t\t\t\t"hidden"\t"{achievement.get("hidden", "0")}"\n'
+            result += f'\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
+            result += f'\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
 
-            result += '\t\t\t\t\t}\n'  # display-ending
-            result += '\t\t\t\t}\n'  # achievement node ending
+            result += '\t\t\t}}\n'  # Closing display
+            result += '\t\t\n'  # Closing achievement
 
-        result += '\t\t\t}\n'  # bits-ending
-        result += '\t\t\t"type"\t"ACHIEVEMENTS"\n'
-        result += '\t\t}\n'  # stats-ending
-        result += '\t}\n'  # stats-END
-        result += f'\t"version"\t"{achievement.get("version", "")}"\n'
-        result += f'\t"gamename"\t"{achievement.get("game_name", "")}"\n'
-        result += '}\n'  # STRUCTURE END
+        result += '\t\t}\n'  # Closing bits
+        result += '\t\t"type"\t"ACHIEVEMENTS"\n'
+        result += '\t}\n'  # Closing stats
+        result += f'\t"version"\t"{achievements[0].get("version", "")}"\n'
+        result += f'\t"gamename"\t"{achievements[0].get("game_name", "")}"\n'
+        result += '}\n'  # Closing the overall structure
 
         # Write VDF file
         with open(self.file_name, "w", encoding="utf-8") as f:
