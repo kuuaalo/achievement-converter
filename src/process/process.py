@@ -84,14 +84,21 @@ class Process:
                         if isinstance(local_data, dict):
                             print("ifinstance toimii")
                             print(f"local_data is a dictionary: {local_data}")
-    
 
-                            # Merge localized values (e.g., name_en, name_fi, etc.)
+                                # Haetaan en-US:n nimi tai fallback-arvo
+                            name_value = localization_data.get("en-US", {}).get("name", achievement.get("name_id", ""))
+                                
+                                # Merge localized values
                             merged_achievement[locale]["name"] = local_data.get("name", "")
                             merged_achievement[locale]["lockedTitle"] = local_data.get("lockedTitle", "")
                             merged_achievement[locale]["lockedDescription"] = local_data.get("lockedDesc", "")
                             merged_achievement[locale]["unlockedTitle"] = local_data.get("unlocked", "")
                             merged_achievement[locale]["unlockedDescription"] = local_data.get("unlockedDesc", "")
+                            merged_achievement[locale]["name_title"] = name_value
+                                            
+                                            
+                
+            
                         else:
                             # Hoida tilanne, jossa local_data ei ole sanakirja
                             print(f"local_data is not a dictionary: {local_data}")

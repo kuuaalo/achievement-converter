@@ -364,8 +364,11 @@ class Write:
 
         for i, achievement in enumerate(achievements, start=1):
             result += f'\t\t\t\t"{i}"\n\t\t\t\t{{\n'
-            result += f'\t\t\t\t\t"name"\t"{achievement["name_id"]}"\n'
-            result += '\t\t\t\t\t"display"\n\t\t\t\t\t{\n'
+            
+            # Use eng name if available, if not use ID
+            name_value = achievement["en-US"]["name"] if "en-US" in achievement and "name" in achievement["en-US"] else achievement["name_id"]
+            achievement_id = f"NEW_ACHIEVEMENT_1_{i}"
+            result += f'\t\t\t\t\t"name"\t"{name_value}"\n'
 
             # "name" - translations
             result += '\t\t\t\t\t\t"name"\n\t\t\t\t\t\t{\n'
@@ -373,7 +376,7 @@ class Write:
                 if isinstance(lang_data, dict) and "unlockedTitle" in lang_data:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
-            result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("name_token", "")}"\n'
+            result += f'\t\t\t\t\t\t\t"token"\t"{achievement_id}_NAME"\n'  # Use token
             result += '\t\t\t\t\t\t}\n'
 
             # "desc" -translations
@@ -382,7 +385,7 @@ class Write:
                 if isinstance(lang_data, dict) and "unlockedDescription" in lang_data:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
-            result += f'\t\t\t\t\t\t\t"token"\t"{achievement.get("desc_token", "")}"\n'
+            result += f'\t\t\t\t\t\t\t"token"\t"{achievement_id}_DESC"\n'  # Use token
             result += '\t\t\t\t\t\t}\n'
 
             # Other info translations
@@ -397,8 +400,8 @@ class Write:
         result += '\t\t\t"type"\t"ACHIEVEMENTS"\n'
         result += '\t\t}\n'  # stats-ending
         result += '\t}\n'  # stats-END
-        result += '\t"version"\t"2"\n'
-        result += '\t"gamename"\t"Super Ultimate Awesome Game"\n'
+        result += f'\t"version"\t"{achievement.get("version", "")}"\n'
+        result += f'\t"gamename"\t"{achievement.get("game_name", "")}"\n'
         result += '}\n'  # STRUCTURE END
 
         # Write VDF file
@@ -430,8 +433,8 @@ class Write:
 
                 # Add tokens to the language
                 tokens = output[language]["Tokens"]
-                achievement_id = entry["name_id"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
-                tokens[f"{achievement_id}_NAME"] = content.get("name", "")
+                achievement_id = entry["name_title"].replace("AchievementID", "NEW_ACHIEVEMENT_1_")
+                tokens[f"{achievement_id}_NAME"] = content.get("name_title", "")
                 tokens[f"{achievement_id}_DESC"] = content.get("unlockedDescription", "")
 
         return output
