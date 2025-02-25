@@ -40,8 +40,9 @@ class Write:
 
         # Write to XML if format is XML
         if self.file_format == ".xml":
-            self.write_to_xml(achievements)
             self.write_localizations_to_xml(achievements) 
+            self.write_to_xml(achievements)
+            
         # Write to CSV if format is CSV
         elif self.file_format == ".csv":
             self.write_to_csv(achievements)
@@ -60,9 +61,8 @@ class Write:
 
 
     def write_to_xml(self, achievements):
-        # Create the XML document
         doc = minidom.Document()
-        root = doc.createElement('Achievements2017')
+        root = doc.createElement('AchievementsXXXX')
         root.setAttribute("xmlns", "http://config.mgt.xboxlive.com/schema/achievements2017/1")
         doc.appendChild(root)
 
@@ -71,71 +71,43 @@ class Write:
                 self.gui.show_error("Error", "No data provided for XML file")
                 return
 
-
-            # Debug: Print the achievement data to check if descriptions exist
-            #print(f"Achievement {i} data: {achievement}")
-
             achievement_element = doc.createElement('Achievement')
 
-            # Map XML tags to achievement data keys
+            # 🔹 Nyt käytetään lokalisaation generoimia ID:tä
             xml_tags_map = {
                 "AchievementNameId": "name_id",
                 "BaseAchievement": "base_acmt",
                 "DisplayOrder": "acmt_num",
-                "LockedDescriptionId": "desc_locked",
-                "UnlockedDescriptionId": "desc_token",
+                "LockedDescriptionId": "LockedDescriptionId",  # 🔹 Käyttää lokalisaation ID:tä
+                "UnlockedDescriptionId": "UnlockedDescriptionId",  # 🔹 Sama täällä
                 "IsHidden": "hidden",
-                "AchievementId": str(i),  # Achievement ID based on index
+                "AchievementId": str(i),
                 "IconImageId": "icon"
             }
 
-            # Iterate over the xml_tags_map to create XML elements
             for xml_tag, key in xml_tags_map.items():
                 element = doc.createElement(xml_tag)
 
-                # Special handling for certain tags
                 if xml_tag == "UnlockedDescriptionId":
-                    # Create Rewards block before UnlockedDescriptionId
                     rewards_element = doc.createElement("Rewards")
                     gamerscore = doc.createElement("Gamerscore")
                     gamerscore.appendChild(doc.createTextNode(str(achievement.get("acmt_xp", "0"))))
                     rewards_element.appendChild(gamerscore)
                     achievement_element.appendChild(rewards_element)
 
-                # Handle BaseAchievement and IsHidden as booleans
                 if xml_tag == "BaseAchievement":
                     element.appendChild(doc.createTextNode(str(achievement.get(key, "true")).lower()))
                 elif xml_tag == "IsHidden":
                     element.appendChild(doc.createTextNode("true" if achievement.get(key, False) else "false"))
                 elif xml_tag == "AchievementId":
-                    element.appendChild(doc.createTextNode(str(i))) 
+                    element.appendChild(doc.createTextNode(str(i)))
                 else:
-                    element.appendChild(doc.createTextNode(str(achievement.get(key, ""))))  
+                    # 🔹 Nyt haetaan oikein generoidut ID:t
+                    element.appendChild(doc.createTextNode(str(achievement.get(key, ""))))
 
-                # Append element to Achievement
                 achievement_element.appendChild(element)
-
-            # Now add unlockedDescription and lockedDescription from specific languages
-            unlocked_desc = achievement.get('en-US', {}).get('unlockedDescription', '')
-            locked_desc = achievement.get('en-US', {}).get('lockedDescription', '')
-
-            # Debug: Check if descriptions exist
-            print(f"Unlocked description: {unlocked_desc}, Locked description: {locked_desc}")
-
-            if unlocked_desc:  # Add UnlockedDescription if exists
-                unlocked_description_element = doc.createElement('UnlockedDescription')
-                unlocked_description_element.appendChild(doc.createTextNode(unlocked_desc))
-                achievement_element.appendChild(unlocked_description_element)
-
-            if locked_desc:  # Add LockedDescription if exists
-                locked_description_element = doc.createElement('LockedDescription')
-                locked_description_element.appendChild(doc.createTextNode(locked_desc))
-                achievement_element.appendChild(locked_description_element)
-
-            # Append the achievement to the root
             root.appendChild(achievement_element)
 
-        # Write the XML document to a file
         xml_str = doc.toprettyxml(indent="  ")
         with open(self.file_name, "w", encoding="utf-8") as f:
             f.write(xml_str)
@@ -148,73 +120,62 @@ class Write:
 
     
     def write_localizations_to_xml(self, achievements):
-        # Update the file name by replacing .xml with _localized.xml
         output_filename = self.file_name.replace(".xml", "_localized.xml")
 
-        # Create the XML document
         doc = minidom.Document()
         root = doc.createElement('Localization')
         root.setAttribute("xmlns", "http://config.mgt.xboxlive.com/schema/localization/1")
         doc.appendChild(root)
 
-        # Add DevDisplayLocale element
         dev_locale = doc.createElement('DevDisplayLocale')
-        dev_locale.setAttribute('locale', 'en-US')  # This is hardcoded for "en-US" as per the example
+        dev_locale.setAttribute('locale', 'en-US')
         root.appendChild(dev_locale)
 
-        # Lists to store the different types of LocalizedString elements
         achievement_strings = []
         locked_description_strings = []
         unlocked_description_strings = []
 
-        # Iterate over the achievements to create LocalizedString elements
         for achievement in achievements:
-            achievement_id = achievement.get("name_id", "")  # Unique identifier for the achievement
+            achievement_id = achievement.get("name_id", "")
 
-            # Create LocalizedString element for achievement name 
+            # 🔹 Generoidaan oikeat ID:t ja tallennetaan ne sanakirjaan
+            locked_desc_id = f"LockedDescription{achievement_id[11:]}"
+            unlocked_desc_id = f"UnlockedDescription{achievement_id[11:]}"
+            achievement["LockedDescriptionId"] = locked_desc_id
+            achievement["UnlockedDescriptionId"] = unlocked_desc_id
+
             localized_name = doc.createElement('LocalizedString')
             localized_name.setAttribute('id', achievement_id)
 
-            # Add name translations for each locale (skip 'default')
             for locale, lang_data in achievement.items():
-                if isinstance(lang_data, dict) and "name" in lang_data:
-                    if locale != "default":  # Skip the 'default' locale
-                        value_elem = doc.createElement('Value')
-                        value_elem.setAttribute('locale', locale)
-                        value_elem.appendChild(doc.createTextNode(lang_data["name"]))
-                        localized_name.appendChild(value_elem)
+                if isinstance(lang_data, dict) and "name" in lang_data and locale != "default":
+                    value_elem = doc.createElement('Value')
+                    value_elem.setAttribute('locale', locale)
+                    value_elem.appendChild(doc.createTextNode(lang_data["name"]))
+                    localized_name.appendChild(value_elem)
 
-            achievement_strings.append(localized_name)  # Store the achievement name entry
+            achievement_strings.append(localized_name)
 
-            # Handle LockedDescription and UnlockedDescription (these should be separate entries)
-            for desc_type in ["lockedDescription", "unlockedDescription"]:
-                # Generate unique ID for the description (LockedDescriptionId1, UnlockedDescriptionId1, etc.)
-                desc_id = f"{desc_type.capitalize()}{achievement_id[11:]}"  # Extracting the number part from the name_id
-                
+            for desc_type, desc_id in [("lockedDescription", locked_desc_id), ("unlockedDescription", unlocked_desc_id)]:
                 localized_desc = doc.createElement('LocalizedString')
                 localized_desc.setAttribute('id', desc_id)
 
-                # Add description translations, skipping 'default'
                 for locale, lang_data in achievement.items():
-                    if isinstance(lang_data, dict) and desc_type in lang_data:
-                        if locale != "default":  # Skip the 'default' locale
-                            value_elem = doc.createElement('Value')
-                            value_elem.setAttribute('locale', locale)
-                            value_elem.appendChild(doc.createTextNode(lang_data[desc_type]))
-                            localized_desc.appendChild(value_elem)
+                    if isinstance(lang_data, dict) and desc_type in lang_data and locale != "default":
+                        value_elem = doc.createElement('Value')
+                        value_elem.setAttribute('locale', locale)
+                        value_elem.appendChild(doc.createTextNode(lang_data[desc_type]))
+                        localized_desc.appendChild(value_elem)
 
-                # Only add descriptions if they contain at least one translation
                 if localized_desc.childNodes:
                     if desc_type == "lockedDescription":
-                        locked_description_strings.append(localized_desc)  # Store locked description entry
+                        locked_description_strings.append(localized_desc)
                     else:
-                        unlocked_description_strings.append(localized_desc)  # Store unlocked description entry
+                        unlocked_description_strings.append(localized_desc)
 
-        # Now append the entries in the desired order: Achievements -> Locked Descriptions -> Unlocked Descriptions
         for entry in achievement_strings + locked_description_strings + unlocked_description_strings:
             root.appendChild(entry)
 
-        # Write the XML document to a file with the updated filename
         xml_str = doc.toprettyxml(indent="  ")
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(xml_str)
@@ -373,8 +334,8 @@ class Write:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
             
-            achievement_id = f"NEW_ACHIEVEMENT_1_{i}"
-            result += f'\t\t\t\t\t"token"\t"{achievement_id}_NAME"\n'  # Name token
+            achievement_token_id = f"NEW_ACHIEVEMENT_1_{i}"
+            result += f'\t\t\t\t\t"token"\t"{achievement_token_id}_NAME"\n'  # Name token
             result += f'\t\t\t\t}}\n'
 
             # "desc" translations
@@ -385,7 +346,7 @@ class Write:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
             
-            result += f'\t\t\t\t\t"token"\t"{achievement_id}_DESC"\n'  # Description token
+            result += f'\t\t\t\t\t"token"\t"{achievement_token_id}_DESC"\n'  # Description token
             result += f'\t\t\t\t}}\n'
 
             # Additional fields
