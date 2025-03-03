@@ -266,7 +266,7 @@ class Write:
                             "locale": lang_code,  # Locale (using the language code from the keys)
                             "lockedTitle": locale_data.get("lockedTitle", ""), 
                             "lockedDescription": locale_data.get("lockedDescription", ""), 
-                            "unlockedTitle": locale_data.get("unlockedTitle", ""), 
+                            "unlockedTitle": locale_data.get("name_title", ""), 
                             "unlockedDescription": locale_data.get("unlockedDescription", ""),
                             "flavorText": locale_data.get("flavor_txt", "")  # Using "flavor_txt" key
                         }
@@ -316,17 +316,17 @@ class Write:
             self.gui.show_error("Error", "No data provided for VDF file")
             return
 
-        # Oletusarvot, jos kenttiä ei ole määritelty
+        # Get values, none if nonexistent
         game_id = achievements[0].get("game_id", "None")
         version = achievements[0].get("version", "None")
         game_name = achievements[0].get("game_name", "None")
 
         result = f'"{game_id}"\n{{\n'
         result += '\t"stats"\n\t{\n'
-        result += '\t\t"1"\n\t\t{\n'  # Päälohko saavutuksille
-        result += '\t\t\t"bits"\n\t\t\t{\n'  # Kaikki saavutukset yhteen "bits"-lohkoon
+        result += '\t\t"1"\n\t\t{\n'  # Main block
+        result += '\t\t\t"bits"\n\t\t\t{\n'  # Bits block
 
-        # Loopataan kaikki saavutukset
+        # Loop achievments
         for i, achievement in enumerate(achievements, start=1):
             result += f'\t\t\t\t"{i}"\n\t\t\t\t{{\n'
             result += f'\t\t\t\t\t"name"\t"{achievement["name_id"]}"\n'
@@ -335,49 +335,50 @@ class Write:
             result += '\t\t\t\t\t"display"\n\t\t\t\t\t{\n'
             result += f'\t\t\t\t\t\t"name"\n\t\t\t\t\t\t{{\n'
 
-            # Luetaan kaikki mahdolliset kieliversiot "name" kentästä
+            # Read all the lang names
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "name" in lang_data:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["name"]}"\n'
 
-            # Lisää token kenttä
+            # Token field
             achievement_token_id = f"NEW_ACHIEVEMENT_1_{i}"
             result += f'\t\t\t\t\t\t\t"token"\t"{achievement_token_id}_NAME"\n'
             result += f'\t\t\t\t\t\t}}\n'  # Suljetaan "name"
 
             # "desc" translations
             result += f'\t\t\t\t\t\t"desc"\n\t\t\t\t\t\t{{\n'
-            # Luetaan kaikki mahdolliset kieliversiot "unlockedDescription" kentästä
+           #Unlocked descs
             for locale, lang_data in achievement.items():
                 if isinstance(lang_data, dict) and "unlockedDescription" in lang_data:
                     language = self.get_language_from_locale(locale)
                     result += f'\t\t\t\t\t\t\t"{language}"\t"{lang_data["unlockedDescription"]}"\n'
 
             result += f'\t\t\t\t\t\t\t"token"\t"{achievement_token_id}_DESC"\n'
-            result += f'\t\t\t\t\t\t}}\n'  # Suljetaan "desc"
+            result += f'\t\t\t\t\t\t}}\n'  
 
-            # Lisätään "hidden", "icon", ja "icon_gray"
-            result += f'\t\t\t\t\t\t"hidden"\t"{str(achievement.get("hidden", "false")).lower()}"\n'  # "hidden" pitäisi olla merkkijono
+            # hidden, icon, icon gray
+            result += f'\t\t\t\t\t\t"hidden"\t"{str(achievement.get("hidden", "false")).lower()}"\n' 
             result += f'\t\t\t\t\t\t"icon"\t"{achievement.get("icon", "")}"\n'
             result += f'\t\t\t\t\t\t"icon_gray"\t"{achievement.get("icon_gray", "")}"\n'
 
-            result += '\t\t\t\t\t}\n'  # Suljetaan yksittäinen saavutustieto
-            result += '\t\t\t\t}\n'  # Suljetaan saavutustieto
+            #closing
+            result += '\t\t\t\t\t}\n'  
+            result += '\t\t\t\t}\n'  
 
-        result += '\t\t\t}\n'  # Suljetaan "bits"
+        result += '\t\t\t}\n'  
 
         
 
-        # Lisätään "type", "version" ja "gamename"
+        # "type", "version" and "gamename"
         result += '\t\t\t"type"\t"ACHIEVEMENTS"\n'
-        result += '\t\t}\n'  # Suljetaan "stats"
-        result += '\t}\n'  # Suljetaan koko tiedosto
+        result += '\t\t}\n'  
+        result += '\t}\n' 
         result += f'\t"version"\t"{version}"\n'
         result += f'\t"gamename"\t"{game_name}"\n'
-        result += '}\n'  # Suljetaan päälohko
+        result += '}\n'  #
 
-        # Kirjoitetaan VDF-tiedosto
+        # Write vdf file
         with open(self.file_name, "w", encoding="utf-8") as f:
             f.write(result)
 
